@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);color:var(--text);
+  max-width:480px;margin:0 auto;min-height:100vh;
+  padding-bottom:80px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:var(--navy);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.brand{font-size:18px;font-weight:800;color:#fff}
+.brand span{color:#60a5fa}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.notif{font-size:20px;position:relative;cursor:pointer}
+.notif::after{content:'';position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--coral);border-radius:50%;border:2px solid var(--navy)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* MES SELECTOR */
+.mes-selector{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 20px 10px;
+}
+.mes-nav{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;padding:4px 8px}
+.mes-nav:hover{color:var(--navy)}
+.mes-label{font-size:15px;font-weight:700;color:var(--navy)}
+.comparar-btn{font-size:12px;font-weight:600;color:var(--blue);background:var(--sky);border:none;padding:5px 12px;border-radius:20px;cursor:pointer}
+
+/* AGENTE BANNER */
+.agent-banner{
+  margin:0 16px 16px;
+  background:var(--navy);border-radius:18px;padding:18px 20px;
+}
+.agent-top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.agent-av{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.15);flex-shrink:0}
+.agent-name{font-size:13px;font-weight:700;color:#fff}
+.agent-status{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:4px}
+.agent-status::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block}
+.agent-msg{font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;margin-bottom:14px}
+.agent-msg strong{color:#60a5fa}
+.agent-btns{display:flex;gap:8px;flex-wrap:wrap}
+.abtn{padding:8px 14px;border-radius:10px;border:none;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.abtn-p{background:var(--blue);color:#fff}
+.abtn-p:hover{background:var(--blue2)}
+.abtn-s{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85)}
+.abtn-s:hover{background:rgba(255,255,255,0.18)}
+
+/* DISPONIBLE CARD */
+.disponible{
+  margin:0 16px 16px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:18px;
+  padding:20px;display:flex;align-items:center;gap:16px;
+}
+.disp-left{flex:1}
+.disp-emoji{font-size:13px;color:var(--muted);margin-bottom:4px}
+.disp-val{font-size:36px;font-weight:800;color:var(--navy);letter-spacing:-1.5px;line-height:1}
+.disp-label{font-size:13px;color:var(--muted);margin-top:4px}
+.disp-change{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-top:8px}
+.disp-change.up{background:var(--green-dim);color:var(--green)}
+.disp-change.down{background:var(--coral-dim);color:var(--coral)}
+.disp-donut{width:72px;height:72px;flex-shrink:0}
+.disp-invest{
+  width:100%;margin-top:14px;padding:12px;
+  background:var(--blue);color:#fff;border:none;border-radius:12px;
+  font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;
+}
+.disp-invest:hover{background:var(--blue2)}
+
+/* MINI STATS */
+.mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px 16px}
+.mini-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px}
+.mc-emoji{font-size:20px;margin-bottom:6px}
+.mc-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.mc-val{font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
+.mc-val.green{color:var(--green)}
+.mc-val.red{color:var(--coral)}
+.mc-change{font-size:11px;font-weight:600;margin-top:3px}
+.mc-change.up{color:var(--green)}
+.mc-change.down{color:var(--coral)}
+.mc-change.neutral{color:var(--muted)}
+
+/* SECTION HEADER */
+.sec-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;margin-bottom:10px;
+}
+.sec-title{font-size:15px;font-weight:700;color:var(--navy)}
+.sec-link{font-size:12px;font-weight:600;color:var(--blue);cursor:pointer}
+
+/* CATEGORÍAS */
+.cats{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.cat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:14px 16px;cursor:pointer;
+  transition:all .15s;
+}
+.cat-card:hover{border-color:var(--blue2);box-shadow:0 2px 12px rgba(26,86,219,0.08)}
+.cat-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cat-icon{font-size:26px;flex-shrink:0}
+.cat-info{flex:1}
+.cat-name{font-size:14px;font-weight:700;color:var(--navy)}
+.cat-items{font-size:11px;color:var(--muted);margin-top:1px}
+.cat-amount{text-align:right}
+.cat-val{font-size:16px;font-weight:800;color:var(--navy)}
+.cat-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-top:3px}
+.cb-up{background:var(--coral-dim);color:var(--coral)}
+.cb-down{background:var(--green-dim);color:var(--green)}
+.cb-neutral{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.cat-bar-wrap{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.cat-bar{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* ALERTA SEGURO */
+.seguro-alert{
+  margin:0 16px 10px;
+  background:var(--amber-dim);border:1px solid #fde68a;
+  border-radius:14px;padding:14px 16px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.sa-icon{font-size:22px;flex-shrink:0}
+.sa-body h4{font-size:13px;font-weight:700;color:#78350f;margin-bottom:3px}
+.sa-body p{font-size:12px;color:#92400e;line-height:1.5}
+.sa-btn{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--amber);cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+
+/* EDU TIP */
+.edu-card{
+  margin:0 16px 16px;
+  background:var(--sky);border:1px solid #bfdbfe;
+  border-radius:14px;padding:14px 16px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.edu-icon{font-size:20px;flex-shrink:0}
+.edu-body h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.edu-body p{font-size:12px;color:var(--muted);line-height:1.5}
+.edu-btn{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer}
+
+/* ACCIONES RÁPIDAS */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px;margin-bottom:20px}
+.q-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.q-card:hover{border-color:var(--blue);background:var(--sky);transform:translateY(-1px)}
+.q-icon{font-size:22px;margin-bottom:6px}
+.q-label{font-size:11px;font-weight:600;color:var(--navy);line-height:1.3}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:480px;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;padding:10px 0 16px;z-index:50;
+}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:21px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+
+/* MODAL CATEGORIA */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--bg2);border-radius:24px 24px 0 0;
+  width:100%;max-width:480px;padding:24px 20px 32px;
+  max-height:85vh;overflow-y:auto;
+}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.modal-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.modal-item:last-child{border-bottom:none}
+.mi-left{display:flex;align-items:center;gap:10px}
+.mi-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.mi-name{font-size:14px;color:var(--text2)}
+.mi-date{font-size:11px;color:var(--muted);margin-top:1px}
+.mi-val{font-size:14px;font-weight:700;color:var(--navy)}
+.modal-close{width:100%;margin-top:20px;padding:14px;background:var(--navy);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <div class="topbar-right">
+    <div class="notif">🔔</div>
+    <div class="avatar">N</div>
+  </div>
+</div>
+
+<!-- MES SELECTOR -->
+<div class="mes-selector">
+  <button class="mes-nav">‹</button>
+  <div class="mes-label">Junio 2026</div>
+  <button class="mes-nav">›</button>
+  <button class="comparar-btn" onclick="alert('Subí otro resumen para comparar meses 📄')">Comparar meses</button>
+</div>
+
+<!-- AGENTE -->
+<div class="agent-banner">
+  <div class="agent-top">
+    <div class="agent-av">F</div>
+    <div>
+      <div class="agent-name">FinIA — tu asesor</div>
+      <div class="agent-status">En línea</div>
+    </div>
+  </div>
+  <div class="agent-msg">
+    Hola <strong>Nani</strong>! 👋 Este mes te <strong>sobran $284.500</strong> después de pagar todo — eso es un 8% más que mayo. <br><br>Ojo: tu gasto en <strong>seguros subió 43%</strong>. Te encontré opciones más baratas. ¿Las vemos?
+  </div>
+  <div class="agent-btns">
+    <button class="abtn abtn-p">Ver seguros más baratos 🔍</button>
+    <button class="abtn abtn-s">Preguntarle algo 💬</button>
+  </div>
+</div>
+
+<!-- DISPONIBLE -->
+<div class="disponible">
+  <div style="flex:1">
+    <div class="disp-emoji">💰 Te sobra este mes</div>
+    <div class="disp-val">$284.500</div>
+    <div class="disp-label">después de pagar todo</div>
+    <div class="disp-change up">↑ 8% vs mayo</div>
+    <button class="disp-invest" onclick="window.location.href='finia_chat.html'">¿Qué hago con esta plata? →</button>
+  </div>
+  <svg class="disp-donut" viewBox="0 0 72 72">
+    <circle cx="36" cy="36" r="28" fill="none" stroke="#e5e7eb" stroke-width="10"/>
+    <circle cx="36" cy="36" r="28" fill="none" stroke="#1a56db" stroke-width="10"
+      stroke-dasharray="88 88" stroke-dashoffset="22" stroke-linecap="round"
+      transform="rotate(-90 36 36)"/>
+    <text x="36" y="40" text-anchor="middle" font-size="11" font-weight="800" fill="#0a1f44">42%</text>
+  </svg>
+</div>
+
+<!-- MINI STATS -->
+<div class="mini-stats">
+  <div class="mini-card">
+    <div class="mc-emoji">📥</div>
+    <div class="mc-label">Entró este mes</div>
+    <div class="mc-val green">$680K</div>
+    <div class="mc-change up">↑ 5% vs mayo</div>
+  </div>
+  <div class="mini-card">
+    <div class="mc-emoji">📤</div>
+    <div class="mc-label">Salió este mes</div>
+    <div class="mc-val red">$395K</div>
+    <div class="mc-change down">↑ 3% vs mayo</div>
+  </div>
+</div>
+
+<!-- ALERTA SEGURO -->
+<div class="seguro-alert">
+  <div class="sa-icon">⚠️</div>
+  <div class="sa-body">
+    <h4>Tu seguro del auto subió mucho</h4>
+    <p>Pasó de $47.000 a $67.000 este mes. Eso es un 43% más. Encontré 3 opciones con la misma cobertura desde $39.000.</p>
+    <button class="sa-btn">Ver opciones más baratas →</button>
+  </div>
+</div>
+
+<!-- CATEGORÍAS -->
+<div class="sec-header">
+  <div class="sec-title">En qué gastaste</div>
+  <div class="sec-link">Ver todo</div>
+</div>
+
+<div class="cats" id="cats"></div>
+
+<!-- EDU TIP -->
+<div class="edu-card">
+  <div class="edu-icon">💡</div>
+  <div class="edu-body">
+    <h4>¿Sabías que podés hacer crecer tu plata?</h4>
+    <p>Con los $284.500 que te sobran podés poner en un FCI money market y ganar ~$11.000 extra este mes sin hacer nada. Es como un plazo fijo pero podés sacar la plata cuando quieras.</p>
+    <div class="edu-btn" onclick="window.location.href='finia_chat.html'">Contame más →</div>
+  </div>
+</div>
+
+<!-- ACCIONES RÁPIDAS -->
+<div class="sec-header">
+  <div class="sec-title">¿Qué querés hacer?</div>
+</div>
+<div class="quick">
+  <div class="q-card">
+    <div class="q-icon">📸</div>
+    <div class="q-label">Subir ticket</div>
+  </div>
+  <div class="q-card">
+    <div class="q-icon">📄</div>
+    <div class="q-label">Subir tarjeta</div>
+  </div>
+  <div class="q-card">
+    <div class="q-icon">📈</div>
+    <div class="q-label">Invertir</div>
+  </div>
+  <div class="q-card">
+    <div class="q-icon">🧾</div>
+    <div class="q-label">Impuestos</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item active">
+    <div class="bn-icon">🏠</div>
+    <div class="bn-label">Inicio</div>
+  </div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'">
+    <div class="bn-icon">💬</div>
+    <div class="bn-label">Asesor</div>
+  </div>
+  <div class="bn-item">
+    <div class="bn-icon">📊</div>
+    <div class="bn-label">Gastos</div>
+  </div>
+  <div class="bn-item">
+    <div class="bn-icon">📈</div>
+    <div class="bn-label">Invertir</div>
+  </div>
+  <div class="bn-item">
+    <div class="bn-icon">👤</div>
+    <div class="bn-label">Perfil</div>
+  </div>
+</div>
+
+<!-- MODAL CATEGORÍA -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-items"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const CATS = [
+  {
+    icon:'🏠', name:'Vivienda', val:145000, prev:145000,
+    color:'#1a56db', pct:37,
+    items:['Alquiler · $120.000','Expensas · $18.000','Gas · $4.500','Agua · $2.500'],
+    edu:'El gasto en vivienda idealmente no debería superar el 30% de tus ingresos. El tuyo está en el 21% — ¡muy bien!'
+  },
+  {
+    icon:'🛒', name:'Supermercado y compras', val:68000, prev:55000,
+    color:'#059669', pct:17,
+    items:['Carrefour · $32.000','Farmacity · $18.000','Mercado libre · $12.000','Otros · $6.000'],
+    edu:'Tus gastos en supermercado subieron 24% vs el mes pasado. Revisá si hubo compras grandes puntuales o si es una tendencia.'
+  },
+  {
+    icon:'🛡️', name:'Seguros', val:67000, prev:47000,
+    color:'#d97706', pct:17,
+    items:['Seguro auto (Sancor) · $67.000'],
+    edu:'Pagás $67.000 en seguro de auto. Eso es el 10% de tus ingresos — lo ideal es menos del 5%. Tengo opciones más baratas para vos.'
+  },
+  {
+    icon:'📱', name:'Servicios', val:42000, prev:40000,
+    color:'#7c3aed', pct:11,
+    items:['Internet (Fibertel) · $18.000','Celular (Personal) · $14.500','Netflix · $5.200','Spotify · $2.800','Disney+ · $1.500'],
+    edu:'Tenés 3 servicios de streaming activos. ¿Los usás todos? A veces sin darnos cuenta pagamos cosas que casi no usamos.'
+  },
+  {
+    icon:'🍕', name:'Salidas y ocio', val:38000, prev:28000,
+    color:'#f59e0b', pct:10,
+    items:['Restaurantes · $22.000','Delivery · $11.000','Cine / entretenimiento · $5.000'],
+    edu:'Tus salidas subieron 36% vs mayo. Nada malo — solo es bueno saberlo para que no sea una sorpresa al final del mes.'
+  },
+  {
+    icon:'🎓', name:'Educación', val:22000, prev:22000,
+    color:'#0d9488', pct:6,
+    items:['Cuota escolar · $22.000'],
+    edu:'Gasto fijo y estable. Bien controlado.'
+  },
+  {
+    icon:'💊', name:'Salud', val:13000, prev:8000,
+    color:'#dc2626', pct:3,
+    items:['Farmacia · $8.500','Médico particular · $4.500'],
+    edu:'Subió un poco este mes. Si no tenés prepaga, podés considerar una que cubra consultas y medicamentos — a veces sale más barato que pagar todo aparte.'
+  }
+];
+
+function renderCats(){
+  const container=document.getElementById('cats');
+  container.innerHTML='';
+  CATS.forEach((c,i)=>{
+    const diff=c.val-c.prev;
+    const pct=c.prev>0?Math.round((diff/c.prev)*100):0;
+    const badgeClass=diff>0?'cb-up':diff<0?'cb-down':'cb-neutral';
+    const badgeText=diff>0?`↑ ${pct}%`:diff<0?`↓ ${Math.abs(pct)}%`:'Sin cambios';
+    const card=document.createElement('div');
+    card.className='cat-card';
+    card.onclick=()=>openModal(i);
+    card.innerHTML=`
+      <div class="cat-top">
+        <div class="cat-icon">${c.icon}</div>
+        <div class="cat-info">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-items">${c.items.length} ${c.items.length===1?'ítem':'ítems'}</div>
+        </div>
+        <div class="cat-amount">
+          <div class="cat-val">$${c.val.toLocaleString('es-AR')}</div>
+          <div class="cat-badge ${badgeClass}">${badgeText}</div>
+        </div>
+      </div>
+      <div class="cat-bar-wrap">
+        <div class="cat-bar" style="width:${c.pct}%;background:${c.color}20;outline:none">
+          <div style="height:100%;width:100%;background:${c.color};border-radius:3px"></div>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function openModal(i){
+  const c=CATS[i];
+  const diff=c.val-c.prev;
+  const pct=c.prev>0?Math.round((diff/c.prev)*100):0;
+  document.getElementById('modal-title').textContent=c.icon+' '+c.name;
+  document.getElementById('modal-sub').textContent=
+    diff>0?`Subió ${pct}% vs el mes pasado — de $${c.prev.toLocaleString('es-AR')} a $${c.val.toLocaleString('es-AR')}`:
+    diff<0?`Bajó ${Math.abs(pct)}% vs el mes pasado — de $${c.prev.toLocaleString('es-AR')} a $${c.val.toLocaleString('es-AR')}`:
+    `Sin cambios vs el mes pasado`;
+  const itemsEl=document.getElementById('modal-items');
+  itemsEl.innerHTML='';
+  const colors=['#1a56db','#059669','#d97706','#7c3aed','#f59e0b','#0d9488','#dc2626'];
+  c.items.forEach((item,j)=>{
+    const[name,val]=item.split(' · ');
+    const div=document.createElement('div');
+    div.className='modal-item';
+    div.innerHTML=`
+      <div class="mi-left">
+        <div class="mi-dot" style="background:${colors[j%colors.length]}"></div>
+        <div><div class="mi-name">${name}</div></div>
+      </div>
+      <div class="mi-val">${val}</div>`;
+    itemsEl.appendChild(div);
+  });
+  // Edu tip en el modal
+  if(c.edu){
+    const tip=document.createElement('div');
+    tip.style.cssText='margin-top:16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e40af;line-height:1.55;border-left:3px solid #1a56db';
+    tip.innerHTML='💡 '+c.edu;
+    itemsEl.appendChild(tip);
+  }
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal')){
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+renderCats();
+</script>
+</body>
+</html>
