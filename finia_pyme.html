@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Mi negocio</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;--green-dark:#065f46;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);color:var(--text);
+  max-width:480px;margin:0 auto;min-height:100vh;
+  padding-bottom:80px;
+}
+
+/* TOPBAR */
+.topbar{
+  background:var(--navy);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.brand{font-size:18px;font-weight:800;color:#fff}
+.brand span{color:#60a5fa}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.notif{font-size:19px;position:relative;cursor:pointer}
+.notif::after{content:'3';position:absolute;top:-5px;right:-6px;width:16px;height:16px;background:var(--coral);border-radius:50%;border:2px solid var(--navy);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}
+.mode-pill{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#fff;cursor:pointer}
+
+/* MES NAV */
+.mes-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
+.mes-arrow{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;padding:4px 8px}
+.mes-label{font-size:15px;font-weight:700;color:var(--navy)}
+.upload-fab{background:var(--blue);color:#fff;border:none;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
+
+/* AGENTE */
+.agent{margin:0 16px 14px;background:var(--navy);border-radius:16px;padding:16px 18px}
+.agent-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.agent-av{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.15);flex-shrink:0}
+.agent-name{font-size:13px;font-weight:700;color:#fff}
+.agent-on{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:4px}
+.agent-on::before{content:'';width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block}
+.agent-msg{font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;margin-bottom:12px}
+.agent-msg strong{color:#60a5fa}
+.agent-btns{display:flex;gap:7px;flex-wrap:wrap}
+.abtn{padding:7px 13px;border-radius:9px;border:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.abtn-p{background:var(--blue);color:#fff}
+.abtn-s{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85)}
+
+/* RESULTADO */
+.resultado{margin:0 16px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:18px}
+.res-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.res-label{font-size:12px;color:var(--muted);margin-bottom:4px}
+.res-val{font-size:34px;font-weight:800;color:var(--green);letter-spacing:-1.5px}
+.res-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.res-change{font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;background:var(--green-dim);color:var(--green);align-self:flex-start;white-space:nowrap}
+
+/* DOS COLUMNAS */
+.dos-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.col-card{border-radius:14px;padding:14px 12px}
+.col-card.in{background:var(--green-dim);border:1px solid #a7f3d0}
+.col-card.out{background:var(--coral-dim);border:1px solid #fca5a5}
+.col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.col-card.in .col-title{color:var(--green-dark)}
+.col-card.out .col-title{color:#991b1b}
+.col-item{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,0,0,0.05)}
+.col-item:last-child{border-bottom:none}
+.col-item-name{font-size:12px;color:var(--text2)}
+.col-item-val{font-size:12px;font-weight:700}
+.col-card.in .col-item-val{color:var(--green-dark)}
+.col-card.out .col-item-val{color:#991b1b}
+.col-total{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1.5px solid rgba(0,0,0,0.1)}
+.col-total-label{font-size:12px;font-weight:700;color:var(--text)}
+.col-total-val{font-size:16px;font-weight:800}
+.col-card.in .col-total-val{color:var(--green)}
+.col-card.out .col-total-val{color:var(--coral)}
+
+/* BARRA RESULTADO */
+.res-bar-wrap{margin:0 0 12px}
+.res-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px}
+.res-bar-track{height:10px;background:var(--border);border-radius:5px;overflow:hidden;display:flex}
+.res-bar-in{background:var(--green);border-radius:5px 0 0 5px;transition:width .6s}
+.res-bar-out{background:var(--coral);border-radius:0 5px 5px 0;transition:width .6s}
+
+/* ACTORES */
+.actores-title{font-size:15px;font-weight:700;color:var(--navy);padding:0 20px;margin-bottom:10px}
+.actores{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.actor-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .15s}
+.actor-card:hover{border-color:var(--blue2);box-shadow:0 2px 12px rgba(26,86,219,0.07)}
+.actor-header{padding:12px 14px;display:flex;align-items:center;gap:10px}
+.actor-icon{font-size:22px;flex-shrink:0}
+.actor-info{flex:1}
+.actor-name{font-size:14px;font-weight:700;color:var(--navy)}
+.actor-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.actor-right{text-align:right}
+.actor-val{font-size:15px;font-weight:800}
+.actor-val.in{color:var(--green)}
+.actor-val.out{color:var(--coral)}
+.actor-val.neutral{color:var(--navy)}
+.actor-badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block}
+.ab-alert{background:var(--coral-dim);color:var(--coral)}
+.ab-ok{background:var(--green-dim);color:var(--green)}
+.ab-warn{background:var(--amber-dim);color:var(--amber)}
+.actor-bar{height:4px;background:var(--bg)}
+.actor-bar-fill{height:100%;border-radius:0 0 0 0;transition:width .5s}
+
+/* VENCIMIENTOS */
+.venc-title{font-size:15px;font-weight:700;color:var(--navy);padding:0 20px;margin-bottom:10px}
+.venc-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.venc-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px}
+.venc-date{text-align:center;flex-shrink:0;width:40px}
+.venc-day{font-size:20px;font-weight:800;color:var(--navy);line-height:1}
+.venc-month{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase}
+.venc-info{flex:1}
+.venc-name{font-size:13px;font-weight:700;color:var(--navy)}
+.venc-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.venc-right{text-align:right;flex-shrink:0}
+.venc-val{font-size:14px;font-weight:800;color:var(--coral)}
+.venc-dias{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block}
+.vd-urgent{background:var(--coral-dim);color:var(--coral)}
+.vd-soon{background:var(--amber-dim);color:var(--amber)}
+.vd-ok{background:var(--green-dim);color:var(--green)}
+
+/* INVERTIR */
+.invertir-card{margin:0 16px 16px;background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:16px;padding:18px}
+.inv-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.inv-val{font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:4px}
+.inv-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5}
+.inv-sub strong{color:#60a5fa}
+.inv-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.inv-opt{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .15s}
+.inv-opt:hover{background:rgba(255,255,255,0.14)}
+.inv-opt-left h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px}
+.inv-opt-left p{font-size:11px;color:rgba(255,255,255,0.5)}
+.inv-opt-right{text-align:right;flex-shrink:0}
+.inv-opt-gain{font-size:14px;font-weight:800;color:#4ade80}
+.inv-opt-plazo{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px}
+.inv-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+
+/* ACCIONES RÁPIDAS */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px;margin-bottom:16px}
+.q-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.q-card:hover{border-color:var(--blue);background:var(--sky);transform:translateY(-1px)}
+.q-icon{font-size:20px;margin-bottom:5px}
+.q-label{font-size:10px;font-weight:600;color:var(--navy);line-height:1.3}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 16px;z-index:50}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:88vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.modal-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.modal-item:last-child{border-bottom:none}
+.mi-name{font-size:13px;color:var(--text2)}
+.mi-date{font-size:11px;color:var(--muted);margin-top:1px}
+.mi-val{font-size:14px;font-weight:700}
+.mi-val.in{color:var(--green)}
+.mi-val.out{color:var(--coral)}
+.modal-edu{margin-top:14px;background:var(--sky);border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e3a8a;line-height:1.55;border-left:3px solid var(--blue)}
+.modal-upload{margin-top:14px;width:100%;padding:12px;border:1.5px dashed var(--border2);border-radius:12px;background:var(--bg);font-family:inherit;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+.modal-close{width:100%;margin-top:14px;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <div class="topbar-right">
+    <div class="notif">🔔</div>
+    <div class="mode-pill">🏢 Mi negocio</div>
+  </div>
+</div>
+
+<!-- MES NAV -->
+<div class="mes-nav">
+  <button class="mes-arrow">‹</button>
+  <div class="mes-label">Junio 2026</div>
+  <button class="mes-arrow">›</button>
+  <button class="upload-fab">📸 Subir comprobante</button>
+</div>
+
+<!-- AGENTE -->
+<div class="agent">
+  <div class="agent-top">
+    <div class="agent-av">F</div>
+    <div>
+      <div class="agent-name">FinIA — asesor del negocio</div>
+      <div class="agent-on">En línea</div>
+    </div>
+  </div>
+  <div class="agent-msg">
+    Buen día! 👋 Junio viene <strong>bien</strong> — resultado positivo de <strong>$213.000</strong>. Ojo: el F931 vence en <strong>6 días</strong> y necesitás $85.000 listos. ¿Querés que invierta el resto mientras tanto?
+  </div>
+  <div class="agent-btns">
+    <button class="abtn abtn-p">Sí, invertí el excedente 📈</button>
+    <button class="abtn abtn-s">Ver vencimientos 🗓️</button>
+    <button class="abtn abtn-s">Hablar con el asesor 💬</button>
+  </div>
+</div>
+
+<!-- RESULTADO -->
+<div class="resultado">
+  <div class="res-header">
+    <div>
+      <div class="res-label">Resultado junio</div>
+      <div class="res-val">+$213.000</div>
+      <div class="res-sub">después de todos los gastos</div>
+    </div>
+    <div class="res-change">↑ 18% vs mayo</div>
+  </div>
+  <div class="res-bar-wrap">
+    <div class="res-bar-labels">
+      <span>📥 Entró $800K</span>
+      <span>📤 Salió $587K</span>
+    </div>
+    <div class="res-bar-track">
+      <div class="res-bar-in" style="width:58%"></div>
+      <div class="res-bar-out" style="width:42%"></div>
+    </div>
+  </div>
+
+  <!-- DOS COLUMNAS -->
+  <div class="dos-col">
+    <div class="col-card in" onclick="openModal('ingresos')">
+      <div class="col-title">📥 Entró</div>
+      <div class="col-item"><span class="col-item-name">Ventas</span><span class="col-item-val">$650K</span></div>
+      <div class="col-item"><span class="col-item-name">Cobros</span><span class="col-item-val">$120K</span></div>
+      <div class="col-item"><span class="col-item-name">Otros</span><span class="col-item-val">$30K</span></div>
+      <div class="col-total"><span class="col-total-label">Total</span><span class="col-total-val">$800K</span></div>
+    </div>
+    <div class="col-card out" onclick="openModal('egresos')">
+      <div class="col-title">📤 Salió</div>
+      <div class="col-item"><span class="col-item-name">Proveedores</span><span class="col-item-val">$280K</span></div>
+      <div class="col-item"><span class="col-item-name">Sueldos</span><span class="col-item-val">$180K</span></div>
+      <div class="col-item"><span class="col-item-name">Impuestos</span><span class="col-item-val">$85K</span></div>
+      <div class="col-item"><span class="col-item-name">Gastos op.</span><span class="col-item-val">$42K</span></div>
+      <div class="col-total"><span class="col-total-label">Total</span><span class="col-total-val">$587K</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTORES -->
+<div class="actores-title">Por actor</div>
+<div class="actores">
+
+  <div class="actor-card" onclick="openActorModal('clientes')">
+    <div class="actor-header">
+      <div class="actor-icon">🤝</div>
+      <div class="actor-info">
+        <div class="actor-name">Clientes</div>
+        <div class="actor-sub">3 facturas emitidas · 1 pendiente de cobro</div>
+      </div>
+      <div class="actor-right">
+        <div class="actor-val in">+$800K</div>
+        <div class="actor-badge ab-warn">$120K por cobrar</div>
+      </div>
+    </div>
+    <div class="actor-bar"><div class="actor-bar-fill" style="width:100%;background:#dcfce7;height:4px"></div></div>
+  </div>
+
+  <div class="actor-card" onclick="openActorModal('proveedores')">
+    <div class="actor-header">
+      <div class="actor-icon">🚚</div>
+      <div class="actor-info">
+        <div class="actor-name">Proveedores</div>
+        <div class="actor-sub">8 facturas recibidas · 2 pendientes de pago</div>
+      </div>
+      <div class="actor-right">
+        <div class="actor-val out">-$280K</div>
+        <div class="actor-badge ab-alert">$68K por pagar</div>
+      </div>
+    </div>
+    <div class="actor-bar"><div class="actor-bar-fill" style="width:48%;background:#fee2e2;height:4px"></div></div>
+  </div>
+
+  <div class="actor-card" onclick="openActorModal('empleados')">
+    <div class="actor-header">
+      <div class="actor-icon">👔</div>
+      <div class="actor-info">
+        <div class="actor-name">Empleados</div>
+        <div class="actor-sub">4 empleados · Sueldos pagados ✓</div>
+      </div>
+      <div class="actor-right">
+        <div class="actor-val out">-$180K</div>
+        <div class="actor-badge ab-ok">Al día</div>
+      </div>
+    </div>
+    <div class="actor-bar"><div class="actor-bar-fill" style="width:31%;background:#fee2e2;height:4px"></div></div>
+  </div>
+
+  <div class="actor-card" onclick="openActorModal('impuestos')">
+    <div class="actor-header">
+      <div class="actor-icon">🏛️</div>
+      <div class="actor-info">
+        <div class="actor-name">Impuestos y tributos</div>
+        <div class="actor-sub">IVA · F931 · IIBB · Municipales</div>
+      </div>
+      <div class="actor-right">
+        <div class="actor-val out">-$85K</div>
+        <div class="actor-badge ab-alert">F931 en 6 días</div>
+      </div>
+    </div>
+    <div class="actor-bar"><div class="actor-bar-fill" style="width:14%;background:#fee2e2;height:4px"></div></div>
+  </div>
+
+</div>
+
+<!-- VENCIMIENTOS -->
+<div class="venc-title">Próximos vencimientos</div>
+<div class="venc-list">
+
+  <div class="venc-card">
+    <div class="venc-date"><div class="venc-day">12</div><div class="venc-month">Jun</div></div>
+    <div class="venc-info"><div class="venc-name">F931 — Cargas sociales</div><div class="venc-desc">Empleados · AFIP</div></div>
+    <div class="venc-right"><div class="venc-val">$85.000</div><div class="venc-dias vd-urgent">En 6 días</div></div>
+  </div>
+
+  <div class="venc-card">
+    <div class="venc-date"><div class="venc-day">18</div><div class="venc-month">Jun</div></div>
+    <div class="venc-info"><div class="venc-name">IVA — Posición mayo</div><div class="venc-desc">AFIP · Responsable Inscripto</div></div>
+    <div class="venc-right"><div class="venc-val">$42.000</div><div class="venc-dias vd-soon">En 12 días</div></div>
+  </div>
+
+  <div class="venc-card">
+    <div class="venc-date"><div class="venc-day">20</div><div class="venc-month">Jun</div></div>
+    <div class="venc-info"><div class="venc-name">Proveedor Martínez</div><div class="venc-desc">Factura #0045 · 30 días</div></div>
+    <div class="venc-right"><div class="venc-val">$38.000</div><div class="venc-dias vd-soon">En 14 días</div></div>
+  </div>
+
+  <div class="venc-card">
+    <div class="venc-date"><div class="venc-day">30</div><div class="venc-month">Jun</div></div>
+    <div class="venc-info"><div class="venc-name">IIBB — Ingresos Brutos</div><div class="venc-desc">AGIP · Buenos Aires</div></div>
+    <div class="venc-right"><div class="venc-val">$18.000</div><div class="venc-dias vd-ok">En 24 días</div></div>
+  </div>
+
+</div>
+
+<!-- INVERTIR EXCEDENTE -->
+<div class="invertir-card">
+  <div class="inv-label">💰 Disponible para invertir</div>
+  <div class="inv-val">$128.000</div>
+  <div class="inv-sub">Después del F931 ($85K el 12/jun) te sobran <strong>$128.000</strong> libres. Hacelos trabajar hasta el próximo compromiso.</div>
+  <div class="inv-options">
+    <div class="inv-opt">
+      <div class="inv-opt-left">
+        <h4>🛡️ FCI Money Market</h4>
+        <p>Rescatable en 24hs · Sin riesgo</p>
+      </div>
+      <div class="inv-opt-right">
+        <div class="inv-opt-gain">+$4.200</div>
+        <div class="inv-opt-plazo">en 14 días</div>
+      </div>
+    </div>
+    <div class="inv-opt">
+      <div class="inv-opt-left">
+        <h4>⚖️ Caución bursátil</h4>
+        <p>7 días · Muy bajo riesgo</p>
+      </div>
+      <div class="inv-opt-right">
+        <div class="inv-opt-gain">+$2.800</div>
+        <div class="inv-opt-plazo">en 7 días</div>
+      </div>
+    </div>
+  </div>
+  <button class="inv-btn" onclick="window.location.href='finia_chat.html'">Hablar con el asesor sobre esto →</button>
+</div>
+
+<!-- ACCIONES RÁPIDAS -->
+<div class="quick">
+  <div class="q-card"><div class="q-icon">📸</div><div class="q-label">Subir factura</div></div>
+  <div class="q-card"><div class="q-icon">💬</div><div class="q-label">Hablar con asesor</div></div>
+  <div class="q-card"><div class="q-icon">📊</div><div class="q-label">Ver P&L completo</div></div>
+  <div class="q-card"><div class="q-icon">🧾</div><div class="q-label">Posición fiscal</div></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item" onclick="window.location.href='finia_dashboard.html'">
+    <div class="bn-icon">🏠</div><div class="bn-label">Inicio</div>
+  </div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'">
+    <div class="bn-icon">💬</div><div class="bn-label">Asesor</div>
+  </div>
+  <div class="bn-item active">
+    <div class="bn-icon">🏢</div><div class="bn-label">Negocio</div>
+  </div>
+  <div class="bn-item">
+    <div class="bn-icon">📈</div><div class="bn-label">Invertir</div>
+  </div>
+  <div class="bn-item">
+    <div class="bn-icon">👤</div><div class="bn-label">Perfil</div>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const MODALS = {
+  ingresos:{
+    title:'📥 Todo lo que entró',
+    sub:'Junio 2026 · Total $800.000',
+    items:[
+      {name:'Venta Cliente ABC',date:'03/06',val:'+$280.000',type:'in'},
+      {name:'Venta Cliente XYZ',date:'10/06',val:'+$220.000',type:'in'},
+      {name:'Venta Cliente DEF',date:'15/06',val:'+$150.000',type:'in'},
+      {name:'Cobro factura may.',date:'02/06',val:'+$120.000',type:'in'},
+      {name:'Otros ingresos',date:'varios',val:'+$30.000',type:'in'},
+    ],
+    edu:'💡 Tus ventas subieron 22% vs mayo. El cliente ABC representa el 35% de tus ingresos — bueno saberlo para no depender demasiado de uno solo.'
+  },
+  egresos:{
+    title:'📤 Todo lo que salió',
+    sub:'Junio 2026 · Total $587.000',
+    items:[
+      {name:'Proveedor Martínez',date:'05/06',val:'-$180.000',type:'out'},
+      {name:'Proveedor López',date:'08/06',val:'-$100.000',type:'out'},
+      {name:'Sueldos x4',date:'04/06',val:'-$180.000',type:'out'},
+      {name:'IVA mayo (pagado)',date:'18/05',val:'-$38.000',type:'out'},
+      {name:'Alquiler oficina',date:'01/06',val:'-$25.000',type:'out'},
+      {name:'Servicios / internet',date:'varios',val:'-$17.000',type:'out'},
+      {name:'Gastos varios',date:'varios',val:'-$47.000',type:'out'},
+    ],
+    edu:'💡 Tus gastos en proveedores representan el 48% de tus egresos totales. Si podés negociar 15 días más de plazo con ellos, mejorás mucho tu flujo de caja.'
+  },
+  clientes:{
+    title:'🤝 Clientes',
+    sub:'3 facturas · $120.000 pendiente de cobro',
+    items:[
+      {name:'Cliente ABC — Factura #0089',date:'Cobrado 10/06',val:'+$280.000',type:'in'},
+      {name:'Cliente XYZ — Factura #0090',date:'Cobrado 15/06',val:'+$220.000',type:'in'},
+      {name:'Cliente DEF — Factura #0091',date:'⚠️ Vence 25/06',val:'+$120.000',type:'out'},
+    ],
+    edu:'💡 El Cliente DEF tiene una factura de $120.000 que vence el 25/06. Si no pagó en 3 días, el agente te va a recordar para que lo llames.'
+  },
+  proveedores:{
+    title:'🚚 Proveedores',
+    sub:'8 facturas · $68.000 pendiente de pago',
+    items:[
+      {name:'Proveedor Martínez #0045',date:'Vence 20/06',val:'-$38.000',type:'out'},
+      {name:'Proveedor López #0032',date:'Vence 28/06',val:'-$30.000',type:'out'},
+      {name:'Resto de facturas',date:'Pagadas',val:'-$212.000',type:'in'},
+    ],
+    edu:'💡 IVA crédito fiscal de este mes: $58.800. Se descuenta de tu IVA débito cuando presentes la DJ. Ya está calculado en tu posición fiscal.'
+  },
+  empleados:{
+    title:'👔 Empleados',
+    sub:'4 empleados · Sueldos al día',
+    items:[
+      {name:'Sueldos netos x4',date:'Pagado 04/06',val:'-$140.000',type:'in'},
+      {name:'Cargas sociales (F931)',date:'Vence 12/06',val:'-$85.000',type:'out'},
+      {name:'ART mensual',date:'Pagado 02/06',val:'-$18.000',type:'in'},
+      {name:'Obra social',date:'Pagado 02/06',val:'-$22.000',type:'in'},
+    ],
+    edu:'💡 El costo laboral total (sueldo + cargas) es aproximadamente 1.7x el sueldo neto. Tus 4 empleados cuestan $265.000/mes en total al negocio.'
+  },
+  impuestos:{
+    title:'🏛️ Impuestos y tributos',
+    sub:'Posición fiscal junio 2026',
+    items:[
+      {name:'F931 Cargas sociales',date:'Vence 12/06 ⚠️',val:'-$85.000',type:'out'},
+      {name:'IVA débito fiscal',date:'Vence 18/06',val:'-$84.000',type:'out'},
+      {name:'IVA crédito fiscal',date:'A descontar',val:'+$58.800',type:'in'},
+      {name:'Posición IVA neta',date:'A pagar 18/06',val:'-$25.200',type:'out'},
+      {name:'IIBB Buenos Aires',date:'Vence 30/06',val:'-$18.000',type:'out'},
+    ],
+    edu:'💡 Tu IVA débito ($84K) menos tu IVA crédito ($58.8K) da una posición a pagar de $25.200. Ese es el monto real que vas a girar a AFIP el 18/06.'
+  }
+};
+
+function openModal(id){
+  const m=MODALS[id];
+  if(!m)return;
+  document.getElementById('modal-title').textContent=m.title;
+  document.getElementById('modal-sub').textContent=m.sub;
+  const body=document.getElementById('modal-body');
+  body.innerHTML='';
+  m.items.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='modal-item';
+    div.innerHTML=`<div><div class="mi-name">${item.name}</div><div class="mi-date">${item.date}</div></div><div class="mi-val ${item.type}">${item.val}</div>`;
+    body.appendChild(div);
+  });
+  if(m.edu){
+    const edu=document.createElement('div');
+    edu.className='modal-edu';
+    edu.textContent=m.edu;
+    body.appendChild(edu);
+  }
+  const uploadBtn=document.createElement('button');
+  uploadBtn.className='modal-upload';
+  uploadBtn.innerHTML='📸 Subir comprobante de este actor';
+  uploadBtn.onclick=()=>closeModal();
+  body.appendChild(uploadBtn);
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function openActorModal(id){openModal(id)}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal')){
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+</script>
+</body>
+</html>
