@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Invertir</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;--green-dark:#065f46;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;color:#fff}.brand span{color:#60a5fa}
+.back-btn{background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer}
+
+/* SCREENS */
+.screen{display:none;animation:fadeUp .3s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SCREEN 1: DISPONIBLE ===== */
+.disponible-screen{padding:24px 16px}
+.disp-header{text-align:center;margin-bottom:28px}
+.disp-emoji-big{font-size:48px;margin-bottom:12px}
+.disp-greeting{font-size:14px;color:var(--muted);margin-bottom:8px}
+.disp-amount{font-size:52px;font-weight:800;color:var(--navy);letter-spacing:-2px;line-height:1}
+.disp-label{font-size:14px;color:var(--muted);margin-top:6px}
+.disp-change{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px;background:var(--green-dim);color:var(--green);margin-top:10px}
+
+.breakdown{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:20px}
+.bk-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px}
+.bk-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.bk-row:last-child{border-bottom:none}
+.bk-label{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:7px}
+.bk-val{font-size:13px;font-weight:700}
+.bk-val.in{color:var(--green)}
+.bk-val.out{color:var(--coral)}
+.bk-val.avail{color:var(--blue)}
+
+.edu-box{background:var(--sky);border:1px solid #bfdbfe;border-radius:14px;padding:14px 16px;margin-bottom:20px;border-left:3px solid var(--blue)}
+.edu-box p{font-size:14px;color:#1e3a8a;line-height:1.6}
+.edu-box strong{font-weight:700}
+
+.start-btn{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:all .15s}
+.start-btn:hover{background:var(--blue2);transform:translateY(-1px)}
+
+/* ===== SCREEN 2: TEST ===== */
+.test-screen{padding:20px 16px}
+.test-progress{display:flex;gap:6px;margin-bottom:24px}
+.tp-dot{flex:1;height:4px;border-radius:2px;background:var(--border);transition:background .3s}
+.tp-dot.done{background:var(--blue)}
+.tp-dot.active{background:var(--blue);opacity:.5}
+
+.test-question{font-size:20px;font-weight:800;color:var(--navy);line-height:1.25;margin-bottom:6px;letter-spacing:-.5px}
+.test-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+
+.test-options{display:flex;flex-direction:column;gap:10px}
+.test-opt{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:14px}
+.test-opt:hover{border-color:var(--blue);background:var(--sky)}
+.test-opt.selected{border-color:var(--blue);background:var(--sky)}
+.opt-emoji{font-size:32px;flex-shrink:0}
+.opt-body h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.opt-body p{font-size:13px;color:var(--muted);line-height:1.4}
+.test-opt.selected h4{color:var(--blue)}
+
+/* ===== SCREEN 3: RESULTADO ===== */
+.result-screen{padding:20px 16px}
+.result-hero{text-align:center;margin-bottom:24px}
+.result-emoji{font-size:56px;margin-bottom:14px;animation:pop .4s cubic-bezier(.4,0,.2,1)}
+@keyframes pop{0%{transform:scale(.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.result-perfil{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.result-title{font-size:26px;font-weight:800;color:var(--navy);letter-spacing:-.8px;margin-bottom:8px}
+.result-desc{font-size:14px;color:var(--muted);line-height:1.6;max-width:320px;margin:0 auto}
+
+.fondos-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px}
+.fondo-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.fondo-card:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(26,86,219,0.08)}
+.fondo-card.recommended{border-color:var(--blue);border-width:2px;background:linear-gradient(135deg,#fff 0%,var(--sky) 100%)}
+.fc-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.fc-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.fc-info{flex:1}
+.fc-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.fc-admin{font-size:11px;color:var(--muted)}
+.fc-right{text-align:right;flex-shrink:0}
+.fc-gain{font-size:18px;font-weight:800;color:var(--green)}
+.fc-gain-label{font-size:11px;color:var(--muted);margin-top:1px}
+.fc-rec-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--sky);color:var(--blue);margin-top:3px;display:inline-block}
+
+.fc-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.fc-detail{background:var(--bg);border-radius:10px;padding:8px;text-align:center}
+.fc-d-label{font-size:10px;color:var(--muted);margin-bottom:2px}
+.fc-d-val{font-size:12px;font-weight:700;color:var(--navy)}
+
+.edu-tip{background:var(--sky);border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;margin:4px 0 14px;font-size:13px;color:#1e3a8a;line-height:1.55;border-left:3px solid var(--blue)}
+
+.invert-btn{width:100%;padding:15px;border:none;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;transition:all .15s}
+.invert-btn.primary{background:var(--blue);color:#fff}
+.invert-btn.primary:hover{background:var(--blue2)}
+.invert-btn.secondary{background:var(--bg2);color:var(--navy);border:1px solid var(--border)}
+
+.mix-card{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:16px;padding:18px;margin-bottom:14px}
+.mix-title{font-size:13px;font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:4px}
+.mix-name{font-size:17px;font-weight:800;color:#fff;margin-bottom:12px}
+.mix-bars{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.mix-bar-row{display:flex;align-items:center;gap:10px}
+.mix-bar-label{font-size:12px;color:rgba(255,255,255,0.7);width:110px;flex-shrink:0}
+.mix-bar-track{flex:1;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden}
+.mix-bar-fill{height:100%;border-radius:4px}
+.mix-bar-pct{font-size:12px;font-weight:700;color:#fff;width:28px;text-align:right;flex-shrink:0}
+.mix-gain-row{display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)}
+.mix-gain-label{font-size:12px;color:rgba(255,255,255,0.5)}
+.mix-gain-val{font-size:20px;font-weight:800;color:#4ade80}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 16px;z-index:50}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+
+/* RESPONSIVE */
+@media(min-width:600px){body{padding-left:12px;padding-right:12px}}
+@media(min-width:900px){
+  body{display:grid;grid-template-columns:220px 1fr;grid-template-rows:54px 1fr;max-width:1100px;padding:0}
+  .topbar{grid-column:1/-1}
+  .desktop-nav{display:flex!important;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);padding:20px 14px;gap:3px;position:sticky;top:54px;height:calc(100vh - 54px);overflow-y:auto}
+  .desktop-nav .dn-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:14px 10px 4px}
+  .desktop-nav a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;transition:all .15s}
+  .desktop-nav a:hover{background:var(--bg);color:var(--navy)}
+  .desktop-nav a.active{background:var(--sky);color:var(--blue)}
+  .page-main{overflow-y:auto;padding:24px 32px 40px;height:calc(100vh - 54px)}
+  .bottom-nav{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <button class="back-btn" onclick="goBack()">← Volver</button>
+</div>
+
+<!-- DESKTOP NAV -->
+<nav class="desktop-nav" style="display:none">
+  <div class="dn-label">Principal</div>
+  <a href="finia_dashboard.html">🏠 Inicio</a>
+  <a href="finia_chat.html">💬 Asesor IA</a>
+  <a href="finia_pyme.html">🏢 Mi negocio</a>
+  <a href="finia_inversiones.html" class="active">📈 Invertir</a>
+  <div class="dn-label">Herramientas</div>
+  <a href="#">🧾 Impuestos</a>
+  <a href="#">📸 Documentos</a>
+  <a href="#">🛡️ Seguros</a>
+  <a href="#">📄 Reportes</a>
+</nav>
+
+<div class="page-main" id="page-main">
+
+<!-- ===== SCREEN 1: DISPONIBLE ===== -->
+<div class="screen active" id="s1">
+  <div class="disponible-screen">
+    <div class="disp-header">
+      <div class="disp-emoji-big">💰</div>
+      <div class="disp-greeting">Este mes te sobró</div>
+      <div class="disp-amount">$284.500</div>
+      <div class="disp-label">después de pagar todo</div>
+      <div class="disp-change">↑ 8% más que mayo</div>
+    </div>
+
+    <div class="breakdown">
+      <div class="bk-title">¿De dónde sale ese número?</div>
+      <div class="bk-row"><div class="bk-label">📥 Lo que entró</div><div class="bk-val in">+$680.000</div></div>
+      <div class="bk-row"><div class="bk-label">📤 Lo que salió</div><div class="bk-val out">-$395.500</div></div>
+      <div class="bk-row"><div class="bk-label">🗓️ Próximos vencimientos</div><div class="bk-val out">-$98.500</div></div>
+      <div class="bk-row"><div class="bk-label" style="font-weight:700;color:var(--navy)">✅ Libre para invertir</div><div class="bk-val avail">$186.000</div></div>
+    </div>
+
+    <div class="edu-box">
+      <p>💡 <strong>¿Sabías que la plata parada pierde valor?</strong> Con la inflación de hoy, $186.000 guardados en la cuenta en 30 días valen menos. Hay opciones muy seguras para que esa plata crezca mientras la tenés guardada.</p>
+    </div>
+
+    <button class="start-btn" onclick="showScreen('s2')">Quiero que mi plata crezca →</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN 2: TEST ===== -->
+<div class="screen" id="s2">
+  <div class="test-screen">
+    <div class="test-progress">
+      <div class="tp-dot active" id="tp1"></div>
+      <div class="tp-dot" id="tp2"></div>
+      <div class="tp-dot" id="tp3"></div>
+    </div>
+
+    <div id="test-content"></div>
+  </div>
+</div>
+
+<!-- ===== SCREEN 3: RESULTADO ===== -->
+<div class="screen" id="s3">
+  <div class="result-screen" id="result-content"></div>
+</div>
+
+</div><!-- /page-main -->
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item" onclick="window.location.href='finia_dashboard.html'"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_pyme.html'"><div class="bn-icon">🏢</div><div class="bn-label">Negocio</div></div>
+  <div class="bn-item active"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
+</div>
+
+<script>
+const DISPONIBLE = 186000;
+
+const PREGUNTAS = [
+  {
+    id:1,
+    pregunta:'Si tus $186.000 de repente bajan a $150.000, ¿qué hacés?',
+    sub:'No hay respuesta correcta — es solo para entenderte mejor.',
+    opciones:[
+      {emoji:'😱', titulo:'Los saco ya mismo', desc:'No soporto ver que baja. Prefiero no ganar nada.', perfil:'conservador'},
+      {emoji:'😌', titulo:'Espero a que vuelvan a subir', desc:'Entiendo que sube y baja. Si a largo plazo gana, aguanto.', perfil:'moderado'},
+      {emoji:'😎', titulo:'Pongo más mientras están baratos', desc:'Es una oportunidad. Me banco el riesgo por más ganancia.', perfil:'agresivo'},
+    ]
+  },
+  {
+    id:2,
+    pregunta:'¿Cuándo podés necesitar esa plata?',
+    sub:'Esto define qué tan líquida tiene que ser tu inversión.',
+    opciones:[
+      {emoji:'⚡', titulo:'En cualquier momento', desc:'Puede ser mañana, la semana que viene, no sé.', perfil:'conservador'},
+      {emoji:'📅', titulo:'En 1 a 3 meses', desc:'Tengo compromisos próximos pero no urgentes.', perfil:'moderado'},
+      {emoji:'🏖️', titulo:'En más de 6 meses', desc:'Puedo dejarla quieta por un buen tiempo.', perfil:'agresivo'},
+    ]
+  },
+  {
+    id:3,
+    pregunta:'¿Qué preferís?',
+    sub:'Elegí lo que más se parece a tu forma de ver la plata.',
+    opciones:[
+      {emoji:'🛡️', titulo:'Que no baje nunca, aunque gane poco', desc:'La seguridad es lo primero.', perfil:'conservador'},
+      {emoji:'⚖️', titulo:'Un equilibrio entre seguridad y ganancia', desc:'Acepto algo de riesgo si gano más.', perfil:'moderado'},
+      {emoji:'🚀', titulo:'Que gane lo máximo posible', desc:'Entiendo que puede bajar, busco el mejor resultado.', perfil:'agresivo'},
+    ]
+  }
+];
+
+const PERFILES = {
+  conservador:{
+    emoji:'🛡️',
+    color:'#0d9488',
+    nombre:'Conservador',
+    desc:'Querés que tu plata esté segura y podés retirarla cuando quieras. Lo más importante para vos es no perder.',
+    fondos:[
+      {
+        nombre:'Fima Premium',
+        admin:'FIMA · Galicia',
+        tipo:'Money Market',
+        icono:'💧',
+        iconoBg:'#e0f2fe',
+        liquidez:'Inmediata (24hs)',
+        riesgo:'Muy bajo',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.038),
+        tna:'~46% TNA',
+        desc:'La opción más segura. Tu plata está en depósitos bancarios. Podés sacarla cuando quieras.',
+        recommended:true,
+        edu:'Es como tener la plata en el banco pero ganando más. Perfecto para vos.'
+      },
+      {
+        nombre:'Fima Ahorro Pesos',
+        admin:'FIMA · Galicia',
+        tipo:'Renta fija corto plazo',
+        icono:'📦',
+        iconoBg:'#dcfce7',
+        liquidez:'24 horas',
+        riesgo:'Bajo',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.043),
+        tna:'~52% TNA',
+        desc:'Un poco más de ganancia que el money market. Invierte en bonos de corto plazo.',
+        recommended:false,
+        edu:'Un escalón más de ganancia con muy poco riesgo extra.'
+      }
+    ]
+  },
+  moderado:{
+    emoji:'⚖️',
+    color:'#1a56db',
+    nombre:'Moderado',
+    desc:'Buscás un equilibrio. Aceptás que puede subir y bajar un poco, pero querés más ganancia que un plazo fijo.',
+    fondos:[
+      {
+        nombre:'Fima Renta en Pesos',
+        admin:'FIMA · Galicia',
+        tipo:'Renta fija mediano plazo',
+        icono:'📊',
+        iconoBg:'#e8f0fe',
+        liquidez:'24 horas',
+        riesgo:'Moderado',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.052),
+        tna:'~62% TNA',
+        desc:'Invierte en bonos del gobierno y empresas argentinas. Más ganancia, algo de movimiento.',
+        recommended:true,
+        edu:'Muy popular entre quienes quieren ganar más sin asumir demasiado riesgo.'
+      },
+      {
+        nombre:'Mix conservador · 60/40',
+        admin:'Cartera sugerida por FinIA',
+        tipo:'Mix personalizado',
+        icono:'🎯',
+        iconoBg:'#f5f3ff',
+        liquidez:'24-48 horas',
+        riesgo:'Moderado',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.057),
+        tna:'~68% TNA estimado',
+        desc:'60% en Fima Ahorro Pesos + 40% en Fima Renta en Pesos. Lo mejor de los dos mundos.',
+        recommended:false,
+        isMix:true,
+        mix:[
+          {label:'Fima Ahorro Pesos (60%)', pct:60, color:'#1a56db'},
+          {label:'Fima Renta en Pesos (40%)', pct:40, color:'#0d9488'},
+        ],
+        edu:'Un mix simple que combina seguridad y rendimiento.'
+      }
+    ]
+  },
+  agresivo:{
+    emoji:'🚀',
+    color:'#7c3aed',
+    nombre:'Agresivo',
+    desc:'Buscás la máxima ganancia y entendés que puede haber movimientos. Pensás en el largo plazo.',
+    fondos:[
+      {
+        nombre:'Fima Mix I',
+        admin:'FIMA · Galicia',
+        tipo:'Mixto (bonos + acciones)',
+        icono:'⚡',
+        iconoBg:'#fef3c7',
+        liquidez:'48 horas',
+        riesgo:'Alto',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.075),
+        tna:'Variable',
+        desc:'Combina bonos y acciones argentinas. Puede subir mucho — y también bajar. Para horizontes de +6 meses.',
+        recommended:true,
+        edu:'Más potencial de ganancia pero con más movimiento. Recomendado si podés dejar la plata tranquila.'
+      },
+      {
+        nombre:'Mix agresivo · 50/30/20',
+        admin:'Cartera sugerida por FinIA',
+        tipo:'Mix personalizado',
+        icono:'🎯',
+        iconoBg:'#f5f3ff',
+        liquidez:'24-48 horas',
+        riesgo:'Alto',
+        minimo:'$100',
+        ganancia: Math.round(DISPONIBLE * 0.082),
+        tna:'Variable estimado',
+        desc:'50% Fima Renta en Pesos + 30% Fima Mix I + 20% Fima Acciones. Diversificado y con potencial.',
+        recommended:false,
+        isMix:true,
+        mix:[
+          {label:'Fima Renta en Pesos (50%)', pct:50, color:'#1a56db'},
+          {label:'Fima Mix I (30%)', pct:30, color:'#d97706'},
+          {label:'Fima Acciones (20%)', pct:20, color:'#7c3aed'},
+        ],
+        edu:'La mayor diversificación posible con productos FIMA reales.'
+      }
+    ]
+  }
+};
+
+let respuestas = [];
+let preguntaActual = 0;
+let currentScreen = 's1';
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  currentScreen = id;
+  window.scrollTo(0,0);
+  if(id==='s2') renderPregunta();
+}
+
+function goBack(){
+  if(currentScreen==='s2'&&preguntaActual>0){prevPregunta();return}
+  if(currentScreen==='s2'){showScreen('s1');return}
+  if(currentScreen==='s3'){showScreen('s2');respuestas=[];preguntaActual=0;return}
+  window.location.href='finia_dashboard.html';
+}
+
+function renderPregunta(){
+  const q = PREGUNTAS[preguntaActual];
+  // Progress dots
+  document.querySelectorAll('.tp-dot').forEach((d,i)=>{
+    d.classList.remove('done','active');
+    if(i<preguntaActual) d.classList.add('done');
+    else if(i===preguntaActual) d.classList.add('active');
+  });
+  const html = `
+    <div class="test-question">${q.pregunta}</div>
+    <div class="test-sub">${q.sub}</div>
+    <div class="test-options">
+      ${q.opciones.map((o,i)=>`
+        <div class="test-opt" id="opt-${i}" onclick="selectOpt(${i},'${o.perfil}')">
+          <div class="opt-emoji">${o.emoji}</div>
+          <div class="opt-body"><h4>${o.titulo}</h4><p>${o.desc}</p></div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('test-content').innerHTML = html;
+}
+
+function selectOpt(idx, perfil){
+  document.querySelectorAll('.test-opt').forEach(o=>o.classList.remove('selected'));
+  document.getElementById('opt-'+idx).classList.add('selected');
+  setTimeout(()=>{
+    respuestas.push(perfil);
+    if(preguntaActual < PREGUNTAS.length-1){
+      preguntaActual++;
+      renderPregunta();
+    } else {
+      showResultado();
+    }
+  }, 380);
+}
+
+function prevPregunta(){
+  if(preguntaActual>0){respuestas.pop();preguntaActual--;renderPregunta();}
+}
+
+function showResultado(){
+  // Calcular perfil predominante
+  const count = {conservador:0,moderado:0,agresivo:0};
+  respuestas.forEach(r=>count[r]++);
+  const perfil = Object.keys(count).reduce((a,b)=>count[a]>=count[b]?a:b);
+  const P = PERFILES[perfil];
+
+  let fondosHTML = P.fondos.map(f=>{
+    if(f.isMix){
+      return `
+      <div class="mix-card">
+        <div class="mix-title">Cartera personalizada FinIA</div>
+        <div class="mix-name">🎯 ${f.nombre}</div>
+        <div class="mix-bars">
+          ${f.mix.map(m=>`
+            <div class="mix-bar-row">
+              <div class="mix-bar-label">${m.label}</div>
+              <div class="mix-bar-track"><div class="mix-bar-fill" style="width:${m.pct}%;background:${m.color}"></div></div>
+              <div class="mix-bar-pct">${m.pct}%</div>
+            </div>`).join('')}
+        </div>
+        <div class="mix-gain-row">
+          <div class="mix-gain-label">Ganancia estimada 30 días</div>
+          <div class="mix-gain-val">+$${f.ganancia.toLocaleString('es-AR')}</div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="fondo-card ${f.recommended?'recommended':''}">
+      <div class="fc-top">
+        <div class="fc-icon" style="background:${f.iconoBg}">${f.icono}</div>
+        <div class="fc-info">
+          <div class="fc-name">${f.nombre}</div>
+          <div class="fc-admin">${f.admin} · ${f.tipo}</div>
+          ${f.recommended?'<div class="fc-rec-badge">⭐ Recomendado para vos</div>':''}
+        </div>
+        <div class="fc-right">
+          <div class="fc-gain">+$${f.ganancia.toLocaleString('es-AR')}</div>
+          <div class="fc-gain-label">en 30 días</div>
+        </div>
+      </div>
+      <div class="fc-details">
+        <div class="fc-detail"><div class="fc-d-label">Liquidez</div><div class="fc-d-val">${f.liquidez}</div></div>
+        <div class="fc-detail"><div class="fc-d-label">Riesgo</div><div class="fc-d-val">${f.riesgo}</div></div>
+        <div class="fc-detail"><div class="fc-d-label">Mínimo</div><div class="fc-d-val">${f.minimo}</div></div>
+      </div>
+      <div class="edu-tip">💡 ${f.edu}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('result-content').innerHTML = `
+    <div class="result-hero">
+      <div class="result-emoji">${P.emoji}</div>
+      <div class="result-perfil" style="color:${P.color}">Tu perfil inversor</div>
+      <div class="result-title">${P.nombre}</div>
+      <div class="result-desc">${P.desc}</div>
+    </div>
+    <div class="fondos-title">Lo que te recomendamos para tus $${DISPONIBLE.toLocaleString('es-AR')}</div>
+    ${fondosHTML}
+    <button class="invert-btn primary" onclick="window.location.href='finia_chat.html'">Hablar con el asesor sobre esto →</button>
+    <button class="invert-btn secondary" onclick="showScreen('s2');respuestas=[];preguntaActual=0;">Repetir el test</button>
+  `;
+  showScreen('s3');
+}
+</script>
+</body>
+</html>
