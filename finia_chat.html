@@ -269,6 +269,8 @@ body {
     <div class="prompt-chip" onclick="usePrompt('Recomendame una cartera de inversión para este mes')">📈 Cartera del mes</div>
     <div class="prompt-chip" onclick="usePrompt('¿Cuál es mi posición fiscal de IVA este mes?')">📋 Posición IVA</div>
     <div class="prompt-chip" onclick="usePrompt('Generame un resumen financiero del mes para el contador')">📄 Resumen para contador</div>
+    <div class="prompt-chip" onclick="usePrompt('Quiero subir el resumen de mi tarjeta de crédito. ¿Cómo funciona la carga automática?')">📸 Subir resumen de tarjeta</div>
+    <div class="prompt-chip" onclick="usePrompt('¿Qué tipos de archivos puedo subir para que proceses automáticamente?')">📂 ¿Qué archivos acepta FinIA?</div>
   </div>
 
   <div class="sidebar-profile">
@@ -311,6 +313,20 @@ body {
 
   <!-- INPUT -->
   <div class="input-area">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--blue);background:var(--sky);border:1px solid #bfdbfe;padding:6px 12px;border-radius:8px;cursor:pointer">
+        📸 Foto / imagen
+        <input type="file" accept="image/*" style="display:none" onchange="handleFileUpload(this,'imagen')">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--blue);background:var(--sky);border:1px solid #bfdbfe;padding:6px 12px;border-radius:8px;cursor:pointer">
+        📄 PDF / Excel
+        <input type="file" accept=".pdf,.xlsx,.xls,.csv" style="display:none" onchange="handleFileUpload(this,'documento')">
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--blue);background:var(--sky);border:1px solid #bfdbfe;padding:6px 12px;border-radius:8px;cursor:pointer">
+        🧾 Factura XML
+        <input type="file" accept=".xml" style="display:none" onchange="handleFileUpload(this,'factura')">
+      </label>
+    </div>
     <div class="input-wrap">
       <textarea class="input-field" id="input" placeholder="Preguntá lo que necesites..." rows="1"
         onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -347,7 +363,8 @@ Reglas:
 - Nunca ejecutes operaciones, solo asesorás
 - Si el usuario pregunta por su P&L o datos específicos que no tenés, usá números de ejemplo realistas y aclaralo
 - Mencioná productos financieros locales reales: Balanz, IOL, Naranja X, Galicia, Brubank, Sancor Seguros, etc.
-- Máximo 3-4 párrafos por respuesta. Sé conciso y accionable.`;
+- Máximo 3-4 párrafos por respuesta. Sé conciso y accionable.
+- Cuando el usuario mencione subir archivos (tickets, facturas, extractos, resúmenes de tarjeta), explicá el flujo de Document Ingestion: OCR + IA extrae los datos, los categoriza, valida CUIT/CAE contra AFIP si es factura, y los registra automáticamente en el P&L y balance. Simulá el procesamiento con datos de ejemplo realistas.`;
 
 function setCtx(newCtx) {
   ctx = newCtx;
@@ -444,6 +461,16 @@ function showTyping() {
 function removeTyping() {
   const t = document.getElementById('typing');
   if (t) t.remove();
+}
+
+async function handleFileUpload(input, tipo) {
+  const file = input.files[0];
+  if (!file) return;
+  const tipos = { imagen: '📸 foto/ticket', documento: '📄 PDF/Excel', factura: '🧾 factura XML' };
+  const msg = `Subí un archivo (${tipos[tipo]}): "${file.name}" (${(file.size/1024).toFixed(1)} KB). Simulá que lo procesaste: extraé los datos clave, categorizá los ítems y describí cómo lo registrarías en el P&L y balance. Mencioná que en producción esto se haría con OCR real y validación AFIP si corresponde.`;
+  document.getElementById('input').value = msg;
+  await sendMessage();
+  input.value = '';
 }
 
 async function sendMessage() {
