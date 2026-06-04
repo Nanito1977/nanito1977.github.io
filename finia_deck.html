@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Deck para Inversores</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1f44;
+  --navy2: #132a5a;
+  --blue: #1a56db;
+  --sky: #e8f0fe;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --bg: #ffffff;
+  --bg2: #f9fafb;
+  --green: #059669;
+  --green-dim: #ecfdf5;
+  --amber: #d97706;
+  --amber-dim: #fffbeb;
+  --coral: #dc2626;
+  --coral-dim: #fef2f2;
+  --purple: #7c3aed;
+  --purple-dim: #f5f3ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #1a1a2e; }
+
+/* SLIDE BASE */
+.slide {
+  width: 100%; min-height: 100vh;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+
+/* NAV */
+.slide-nav {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+  background: rgba(10,31,68,0.92); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 40px; padding: 10px 20px;
+  display: flex; align-items: center; gap: 12px; z-index: 100;
+}
+.nav-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.25); cursor: pointer; transition: all .2s;
+}
+.nav-dot.active { background: #60a5fa; width: 24px; border-radius: 4px; }
+.nav-arrow {
+  background: none; border: none; color: rgba(255,255,255,0.5);
+  font-size: 18px; cursor: pointer; padding: 0 4px; line-height: 1;
+  transition: color .15s;
+}
+.nav-arrow:hover { color: #fff; }
+.nav-counter { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; min-width: 32px; text-align: center; }
+
+/* SLIDE 1 — COVER */
+.s1 {
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy2) 55%, #1a3a6b 100%);
+  align-items: center; justify-content: center; text-align: center; padding: 60px 48px;
+}
+.s1-tag {
+  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #93c5fd;
+  background: rgba(147,197,253,0.12); border: 1px solid rgba(147,197,253,0.25);
+  padding: 5px 18px; border-radius: 20px; margin-bottom: 28px;
+}
+.s1 h1 {
+  font-size: clamp(40px, 6vw, 72px); font-weight: 800; color: #fff;
+  line-height: 1.06; letter-spacing: -2px; margin-bottom: 20px;
+}
+.s1 h1 em { color: #60a5fa; font-style: normal; }
+.s1 p { font-size: 20px; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto 48px; line-height: 1.55; }
+.s1-stats {
+  display: flex; gap: 0; justify-content: center;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; overflow: hidden; max-width: 600px; margin: 0 auto;
+}
+.s1-stat { flex: 1; padding: 22px 16px; text-align: center; border-right: 1px solid rgba(255,255,255,0.08); }
+.s1-stat:last-child { border-right: none; }
+.s1-stat-val { font-size: 28px; font-weight: 800; color: #60a5fa; letter-spacing: -1px; }
+.s1-stat-label { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 4px; line-height: 1.4; }
+.s1-footer { position: absolute; bottom: 80px; left: 0; right: 0; text-align: center; font-size: 13px; color: rgba(255,255,255,0.3); }
+
+/* SLIDE BLANCO BASE */
+.sw { background: var(--bg); padding: 64px 80px; justify-content: center; }
+.sw-tag { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+.sw h2 { font-size: clamp(28px,4vw,46px); font-weight: 800; color: var(--navy); letter-spacing: -1.2px; line-height: 1.1; margin-bottom: 14px; }
+.sw-sub { font-size: 17px; color: var(--muted); max-width: 600px; line-height: 1.6; margin-bottom: 44px; }
+
+/* SLIDE NAVY */
+.sn { background: var(--navy); padding: 64px 80px; justify-content: center; }
+.sn-tag { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #60a5fa; margin-bottom: 10px; }
+.sn h2 { font-size: clamp(28px,4vw,46px); font-weight: 800; color: #fff; letter-spacing: -1.2px; line-height: 1.1; margin-bottom: 14px; }
+.sn-sub { font-size: 17px; color: rgba(255,255,255,0.55); max-width: 600px; line-height: 1.6; margin-bottom: 44px; }
+
+/* CARDS */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+.card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px;
+}
+.card-dark {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 24px;
+}
+.card h3 { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.card-dark h3 { color: #fff; }
+.card p, .card ul { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.card-dark p, .card-dark ul { color: rgba(255,255,255,0.6); }
+.card ul, .card-dark ul { padding-left: 0; list-style: none; }
+.card ul li, .card-dark ul li { padding: 4px 0; display: flex; gap: 8px; }
+.card ul li::before { content: "→"; color: var(--blue); flex-shrink: 0; }
+.card-dark ul li::before { content: "→"; color: #60a5fa; flex-shrink: 0; }
+.card-icon { font-size: 28px; margin-bottom: 14px; }
+
+/* TAGS */
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin: 2px; }
+.tag.blue { background: var(--sky); color: var(--blue); }
+.tag.green { background: var(--green-dim); color: var(--green); }
+.tag.amber { background: var(--amber-dim); color: var(--amber); }
+.tag.coral { background: var(--coral-dim); color: var(--coral); }
+.tag.purple { background: var(--purple-dim); color: var(--purple); }
+.tag.navy { background: rgba(147,197,253,0.15); color: #93c5fd; }
+
+/* BIG NUMBERS */
+.big-number { font-size: 56px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+.big-number.blue { color: var(--blue); }
+.big-number.white { color: #fff; }
+.big-label { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+.big-label.white { color: rgba(255,255,255,0.5); }
+
+/* HIGHLIGHT */
+.hl { background: var(--sky); border: 1px solid #bfdbfe; border-radius: 12px; padding: 18px 22px; }
+.hl p { font-size: 15px; color: var(--navy); line-height: 1.65; }
+.hl strong { color: var(--blue); font-weight: 700; }
+.hl-dark { background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.2); border-radius: 12px; padding: 18px 22px; }
+.hl-dark p { font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.65; }
+.hl-dark strong { color: #60a5fa; font-weight: 700; }
+
+/* PHASE */
+.phase-row { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+.phase-num { width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; }
+.phase-body h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.phase-body p { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+/* TEAM */
+.team-card { text-align: center; padding: 28px 20px; }
+.team-av { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: #fff; }
+
+/* DIVIDER */
+.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+.divider-dark { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 28px 0; }
+
+/* TABLE */
+.t { width: 100%; border-collapse: collapse; font-size: 13px; }
+.t th { text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; padding: 10px 14px; border-bottom: 2px solid var(--border); background: var(--bg2); }
+.t td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+
+/* PROGRESS */
+.progress-row { margin-bottom: 16px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.progress-bar { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 4px; background: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- S1: COVER -->
+<div class="slide s1" id="slide-1">
+  <div class="s1-tag">Deck para Inversores · Junio 2026</div>
+  <h1>Fin<em>IA</em></h1>
+  <p>El primer asesor financiero IA integral para familias y pymes argentinas. P&L · Inversiones · Seguros · Taxation.</p>
+  <div class="s1-stats">
+    <div class="s1-stat"><div class="s1-stat-val">90%</div><div class="s1-stat-label">pymes sin gestión financiera organizada</div></div>
+    <div class="s1-stat"><div class="s1-stat-val">0</div><div class="s1-stat-label">competidores con el combo completo local</div></div>
+    <div class="s1-stat"><div class="s1-stat-val">$10</div><div class="s1-stat-label">USD/mes plan Pro · 3 capas de revenue</div></div>
+  </div>
+  <div class="s1-footer">Nani Fintech Project · Confidencial</div>
+</div>
+
+<!-- S2: PROBLEMA -->
+<div class="slide sw" id="slide-2">
+  <div class="sw-tag">01 — El problema</div>
+  <h2>El dueño de pyme argentino<br>vuela a ciegas</h2>
+  <p class="sw-sub">Mezcla finanzas personales con las del negocio, no tiene un CFO, paga impuestos de más o de menos, y toma decisiones financieras de forma intuitiva.</p>
+  <div class="grid3" style="margin-bottom:24px">
+    <div class="card">
+      <div class="card-icon">😵</div>
+      <h3>Sin gestión financiera</h3>
+      <p>El 90% de las pymes de LATAM opera sin gestión financiera organizada. Solo el 10% tiene gestión estratégica (Xepelin 2025).</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧾</div>
+      <h3>Taxation = pesadilla</h3>
+      <p>Las DDJJ de Ganancias y Bienes Personales, la posición de IVA y el IIBB son dolores reales que nadie resuelve digitalmente con IA.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💸</div>
+      <h3>Inversiones subóptimas</h3>
+      <p>El excedente de caja se deja en cuenta corriente perdiendo contra la inflación porque nadie asesora de forma accesible y personalizada.</p>
+    </div>
+  </div>
+  <div class="hl">
+    <p><strong>El insight clave:</strong> el 80% de los dueños de pymes argentinas mezcla sus finanzas personales con las del negocio. Nadie les resuelve ambos lados en un solo lugar hoy.</p>
+  </div>
+</div>
+
+<!-- S3: SOLUCIÓN -->
+<div class="slide sn" id="slide-3">
+  <div class="sn-tag">02 — La solución</div>
+  <h2>Un CFO personal<br>disponible 24/7</h2>
+  <p class="sn-sub">FinIA es un agente financiero IA que analiza, detecta, compara y recomienda — con contexto 100% argentino y memoria del historial del usuario.</p>
+  <div class="grid2">
+    <div class="card-dark">
+      <div class="card-icon">🏠</div>
+      <h3>Perfil familia</h3>
+      <ul>
+        <li>P&L del hogar en tiempo real</li>
+        <li>Ingreso disponible calculado automáticamente</li>
+        <li>Cartera de inversión personalizada</li>
+        <li>Comparador de seguros y servicios</li>
+        <li>DDJJ Ganancias y Bienes Personales</li>
+      </ul>
+    </div>
+    <div class="card-dark">
+      <div class="card-icon">🏢</div>
+      <h3>Perfil empresa</h3>
+      <ul>
+        <li>P&L y cashflow empresarial</li>
+        <li>Proyección a 90 días</li>
+        <li>Inversión del excedente de caja</li>
+        <li>Balance contable mensual</li>
+        <li>Posición IVA, IIBB, Monotributo</li>
+      </ul>
+    </div>
+  </div>
+  <div class="divider-dark"></div>
+  <div class="hl-dark">
+    <p><strong>Vista consolidada única:</strong> patrimonio personal + negocio en un solo dashboard. El usuario ve su situación financiera completa y recibe recomendaciones integrales. No existe en el mercado local.</p>
+  </div>
+</div>
+
+<!-- S4: MERCADO -->
+<div class="slide sw" id="slide-4">
+  <div class="sw-tag">03 — Mercado</div>
+  <h2>Un mercado masivo<br>sin solución</h2>
+  <p class="sw-sub">Argentina tiene el 3er ecosistema fintech más grande de LATAM, con demanda declarada de IA y sin competidor directo en este segmento.</p>
+  <div class="grid4" style="margin-bottom:32px">
+    <div style="text-align:center;padding:20px">
+      <div class="big-number blue">340+</div>
+      <div class="big-label">fintechs activas en Argentina</div>
+    </div>
+    <div style="text-align:center;padding:20px">
+      <div class="big-number blue">90%</div>
+      <div class="big-label">pymes sin gestión financiera organizada</div>
+    </div>
+    <div style="text-align:center;padding:20px">
+      <div class="big-number blue">70%</div>
+      <div class="big-label">pymes argentinas planean adoptar IA</div>
+    </div>
+    <div style="text-align:center;padding:20px">
+      <div class="big-number blue">0</div>
+      <div class="big-label">competidores con el combo completo local</div>
+    </div>
+  </div>
+  <div style="border:1px solid var(--border);border-radius:14px;overflow:hidden">
+    <table class="t">
+      <thead><tr><th>Competidor</th><th>P&L</th><th>Inversiones</th><th>Taxation AR</th><th>IA chat</th><th>Familia+Empresa</th></tr></thead>
+      <tbody>
+        <tr><td><strong>FinIA</strong></td><td><span class="tag green">✓</span></td><td><span class="tag green">✓</span></td><td><span class="tag green">✓</span></td><td><span class="tag green">✓</span></td><td><span class="tag green">✓</span></td></tr>
+        <tr><td>Spendee / Monefy</td><td><span class="tag amber">Parcial</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td></tr>
+        <tr><td>Fintonic</td><td><span class="tag amber">Parcial</span></td><td><span class="tag coral">✗ (no AR)</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td></tr>
+        <tr><td>Galicia / Brubank</td><td><span class="tag coral">✗</span></td><td><span class="tag amber">Solo propias</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td></tr>
+        <tr><td>Xepelin</td><td><span class="tag amber">Parcial</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td><td><span class="tag coral">✗</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- S5: MODELO DE NEGOCIO -->
+<div class="slide sn" id="slide-5">
+  <div class="sn-tag">04 — Modelo de negocio</div>
+  <h2>Tres capas de revenue<br>que se potencian</h2>
+  <p class="sn-sub">Freemium para adquirir, suscripción para monetizar, alianzas para escalar sin límite de techo.</p>
+  <div class="grid3" style="margin-bottom:28px">
+    <div class="card-dark">
+      <div class="card-icon">🆓</div>
+      <h3>Free + publicidad</h3>
+      <p style="margin-bottom:12px">Adquisición masiva. P&L básico, alertas limitadas, 10 consultas/mes. Publicidad financiera segmentada.</p>
+      <div class="tag navy">Adquisición</div>
+    </div>
+    <div class="card-dark" style="border-color:rgba(96,165,250,0.35)">
+      <div class="card-icon">⭐</div>
+      <h3>Pro · ~$10 USD/mes</h3>
+      <p style="margin-bottom:12px">Módulos completos, Taxation, chat ilimitado, reportes PDF. Sin publicidad. Conversión esperada 5-10% de usuarios free.</p>
+      <div class="tag navy">Monetización core</div>
+    </div>
+    <div class="card-dark">
+      <div class="card-icon">🏦</div>
+      <h3>Alianzas comerciales</h3>
+      <p style="margin-bottom:12px">Comisión por venta de seguros, fee por lead a ALYCs, revenue share con fintechs. White label para bancos.</p>
+      <div class="tag navy">Mayor potencial</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div>
+      <div style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px">Proyección de revenue</div>
+      <div class="progress-row">
+        <div class="progress-label"><span style="color:#fff;font-size:13px">Mes 6 (1.000 usuarios)</span><span style="color:#60a5fa;font-size:13px">~$2.000 USD/mes</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:15%;background:#60a5fa"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span style="color:#fff;font-size:13px">Mes 12 (10.000 usuarios)</span><span style="color:#60a5fa;font-size:13px">~$25.000 USD/mes</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:45%;background:#60a5fa"></div></div>
+      </div>
+      <div class="progress-row">
+        <div class="progress-label"><span style="color:#fff;font-size:13px">Año 2 (50.000 usuarios)</span><span style="color:#60a5fa;font-size:13px">~$150.000 USD/mes</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:85%;background:#60a5fa"></div></div>
+      </div>
+    </div>
+    <div class="hl-dark">
+      <p><strong>El mayor upside:</strong> las alianzas con aseguradoras, ALYCs y bancos no tienen techo. Cada usuario que contrata un seguro o invierte a través de FinIA genera comisión recurrente — sin costo marginal adicional.</p>
+    </div>
+  </div>
+</div>
+
+<!-- S6: ROADMAP -->
+<div class="slide sw" id="slide-6">
+  <div class="sw-tag">05 — Roadmap</div>
+  <h2>12 meses al liderazgo<br>del segmento</h2>
+  <p class="sw-sub">Cuatro fases con capital estimado y métricas de validación claras en cada etapa.</p>
+  <div>
+    <div class="phase-row" style="color:inherit">
+      <div class="phase-num" style="background:#dbeafe;color:#1a56db">1</div>
+      <div class="phase-body">
+        <h4 style="color:var(--navy)">Fase 1 — MVP (meses 1–3) · ~$10.000 USD</h4>
+        <p style="color:var(--muted)">P&L básico, chat con agente (Claude API), alertas de variación, Taxation Ganancias persona física. Meta: 100 usuarios beta.</p>
+        <div style="margin-top:8px"><span class="tag blue">P&L</span><span class="tag blue">Chat IA</span><span class="tag blue">Ganancias básico</span></div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num" style="background:#fef3c7;color:#d97706">2</div>
+      <div class="phase-body">
+        <h4 style="color:var(--navy)">Fase 2 — Producto (meses 4–6) · ~$20.000 USD</h4>
+        <p style="color:var(--muted)">Motor de inversión real, Taxation completo, app móvil, primera alianza con ALYC o aseguradora. Meta: 1.000 usuarios, primeros ingresos.</p>
+        <div style="margin-top:8px"><span class="tag amber">Motor inversión</span><span class="tag amber">App móvil</span><span class="tag amber">Taxation completo</span></div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num" style="background:#ecfdf5;color:#059669">3</div>
+      <div class="phase-body">
+        <h4 style="color:var(--navy)">Fase 3 — Escala (meses 7–12) · Ronda seed</h4>
+        <p style="color:var(--muted)">Open banking, marketplace financiero, API contadores, expansión regional. Meta: 10.000 usuarios, ronda de inversión.</p>
+        <div style="margin-top:8px"><span class="tag green">Open banking</span><span class="tag green">Marketplace</span><span class="tag green">Expansión LATAM</span></div>
+      </div>
+    </div>
+    <div class="phase-row">
+      <div class="phase-num" style="background:#f5f3ff;color:#7c3aed">4</div>
+      <div class="phase-body">
+        <h4 style="color:var(--navy)">Fase 4 — Consolidación (año 2)</h4>
+        <p style="color:var(--muted)">White label para bancos y fintechs, scoring financiero propietario, datos como activo estratégico.</p>
+        <div style="margin-top:8px"><span class="tag purple">White label</span><span class="tag purple">Scoring propio</span><span class="tag purple">Datos propietarios</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S7: EQUIPO -->
+<div class="slide sn" id="slide-7">
+  <div class="sn-tag">06 — Equipo fundador</div>
+  <h2>Experiencia donde<br>más importa</h2>
+  <p class="sn-sub">20+ años en banca, fintech y seguros. Conocimiento del mercado argentino y red de contactos para las alianzas comerciales clave.</p>
+  <div class="grid3">
+    <div class="card-dark team-card">
+      <div class="team-av" style="background:var(--blue)">N</div>
+      <h3>Nani</h3>
+      <p style="margin-bottom:10px">Founder & CEO</p>
+      <p>20+ años en banca. Emprendedor fintech. Broker de asistencia (IGS). Director de NEVRONES S.R.L. Red de contactos en banca, seguros y ALYCs.</p>
+      <div style="margin-top:12px"><span class="tag navy">Banca</span><span class="tag navy">Fintech</span><span class="tag navy">Seguros</span></div>
+    </div>
+    <div class="card-dark team-card">
+      <div class="team-av" style="background:#0d9488">CTO</div>
+      <h3>CTO</h3>
+      <p style="margin-bottom:10px">A confirmar</p>
+      <p>Buscamos un co-founder técnico o CTO con experiencia en fintech, APIs bancarias y desarrollo de productos IA. Equity disponible.</p>
+      <div style="margin-top:12px"><span class="tag navy">React Native</span><span class="tag navy">IA / APIs</span><span class="tag navy">Fintech</span></div>
+    </div>
+    <div class="card-dark team-card">
+      <div class="team-av" style="background:#7c3aed">IA</div>
+      <h3>Claude (Anthropic)</h3>
+      <p style="margin-bottom:10px">Motor de IA</p>
+      <p>El agente conversacional y de análisis está construido sobre Claude API de Anthropic — el modelo de IA más confiable del mercado para aplicaciones financieras.</p>
+      <div style="margin-top:12px"><span class="tag navy">Claude API</span><span class="tag navy">NLP</span><span class="tag navy">Análisis</span></div>
+    </div>
+  </div>
+  <div class="divider-dark"></div>
+  <div class="hl-dark">
+    <p><strong>Ventaja competitiva del equipo:</strong> la combinación de red de contactos en banca + seguros + ALYCs con conocimiento profundo del mercado argentino es el activo más difícil de replicar. Las alianzas comerciales se cierran con relaciones, no con código.</p>
+  </div>
+</div>
+
+<!-- S8: ASK -->
+<div class="slide s1" id="slide-8" style="background:linear-gradient(160deg,#0a1f44 0%,#132a5a 55%,#1a3a6b 100%)">
+  <div class="s1-tag">07 — Lo que buscamos</div>
+  <h1 style="font-size:clamp(36px,5vw,60px)">Sumemos al<br><em>proyecto</em></h1>
+  <p style="margin-bottom:40px">Buscamos socios estratégicos, inversores y co-founders técnicos para arrancar el MVP y llegar a los primeros 1.000 usuarios.</p>
+  <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+    <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 32px;text-align:center;min-width:200px">
+      <div style="font-size:32px;font-weight:800;color:#60a5fa;letter-spacing:-1px">$30K</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">USD · Fase 1 + 2</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 32px;text-align:center;min-width:200px">
+      <div style="font-size:32px;font-weight:800;color:#60a5fa;letter-spacing:-1px">Equity</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Para co-founder técnico</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:24px 32px;text-align:center;min-width:200px">
+      <div style="font-size:32px;font-weight:800;color:#60a5fa;letter-spacing:-1px">Alianzas</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Seguros · ALYCs · Bancos</div>
+    </div>
+  </div>
+  <div style="font-size:18px;color:rgba(255,255,255,0.5)">Nani Fintech Project · 2026</div>
+  <div style="font-size:15px;color:#60a5fa;margin-top:8px">nanito1977.github.io</div>
+</div>
+
+<!-- NAV -->
+<div class="slide-nav" id="nav">
+  <button class="nav-arrow" onclick="prevSlide()">‹</button>
+  <div id="dots"></div>
+  <span class="nav-counter" id="counter">1/8</span>
+  <button class="nav-arrow" onclick="nextSlide()">›</button>
+</div>
+
+<script>
+const total = 8;
+let current = 1;
+
+function renderDots() {
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  for (let i = 1; i <= total; i++) {
+    const d = document.createElement('div');
+    d.className = 'nav-dot' + (i === current ? ' active' : '');
+    d.onclick = () => goTo(i);
+    dots.appendChild(d);
+  }
+}
+
+function goTo(n) {
+  current = Math.max(1, Math.min(total, n));
+  document.getElementById('slide-' + current).scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('counter').textContent = current + '/' + total;
+  renderDots();
+}
+
+function nextSlide() { goTo(current + 1); }
+function prevSlide() { goTo(current - 1); }
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+});
+
+// Intersection Observer para actualizar nav al hacer scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      current = parseInt(e.target.id.split('-')[1]);
+      document.getElementById('counter').textContent = current + '/' + total;
+      renderDots();
+    }
+  });
+}, { threshold: 0.5 });
+
+for (let i = 1; i <= total; i++) {
+  const el = document.getElementById('slide-' + i);
+  if (el) observer.observe(el);
+}
+
+renderDots();
+</script>
+</body>
+</html>
