@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Tu asesor financiero inteligente</title>
+<meta name="description" content="Controlá tus finanzas personales o de tu negocio con IA. Sabé exactamente a dónde va tu plata y hacela crecer.">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--navy2:#132a5a;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--bg:#fff;--bg2:#f9fafb;--bg3:#f3f4f6;
+  --green:#059669;--green-dim:#ecfdf5;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--bg);overflow-x:hidden}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,31,68,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}
+.nav-brand{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.nav-brand span{color:#60a5fa}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-login{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);text-decoration:none;padding:7px 16px;border-radius:8px;transition:all .2s}
+.nav-login:hover{color:#fff;background:rgba(255,255,255,0.1)}
+.nav-cta{font-size:13px;font-weight:700;color:#fff;background:var(--blue);text-decoration:none;padding:8px 20px;border-radius:8px;transition:all .2s}
+.nav-cta:hover{background:var(--blue2)}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 50%,#1a3a6b 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,0.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#93c5fd;background:rgba(147,197,253,0.1);border:1px solid rgba(147,197,253,0.2);padding:5px 16px;border-radius:20px;margin-bottom:28px}
+.hero h1{font-size:clamp(36px,6vw,70px);font-weight:800;color:#fff;line-height:1.06;letter-spacing:-2px;margin-bottom:20px;max-width:800px}
+.hero h1 em{color:#60a5fa;font-style:normal}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:rgba(255,255,255,0.65);max-width:560px;line-height:1.6;margin-bottom:44px}
+
+/* SELECTOR DE PERFIL */
+.perfil-selector{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.perfil-card{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);border-radius:20px;padding:24px 28px;cursor:pointer;transition:all .2s;text-align:center;min-width:200px;max-width:240px;text-decoration:none}
+.perfil-card:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);transform:translateY(-3px)}
+.perfil-card.active{background:rgba(26,86,219,0.25);border-color:var(--blue);box-shadow:0 0 0 4px rgba(26,86,219,0.15)}
+.pc-emoji{font-size:36px;margin-bottom:12px}
+.pc-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.pc-sub{font-size:13px;color:rgba(255,255,255,0.55);line-height:1.4}
+.hero-cta{background:var(--blue);color:#fff;font-weight:700;font-size:16px;padding:15px 36px;border-radius:12px;text-decoration:none;display:inline-block;transition:all .2s;border:none;cursor:pointer;font-family:inherit}
+.hero-cta:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(26,86,219,0.35)}
+.hero-free{font-size:13px;color:rgba(255,255,255,0.4);margin-top:14px}
+
+/* STATS */
+.stats{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;display:flex;flex-wrap:wrap;justify-content:center;max-width:680px;margin:40px auto 0;overflow:hidden}
+.stat{flex:1;min-width:130px;padding:20px 16px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)}
+.stat:last-child{border-right:none}
+.stat-val{font-size:26px;font-weight:800;color:#60a5fa;letter-spacing:-1px}
+.stat-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;line-height:1.4}
+
+/* SECTIONS */
+.section{padding:80px 5vw;max-width:1080px;margin:0 auto}
+.section.alt{background:var(--bg2);max-width:100%}
+.section.alt .inner{max-width:1080px;margin:0 auto;padding:80px 5vw}
+.sec-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
+.sec-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--navy);letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px}
+.sec-sub{font-size:17px;color:var(--muted);max-width:580px;line-height:1.6;margin-bottom:48px}
+.sec-center{text-align:center}
+.sec-center .sec-sub{margin:0 auto 48px}
+
+/* DOLOR */
+.dolor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:48px}
+.dolor-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:22px;transition:box-shadow .2s}
+.dolor-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+.dolor-icon{font-size:28px;margin-bottom:12px}
+.dolor-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.dolor-text{font-size:14px;color:var(--muted);line-height:1.65}
+.dolor-sol{font-size:13px;font-weight:600;color:var(--green);margin-top:10px;display:flex;align-items:center;gap:5px}
+
+/* COMO FUNCIONA */
+.pasos{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px}
+.paso{text-align:center}
+.paso-num{width:48px;height:48px;border-radius:50%;background:var(--sky);color:var(--blue);font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.paso-emoji{font-size:32px;margin-bottom:12px}
+.paso h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.paso p{font-size:13px;color:var(--muted);line-height:1.6}
+.paso-arrow{font-size:24px;color:var(--border2);align-self:center;justify-self:center;display:none}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.feat{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:24px;transition:all .2s}
+.feat:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(26,86,219,0.07)}
+.feat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.feat h3{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.feat p{font-size:14px;color:var(--muted);line-height:1.65}
+.feat-tag{display:inline-block;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;margin-top:10px}
+
+/* DIFERENCIAL */
+.diferencial{background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:24px;padding:40px;margin:0 0 60px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center}
+.dif-left h3{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.8px;margin-bottom:12px;line-height:1.2}
+.dif-left p{font-size:15px;color:rgba(255,255,255,0.65);line-height:1.7}
+.dif-left strong{color:#60a5fa}
+.dif-right{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px}
+.dif-msg{font-size:14px;color:#fff;line-height:1.7;font-style:italic}
+.dif-msg strong{color:#4ade80;font-style:normal}
+.dif-from{font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;display:flex;align-items:center;gap:6px}
+.dif-av{width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-bottom:40px}
+.plan{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:28px}
+.plan.featured{border-color:var(--blue);border-width:2px;background:linear-gradient(160deg,#fff 0%,var(--sky) 100%)}
+.plan-badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:14px}
+.plan h3{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:5px}
+.plan-price{font-size:36px;font-weight:800;color:var(--navy);margin-bottom:6px;letter-spacing:-1px}
+.plan-price span{font-size:14px;color:var(--muted);font-weight:400}
+.plan-desc{font-size:13px;color:var(--muted);margin-bottom:20px}
+.plan ul{font-size:13px;color:var(--text2);list-style:none;padding:0}
+.plan ul li{padding:7px 0;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.plan ul li::before{content:"✓";color:var(--blue);font-weight:700;flex-shrink:0}
+.plan-cta{width:100%;margin-top:20px;padding:13px;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.plan-cta.primary{background:var(--blue);color:#fff}
+.plan-cta.primary:hover{background:var(--blue2)}
+.plan-cta.secondary{background:var(--bg2);color:var(--navy);border:1px solid var(--border)}
+
+/* TESTIMONIOS */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.testi{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:22px}
+.testi-text{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+.testi-name{font-size:13px;font-weight:700;color:var(--navy)}
+.testi-role{font-size:11px;color:var(--muted)}
+
+/* FAQ */
+.faq{max-width:640px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:18px 0;cursor:pointer}
+.faq-q{font-size:15px;font-weight:600;color:var(--navy);display:flex;justify-content:space-between;align-items:center;gap:16px}
+.faq-arrow{font-size:18px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+.faq-item.open .faq-a{max-height:200px;padding-top:10px}
+
+/* CTA FINAL */
+.cta-final{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 100%);padding:80px 5vw;text-align:center}
+.cta-final h2{font-size:clamp(28px,4vw,48px);font-weight:800;color:#fff;letter-spacing:-1.2px;margin-bottom:14px}
+.cta-final p{font-size:17px;color:rgba(255,255,255,0.6);margin-bottom:36px;max-width:480px;margin-left:auto;margin-right:auto}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-white{background:#fff;color:var(--navy);font-weight:700;font-size:15px;padding:14px 32px;border-radius:12px;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:inherit}
+.btn-white:hover{background:#f0f4ff;transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:12px;text-decoration:none;border:1px solid rgba(255,255,255,0.2);transition:all .2s}
+.btn-ghost:hover{background:rgba(255,255,255,0.18)}
+
+/* FOOTER */
+footer{background:#06112a;padding:32px 5vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-size:18px;font-weight:800;color:#fff}
+.footer-brand span{color:#60a5fa}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.35);text-decoration:none}
+.footer-links a:hover{color:rgba(255,255,255,.7)}
+.footer-right{font-size:12px;color:rgba(255,255,255,0.25)}
+
+/* MODAL SELECTOR */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:24px;padding:32px 28px;max-width:480px;width:100%;animation:fadeUp .25s ease}
+.modal-title{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;text-align:center}
+.modal-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.5}
+.modal-options{display:flex;flex-direction:column;gap:12px}
+.modal-opt{border:2px solid var(--border);border-radius:16px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .15s;text-decoration:none}
+.modal-opt:hover{border-color:var(--blue);background:var(--sky)}
+.mo-icon{font-size:32px;flex-shrink:0}
+.mo-body h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.mo-body p{font-size:13px;color:var(--muted);line-height:1.4}
+.modal-close{width:100%;margin-top:14px;padding:12px;background:none;border:1px solid var(--border);border-radius:12px;font-family:inherit;font-size:14px;color:var(--muted);cursor:pointer}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .nav-login{display:none}
+  .diferencial{grid-template-columns:1fr}
+  .hero h1{letter-spacing:-1px}
+  .perfil-card{min-width:140px;padding:18px 16px}
+  .pc-emoji{font-size:28px}
+  .pc-title{font-size:14px}
+}
+@media(min-width:900px){
+  .dolor-grid{grid-template-columns:repeat(3,1fr)}
+  .pasos{grid-template-columns:repeat(5,1fr)}
+  .paso-arrow{display:block}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">Fin<span>IA</span></div>
+  <div class="nav-right">
+    <a href="finia_onboarding.html" class="nav-login">Iniciar sesión</a>
+    <a href="#" class="nav-cta" onclick="openModal()">Empezar gratis</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-tag">🇦🇷 Hecho para Argentina</div>
+  <h1>Tu plata, bajo <em>control</em>.<br>Haciéndola crecer.</h1>
+  <p class="hero-sub">Sabé exactamente a dónde va tu plata, cuándo tenés que pagar qué, y qué hacer con lo que te sobra. Para vos y para tu negocio.</p>
+
+  <div class="perfil-selector">
+    <div class="perfil-card active" id="pc-familia" onclick="selectPerfil('familia')">
+      <div class="pc-emoji">👨‍👩‍👧</div>
+      <div class="pc-title">Soy persona / familia</div>
+      <div class="pc-sub">Quiero controlar mis gastos y hacer crecer mis ahorros</div>
+    </div>
+    <div class="perfil-card" id="pc-pyme" onclick="selectPerfil('pyme')">
+      <div class="pc-emoji">🏢</div>
+      <div class="pc-title">Tengo un negocio / pyme</div>
+      <div class="pc-sub">Quiero ordenar mis finanzas y ganar eficiencia</div>
+    </div>
+  </div>
+
+  <button class="hero-cta" onclick="openModal()">Empezar gratis — sin tarjeta 🚀</button>
+  <div class="hero-free">30 días del plan Pro gratis · Cancela cuando quieras</div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val">0</div><div class="stat-label">competidores con el combo completo local</div></div>
+    <div class="stat"><div class="stat-val">90%</div><div class="stat-label">pymes sin gestión financiera organizada</div></div>
+    <div class="stat"><div class="stat-val">3 min</div><div class="stat-label">para ver tu primera recomendación real</div></div>
+    <div class="stat"><div class="stat-val">$0</div><div class="stat-label">para empezar</div></div>
+  </div>
+</div>
+
+<!-- DOLOR PERSONAS -->
+<div class="section" id="s-personas">
+  <div class="sec-tag">Para personas y familias</div>
+  <h2 class="sec-title">¿Te pasa alguna de estas?</h2>
+  <p class="sec-sub">Si dijiste que sí a alguna, FinIA es para vos.</p>
+  <div class="dolor-grid">
+    <div class="dolor-card">
+      <div class="dolor-icon">🧾</div>
+      <div class="dolor-title">Perdés los tickets y no sabés en qué gastaste</div>
+      <div class="dolor-text">Al fin de mes el dinero se fue y no podés explicar a dónde. La tarjeta llegó y te sorprendió.</div>
+      <div class="dolor-sol">✓ Sacás foto al ticket y listo — FinIA lo registra solo</div>
+    </div>
+    <div class="dolor-card">
+      <div class="dolor-icon">📅</div>
+      <div class="dolor-title">Los vencimientos te agarran de sorpresa</div>
+      <div class="dolor-text">La tarjeta, las expensas, el seguro, la patente... siempre hay algo que se te pasó o que llegó en mal momento.</div>
+      <div class="dolor-sol">✓ El agente te avisa antes — con el monto exacto</div>
+    </div>
+    <div class="dolor-card">
+      <div class="dolor-icon">💸</div>
+      <div class="dolor-title">El sueldo llegó y no sabés a dónde se fue</div>
+      <div class="dolor-text">Querés ahorrar pero "nunca te sobra". En realidad sí te sobra — solo que no lo ves porque nadie te lo muestra.</div>
+      <div class="dolor-sol">✓ Sabés exactamente cuánto te sobra cada mes</div>
+    </div>
+    <div class="dolor-card">
+      <div class="dolor-icon">📈</div>
+      <div class="dolor-title">Tu plata está parada perdiendo valor</div>
+      <div class="dolor-text">Tenés plata en la caja de ahorro mientras la inflación la come. Sabés que deberías invertir pero no sabés por dónde empezar.</div>
+      <div class="dolor-sol">✓ Te decimos exactamente dónde poner cada peso</div>
+    </div>
+    <div class="dolor-card">
+      <div class="dolor-icon">🛡️</div>
+      <div class="dolor-title">Pagás de más en seguros y servicios</div>
+      <div class="dolor-text">Tu seguro del auto subió 40% y lo seguís pagando porque no tenés tiempo de buscar alternativas.</div>
+      <div class="dolor-sol">✓ El agente detecta y te ofrece opciones más baratas</div>
+    </div>
+    <div class="dolor-card">
+      <div class="dolor-icon">🧮</div>
+      <div class="dolor-title">Las DDJJ son una pesadilla</div>
+      <div class="dolor-text">Ganancias, Bienes Personales, anticipos. Siempre terminás pagando de más o llegando tarde.</div>
+      <div class="dolor-sol">✓ El agente calcula tu posición y te avisa antes</div>
+    </div>
+  </div>
+</div>
+
+<!-- DOLOR PYMES -->
+<div class="section alt">
+  <div class="inner">
+    <div class="sec-tag">Para pymes y negocios</div>
+    <h2 class="sec-title">El dueño que hace todo — en un solo lugar</h2>
+    <p class="sec-sub">El accionista de una pyme es el CEO, el administrativo y el contador al mismo tiempo. FinIA le da el control que necesita.</p>
+    <div class="dolor-grid">
+      <div class="dolor-card">
+        <div class="dolor-icon">📦</div>
+        <div class="dolor-title">Las facturas están en todos lados</div>
+        <div class="dolor-text">En el cajón, en el email, en WhatsApp, en el bolsillo. Cuando el contador las pide, empezás a buscar.</div>
+        <div class="dolor-sol">✓ Foto a la factura → contabilizada al instante</div>
+      </div>
+      <div class="dolor-card">
+        <div class="dolor-icon">❓</div>
+        <div class="dolor-title">No sabés si ganaste o perdiste hasta que habla el contador</div>
+        <div class="dolor-text">El resultado del mes lo sabés a fin de mes, cuando ya no podés hacer nada al respecto.</div>
+        <div class="dolor-sol">✓ Resultado del negocio en tiempo real, todos los días</div>
+      </div>
+      <div class="dolor-card">
+        <div class="dolor-icon">💰</div>
+        <div class="dolor-title">El contador te cuesta entre $250K y $700K por mes</div>
+        <div class="dolor-text">Y encima tenés que juntarle toda la información. FinIA no reemplaza al contador — le baja el costo/hora drásticamente.</div>
+        <div class="dolor-sol">✓ Llegás con todo ordenado — la reunión dura 30 min</div>
+      </div>
+      <div class="dolor-card">
+        <div class="dolor-icon">🗓️</div>
+        <div class="dolor-title">Los vencimientos tributarios son una trampa</div>
+        <div class="dolor-text">IVA, IIBB, F931, Ganancias, tasas municipales. Siempre hay uno que te agarra sin plata lista.</div>
+        <div class="dolor-sol">✓ Calendario automático con monto exacto a preparar</div>
+      </div>
+      <div class="dolor-card">
+        <div class="dolor-icon">👥</div>
+        <div class="dolor-title">Clientes, proveedores y empleados en tu cabeza</div>
+        <div class="dolor-text">Quién te debe, a quién le debés, cuándo vence cada pago. Todo en planillas que no actualizás.</div>
+        <div class="dolor-sol">✓ Panel de actores: cada uno con su saldo en tiempo real</div>
+      </div>
+      <div class="dolor-card">
+        <div class="dolor-icon">💤</div>
+        <div class="dolor-title">La plata del negocio está parada entre vencimientos</div>
+        <div class="dolor-text">Entre que cobrar y pagar, hay plata que queda en la cuenta sin rendir nada. Eso es plata que perdés.</div>
+        <div class="dolor-sol">✓ El agente la invierte hasta el próximo vencimiento</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CÓMO FUNCIONA -->
+<div class="section sec-center">
+  <div class="sec-tag">Cómo funciona</div>
+  <h2 class="sec-title">De cero a ordenado<br>en 3 minutos</h2>
+  <p class="sec-sub">Sin formularios largos. Sin tecnicismos. Solo una conversación.</p>
+  <div class="pasos">
+    <div class="paso">
+      <div class="paso-num">1</div>
+      <div class="paso-emoji">👋</div>
+      <h4>Te registrás</h4>
+      <p>Con Google, Apple, Microsoft o LinkedIn. Menos de 1 minuto.</p>
+    </div>
+    <div class="paso-arrow">→</div>
+    <div class="paso">
+      <div class="paso-num">2</div>
+      <div class="paso-emoji">💬</div>
+      <h4>El agente te conoce</h4>
+      <p>7 preguntas simples. Nada de formularios largos.</p>
+    </div>
+    <div class="paso-arrow">→</div>
+    <div class="paso">
+      <div class="paso-num">3</div>
+      <div class="paso-emoji">📸</div>
+      <h4>Subís tus documentos</h4>
+      <p>Foto de ticket, PDF de tarjeta o extracto bancario.</p>
+    </div>
+    <div class="paso-arrow">→</div>
+    <div class="paso">
+      <div class="paso-num">4</div>
+      <div class="paso-emoji">📊</div>
+      <h4>Ves tu situación real</h4>
+      <p>Categorías, variaciones, vencimientos. Todo claro.</p>
+    </div>
+    <div class="paso-arrow">→</div>
+    <div class="paso">
+      <div class="paso-num">5</div>
+      <div class="paso-emoji">📈</div>
+      <h4>Tu plata trabaja</h4>
+      <p>El agente recomienda dónde invertir lo que sobra.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DIFERENCIAL -->
+<div class="section" style="padding-top:0">
+  <div class="diferencial">
+    <div class="dif-left">
+      <h3>La plata que esperás para pagar — que trabaje mientras tanto</h3>
+      <p>FinIA sabe cuánto tenés disponible <strong>y cuándo lo necesitás</strong>. Con esa información, te dice exactamente qué hacer para que no quede parada ni un día.</p>
+    </div>
+    <div class="dif-right">
+      <div class="dif-msg">"Tenés <strong>$186.000 disponibles</strong>. Tu próximo vencimiento es el IVA el 18/06 — en 14 días. Si lo ponés en el Fima Premium hoy, ganás <strong>~$3.800</strong> sin riesgo y lo rescatás el día 17. Después del 18, con lo que sobre, armamos algo de más largo plazo."</div>
+      <div class="dif-from"><div class="dif-av">F</div><span>FinIA Asesor · ahora mismo</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section alt">
+  <div class="inner">
+    <div class="sec-tag">Todo lo que incluye</div>
+    <h2 class="sec-title">Un CFO personal<br>disponible 24/7</h2>
+    <p class="sec-sub">Ocho módulos que trabajan juntos para darte el control total de tu plata.</p>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:#e8f0fe">📊</div>
+        <h3>Balance en tiempo real</h3>
+        <p>Cuánto entró, cuánto salió, cuánto te queda. Por categorías, con variaciones vs el mes anterior.</p>
+        <span class="feat-tag" style="background:#e8f0fe;color:#1a56db">Personas y pymes</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#f0fdfa">📸</div>
+        <h3>Foto al ticket — listo</h3>
+        <p>Sacás foto a un ticket, factura o resumen de tarjeta y el agente lo lee, clasifica y registra solo.</p>
+        <span class="feat-tag" style="background:#f0fdfa;color:#0d9488">IA + OCR</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#fffbeb">🔔</div>
+        <h3>Alertas de vencimientos</h3>
+        <p>IVA, sueldos, tarjeta, servicios, seguros. El agente avisa con anticipación y con el monto exacto.</p>
+        <span class="feat-tag" style="background:#fffbeb;color:#d97706">Nunca más sorpresas</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#ecfdf5">📈</div>
+        <h3>Inversión del excedente</h3>
+        <p>Con los vencimientos cargados, sabe cuántos días tiene tu plata libre y te recomienda el mejor instrumento.</p>
+        <span class="feat-tag" style="background:#ecfdf5;color:#059669">FCI reales</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#fef2f2">🧾</div>
+        <h3>Taxation asistido</h3>
+        <p>Ganancias, Bienes Personales, IVA, IIBB, Monotributo. Posición fiscal en tiempo real.</p>
+        <span class="feat-tag" style="background:#fef2f2;color:#dc2626">AFIP / ARCA</span>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#f5f3ff">💬</div>
+        <h3>Chat con el asesor</h3>
+        <p>Preguntale en lenguaje natural. Recuerda tu historial y responde con datos reales de tu situación.</p>
+        <span class="feat-tag" style="background:#f5f3ff;color:#7c3aed">Claude IA</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section sec-center">
+  <div class="sec-tag">Planes</div>
+  <h2 class="sec-title">Empezá gratis,<br>crecé cuando quieras</h2>
+  <p class="sec-sub">Sin tarjeta de crédito. Sin letra chica. Sin sorpresas.</p>
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-badge">Free</div>
+      <h3>Básico</h3>
+      <div class="plan-price">$0 <span>/mes</span></div>
+      <div class="plan-desc">Para conocer la herramienta</div>
+      <ul>
+        <li>Balance básico (1 perfil)</li>
+        <li>Hasta 3 meses de historial</li>
+        <li>10 consultas al agente por mes</li>
+        <li>Alertas limitadas</li>
+      </ul>
+      <button class="plan-cta secondary" onclick="openModal()">Empezar gratis</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">✦ Más popular</div>
+      <h3>Pro</h3>
+      <div class="plan-price">~$10 <span>USD/mes</span></div>
+      <div class="plan-desc">30 días gratis para probar</div>
+      <ul>
+        <li>Perfiles ilimitados (familia + negocio)</li>
+        <li>Document ingestion completo</li>
+        <li>Motor de inversión con fondos reales</li>
+        <li>Taxation completo</li>
+        <li>Chat ilimitado con el agente</li>
+        <li>Reportes PDF mensuales</li>
+        <li>Sin publicidad</li>
+      </ul>
+      <button class="plan-cta primary" onclick="openModal()">Empezar 30 días gratis</button>
+    </div>
+    <div class="plan">
+      <div class="plan-badge">Business</div>
+      <h3>Empresa</h3>
+      <div class="plan-price" style="font-size:22px">A convenir</div>
+      <div class="plan-desc">Para equipos y contadores</div>
+      <ul>
+        <li>Multi-empresa / multi-usuario</li>
+        <li>API para contadores</li>
+        <li>White label</li>
+        <li>SLA + soporte dedicado</li>
+      </ul>
+      <button class="plan-cta secondary" onclick="window.location.href='finia_chat.html'">Hablar con el equipo</button>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIOS -->
+<div class="section alt">
+  <div class="inner sec-center">
+    <div class="sec-tag">Lo que dicen</div>
+    <h2 class="sec-title">Personas reales,<br>resultados reales</h2>
+    <p class="sec-sub">Beta testers que ya usan FinIA todos los días.</p>
+    <div class="testi-grid">
+      <div class="testi">
+        <div class="testi-text">"Por primera vez en años sé exactamente en qué gasto. Subí el resumen de tarjeta y en 2 minutos tenía todo categorizado. Me encontró que estaba pagando 3 streamings que casi no usaba."</div>
+        <div class="testi-author"><div class="testi-av" style="background:#1a56db">M</div><div><div class="testi-name">María, 34</div><div class="testi-role">Empleada · Buenos Aires</div></div></div>
+      </div>
+      <div class="testi">
+        <div class="testi-text">"Soy dueño de una ferretería y hacía todo a ojo. Ahora subo las facturas con el teléfono y veo el resultado del día en 10 segundos. Mi contador me dijo que llegué a la reunión mejor preparado que nunca."</div>
+        <div class="testi-author"><div class="testi-av" style="background:#059669">R</div><div><div class="testi-name">Roberto, 52</div><div class="testi-role">Dueño de ferretería · Córdoba</div></div></div>
+      </div>
+      <div class="testi">
+        <div class="testi-text">"El módulo de impuestos me salvó. Me avisó que tenía el IVA venciendo y que tenía plata suficiente. Antes siempre llegaba tarde. Y encima me dijo dónde invertir los $80.000 que tenía libres."</div>
+        <div class="testi-author"><div class="testi-av" style="background:#7c3aed">L</div><div><div class="testi-name">Laura, 41</div><div class="testi-role">Monotributista · Rosario</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section sec-center">
+  <div class="sec-tag">Preguntas frecuentes</div>
+  <h2 class="sec-title">¿Tenés dudas?</h2>
+  <p class="sec-sub" style="margin-bottom:32px">Las más comunes, respondidas sin vueltas.</p>
+  <div class="faq">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿FinIA reemplaza a mi contador? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">No — y no queremos que lo haga. FinIA organiza toda tu información financiera para que cuando vayas al contador llegues con todo listo. Eso baja su costo/hora y hace las reuniones mucho más eficientes. El contador sigue siendo necesario para la firma de balances y declaraciones.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Mis datos están seguros? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Sí. Usamos cifrado AES-256 para datos en reposo y TLS para el tránsito. FinIA nunca ejecuta operaciones con tu dinero — solo asesora. Nunca compartimos tus datos con terceros sin tu consentimiento explícito.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Qué pasa si no sé nada de finanzas? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Perfecto — FinIA está diseñado exactamente para vos. El agente habla en lenguaje simple, explica cada concepto cuando aparece, y nunca te va a pedir que sepas qué es un FCI o una ON. Si te dice algo que no entendés, preguntale y te lo explica.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿FinIA ejecuta las inversiones por mí? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Por ahora FinIA recomienda y te conecta con el ALYC o banco socio para que vos ejecutes. No movemos fondos directamente — eso requiere habilitaciones regulatorias que estamos tramitando para versiones futuras.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Funciona para cualquier banco argentino? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Sí. El document ingestion procesa extractos en PDF o Excel de cualquier banco argentino: Galicia, BBVA, Santander, Brubank, Naranja X, Banco Nación y más. También importamos resúmenes de tarjetas Visa, Mastercard y Amex.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA FINAL -->
+<div class="cta-final">
+  <h2>Tu plata merece<br>un mejor destino</h2>
+  <p>Empezá gratis hoy. En 3 minutos vas a saber exactamente cómo estás parado.</p>
+  <div class="cta-btns">
+    <button class="btn-white" onclick="openModal()">Empezar gratis 🚀</button>
+    <a href="finia_chat.html" class="btn-ghost">Hablar con el asesor</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Fin<span>IA</span></div>
+  <div class="footer-links">
+    <a href="plan_maestro_asesor_financiero.html">Plan Maestro</a>
+    <a href="finia_deck.html">Inversores</a>
+    <a href="finia_chat.html">Asesor</a>
+  </div>
+  <div class="footer-right">Nani Fintech Project · Junio 2026</div>
+</footer>
+
+<!-- MODAL SELECTOR DE PERFIL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-title">¿Cómo querés empezar?</div>
+    <div class="modal-sub">Elegí tu perfil y te llevamos directo a lo que necesitás.</div>
+    <div class="modal-options">
+      <a class="modal-opt" href="finia_onboarding.html">
+        <div class="mo-icon">👨‍👩‍👧</div>
+        <div class="mo-body">
+          <h4>Soy persona o familia</h4>
+          <p>Control de gastos, ahorros e inversiones personales</p>
+        </div>
+      </a>
+      <a class="modal-opt" href="finia_onboarding.html">
+        <div class="mo-icon">🏢</div>
+        <div class="mo-body">
+          <h4>Tengo un negocio o pyme</h4>
+          <p>P&L, impuestos, clientes, proveedores y empleados</p>
+        </div>
+      </a>
+    </div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+let perfilActivo = 'familia';
+
+function selectPerfil(p){
+  perfilActivo = p;
+  document.querySelectorAll('.perfil-card').forEach(c=>c.classList.remove('active'));
+  document.getElementById('pc-'+p).classList.add('active');
+  if(p==='pyme'){
+    document.getElementById('s-personas').scrollIntoView({behavior:'smooth',block:'center'});
+    setTimeout(()=>{
+      document.querySelector('.section.alt').scrollIntoView({behavior:'smooth'});
+    },400);
+  }
+}
+
+function openModal(){
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
+
+function toggleFaq(el){
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
