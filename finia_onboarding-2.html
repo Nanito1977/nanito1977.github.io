@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Bienvenido</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1f44;
+  --blue: #1a56db;
+  --blue2: #1e63f0;
+  --sky: #e8f0fe;
+  --sky2: #dbeafe;
+  --text: #111827;
+  --text2: #374151;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --border2: #d1d5db;
+  --bg: #ffffff;
+  --bg2: #f9fafb;
+  --green: #059669;
+  --green-dim: #ecfdf5;
+  --amber: #d97706;
+  --amber-dim: #fffbeb;
+  --teal: #0d9488;
+  --teal-dim: #f0fdfa;
+  --purple: #7c3aed;
+  --purple-dim: #f5f3ff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg2);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* CARD PRINCIPAL */
+.ob-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+}
+
+/* HEADER */
+.ob-header {
+  background: var(--navy);
+  padding: 24px 32px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ob-brand { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+.ob-brand span { color: #60a5fa; }
+.ob-step-label { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 500; }
+
+/* PROGRESS */
+.ob-progress {
+  height: 3px;
+  background: var(--border);
+  position: relative;
+}
+.ob-progress-fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 0 2px 2px 0;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* BODY */
+.ob-body { padding: 36px 32px 28px; }
+.ob-step { display: none; }
+.ob-step.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.ob-emoji { font-size: 40px; margin-bottom: 16px; }
+.ob-title { font-size: 22px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 8px; line-height: 1.2; }
+.ob-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+
+/* INPUTS */
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.field input, .field select {
+  width: 100%; padding: 11px 14px;
+  border: 1px solid var(--border2); border-radius: 10px;
+  font-family: inherit; font-size: 14px; color: var(--text);
+  background: var(--bg); outline: none; transition: border-color .2s;
+  appearance: none;
+}
+.field input:focus, .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,86,219,0.1); }
+.field input::placeholder { color: var(--muted); }
+
+/* MODO SELECTOR */
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.mode-card {
+  border: 2px solid var(--border);
+  border-radius: 14px; padding: 18px 14px;
+  cursor: pointer; transition: all .2s; text-align: center;
+  background: var(--bg);
+}
+.mode-card:hover { border-color: var(--blue); background: var(--sky); }
+.mode-card.selected { border-color: var(--blue); background: var(--sky); }
+.mode-card .mode-icon { font-size: 28px; margin-bottom: 8px; }
+.mode-card .mode-name { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.mode-card .mode-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+.mode-card.selected .mode-name { color: var(--blue); }
+.mode-card.selected .mode-desc { color: #3b82f6; }
+
+.mode-full {
+  border: 2px solid var(--border);
+  border-radius: 14px; padding: 16px 18px;
+  cursor: pointer; transition: all .2s;
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg); margin-bottom: 0;
+}
+.mode-full:hover { border-color: var(--blue); background: var(--sky); }
+.mode-full.selected { border-color: var(--blue); background: var(--sky); }
+.mode-full .mode-icon { font-size: 24px; flex-shrink: 0; }
+.mode-full .mode-name { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.mode-full .mode-desc { font-size: 12px; color: var(--muted); }
+.mode-full.selected .mode-name { color: var(--blue); }
+
+/* PERFIL RIESGO */
+.risk-options { display: flex; flex-direction: column; gap: 10px; }
+.risk-card {
+  border: 2px solid var(--border); border-radius: 12px; padding: 14px 16px;
+  cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 14px;
+}
+.risk-card:hover { border-color: var(--blue); }
+.risk-card.selected { border-color: var(--blue); background: var(--sky); }
+.risk-icon { font-size: 22px; flex-shrink: 0; }
+.risk-name { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 2px; }
+.risk-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+.risk-card.selected .risk-name { color: var(--blue); }
+
+/* RESUMEN */
+.summary { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.summary-row:last-child { border-bottom: none; }
+.summary-label { font-size: 13px; color: var(--muted); }
+.summary-val { font-size: 13px; font-weight: 700; color: var(--navy); }
+.summary-badge { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.sb-green { background: var(--green-dim); color: var(--green); }
+.sb-blue { background: var(--sky); color: var(--blue); }
+.sb-amber { background: var(--amber-dim); color: var(--amber); }
+.sb-purple { background: var(--purple-dim); color: var(--purple); }
+.sb-teal { background: var(--teal-dim); color: var(--teal); }
+
+/* FOOTER BUTTONS */
+.ob-footer { padding: 0 32px 28px; display: flex; gap: 10px; }
+.btn-primary {
+  flex: 1; background: var(--blue); color: #fff;
+  border: none; border-radius: 12px; padding: 14px;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+}
+.btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-secondary {
+  background: none; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+}
+.btn-secondary:hover { background: var(--bg2); color: var(--text); }
+
+/* SUCCESS */
+.success-screen { text-align: center; padding: 20px 0; }
+.success-icon { font-size: 56px; margin-bottom: 20px; animation: pop .4s cubic-bezier(.4,0,.2,1); }
+@keyframes pop { 0%{transform:scale(.5);opacity:0} 80%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+.success-title { font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 8px; letter-spacing: -.5px; }
+.success-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+.feature-list { text-align: left; background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; }
+.feature-item { display: flex; gap: 10px; padding: 6px 0; font-size: 13px; color: var(--text2); }
+.feature-item::before { content: "✓"; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+
+/* DIVIDER */
+.or-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+.or-line { flex: 1; height: 1px; background: var(--border); }
+.or-text { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+/* SOCIAL LOGIN */
+.social-btn {
+  width: 100%; padding: 11px 14px; border: 1px solid var(--border2);
+  border-radius: 10px; background: var(--bg); font-family: inherit;
+  font-size: 14px; font-weight: 600; color: var(--text2); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all .2s; margin-bottom: 10px;
+}
+.social-btn:hover { background: var(--bg2); border-color: var(--border); }
+
+@media (max-width: 480px) {
+  body { padding: 0; align-items: flex-start; }
+  .ob-card { border-radius: 0; min-height: 100vh; box-shadow: none; border: none; max-width: 100%; }
+  .ob-body { padding: 28px 20px 20px; }
+  .ob-footer { padding: 0 20px 28px; }
+  .ob-header { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="ob-card">
+  <!-- HEADER -->
+  <div class="ob-header">
+    <div class="ob-brand">Fin<span>IA</span></div>
+    <div class="ob-step-label" id="step-label">Paso 1 de 3</div>
+  </div>
+  <div class="ob-progress">
+    <div class="ob-progress-fill" id="progress-bar" style="width:25%"></div>
+  </div>
+
+  <!-- STEP 1: REGISTRO -->
+  <div class="ob-body">
+    <div class="ob-step active" id="step-1">
+      <div class="ob-emoji">👋</div>
+      <div class="ob-title">Hola, ¿cómo te llamás?</div>
+      <div class="ob-sub">Creá tu cuenta gratis en menos de 2 minutos. Sin tarjeta de crédito.</div>
+
+      <div class="field">
+        <label>Nombre</label>
+        <input type="text" id="f-nombre" placeholder="Juan" oninput="updateSummary()">
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="f-email" placeholder="juan@email.com">
+      </div>
+      <div class="field">
+        <label>Contraseña</label>
+        <input type="password" id="f-pass" placeholder="Mínimo 8 caracteres">
+      </div>
+
+      <div class="or-divider"><div class="or-line"></div><div class="or-text">o continuá con</div><div class="or-line"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 6.294C4.672 4.169 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M14.94 13.3c-.27.62-.58 1.19-.95 1.71-.5.71-.91 1.2-1.22 1.47-.49.45-1.01.68-1.57.69-.4 0-.88-.11-1.44-.34-.56-.23-1.07-.34-1.54-.34-.49 0-1.02.11-1.58.34-.57.23-1.02.35-1.38.36-.53.02-1.07-.22-1.6-.72-.34-.29-.77-.8-1.29-1.53C2.8 13.8 2.3 12.8 1.9 11.67c-.43-1.2-.65-2.37-.65-3.5 0-1.29.28-2.41.84-3.34A4.93 4.93 0 0 1 3.87 2.9a4.7 4.7 0 0 1 2.37-.67c.47 0 1.08.14 1.84.43.76.29 1.25.43 1.46.43.16 0 .7-.17 1.61-.5.86-.31 1.59-.44 2.19-.39 1.62.13 2.84.76 3.64 1.91-1.45.88-2.17 2.1-2.15 3.68.02 1.22.46 2.24 1.3 3.03.39.37.82.65 1.3.85-.1.3-.22.59-.35.87zM11.73.22C11.73 1.18 11.39 2.08 10.72 2.9c-.81.97-1.78 1.53-2.84 1.44a2.87 2.87 0 0 1-.02-.35c0-.92.4-1.9 1.11-2.7.35-.4.8-.74 1.34-1.01.54-.26 1.05-.41 1.52-.43.02.12.02.24.02.37z"/></svg>
+          Apple
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.031 0 0 4.031 0 9s4.031 9 9 9 9-4.031 9-9-4.031-9-9-9zm4.5 9.75h-3.75v3.75h-1.5V9.75H4.5v-1.5h3.75V4.5h1.5v3.75H13.5v1.5z" fill="#555"/><path d="M9.563 4.5H8.437v3.813H4.5v1.124h3.937V13.5h1.126V9.437H13.5V8.313H9.563z" fill="white"/><rect width="18" height="18" rx="2" fill="none"/><path d="M0 4a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4z" fill="#00A4EF"/><path d="M1 1h7.5v7.5H1zM9.5 1H17v7.5H9.5zM1 9.5h7.5V17H1zM9.5 9.5H17V17H9.5z" fill="white"/></svg>
+          Microsoft
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.029 0 0 4.029 0 9s4.029 9 9 9 9-4.029 9-9S13.971 0 9 0zm4.388 6.356l-1.502 7.078c-.112.497-.408.617-.826.384l-2.287-1.685-1.103 1.062c-.122.122-.224.224-.459.224l.163-2.329 4.23-3.82c.184-.163-.04-.255-.285-.092L4.55 11.143l-2.255-.704c-.49-.153-.499-.49.103-.724l8.564-3.301c.408-.148.766.102.426 1.942z" fill="#229ED9"/></svg>
+          Telegram
+        </button>
+      </div>
+
+    </div>
+
+    <!-- STEP 2: MODO -->
+    <div class="ob-step" id="step-2">
+      <div class="ob-emoji">🎯</div>
+      <div class="ob-title">¿Para qué vas a usar FinIA?</div>
+      <div class="ob-sub">Podés activar más modos después. Esto configura tu experiencia inicial.</div>
+
+      <div class="mode-grid">
+        <div class="mode-card" id="mode-familia" onclick="selectMode('familia')">
+          <div class="mode-icon">🏠</div>
+          <div class="mode-name">Familia</div>
+          <div class="mode-desc">Finanzas del hogar, inversiones y seguros personales</div>
+        </div>
+        <div class="mode-card" id="mode-negocio" onclick="selectMode('negocio')">
+          <div class="mode-icon">🏢</div>
+          <div class="mode-name">Mi negocio</div>
+          <div class="mode-desc">P&L, cashflow y gestión financiera de la empresa</div>
+        </div>
+      </div>
+      <div class="mode-full" id="mode-ambos" onclick="selectMode('ambos')" style="margin-top:0">
+        <div class="mode-icon">🔭</div>
+        <div>
+          <div class="mode-name">Ambos — vista consolidada</div>
+          <div class="mode-desc">Patrimonio personal + negocio en un solo dashboard. Recomendado para dueños de pyme.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: RESUMEN -->
+    <div class="ob-step" id="step-3">
+      <div class="ob-emoji">✅</div>
+      <div class="ob-title">Todo listo, <span id="summary-nombre-3">amigo</span></div>
+      <div class="ob-sub">Tu asesor financiero IA está configurado y listo para usar.</div>
+      <div class="summary">
+        <div class="summary-row">
+          <span class="summary-label">Modo activo</span>
+          <span class="summary-badge sb-blue" id="sum-modo">—</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Perfil de inversión</span>
+          <span class="summary-badge sb-amber">Lo completás después, cuando quieras</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Taxation</span>
+          <span class="summary-badge sb-amber">Activado</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Document Ingestion</span>
+          <span class="summary-badge sb-teal">Activado</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">Plan</span>
+          <span class="summary-badge sb-purple">Free · 30 días Pro gratis</span>
+        </div>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item">El agente te va a pedir el perfil de inversión la primera vez que lo necesite</div>
+        <div class="feature-item">Podés subir facturas y extractos desde el primer día</div>
+        <div class="feature-item">30 días del plan Pro gratis — sin tarjeta de crédito</div>
+        <div class="feature-item">Tu perfil se completa solo con el uso, sin formularios largos</div>
+      </div>
+    </div>
+
+
+
+    <!-- SUCCESS -->
+    <div class="ob-step" id="step-success">
+      <div class="success-screen">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">¡Bienvenido a FinIA!</div>
+        <div class="success-sub">Tu asesor financiero IA está listo. Te estamos redirigiendo al dashboard...</div>
+        <div style="width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div id="loading-bar" style="height:100%;background:var(--blue);border-radius:2px;width:0%;transition:width 2.5s linear"></div>
+        </div>
+        <div style="margin-top:16px;font-size:13px;color:var(--muted)">Configurando tu experiencia personalizada...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="ob-footer" id="ob-footer">
+    <button class="btn-secondary" id="btn-back" onclick="prevStep()" style="display:none">← Atrás</button>
+    <button class="btn-primary" id="btn-next" onclick="nextStep()">Continuar →</button>
+  </div>
+</div>
+
+<script>
+let step = 1;
+let selectedMode = null;
+let selectedRisk = null;
+const totalSteps = 3;
+
+const modeLabels = {
+  familia: '🏠 Familia',
+  negocio: '🏢 Mi negocio',
+  ambos: '🔭 Consolidado'
+};
+const riskLabels = {
+  conservador: '🛡️ Conservador',
+  moderado: '⚖️ Moderado',
+  agresivo: '🚀 Agresivo'
+};
+const riskBadgeClass = {
+  conservador: 'sb-blue',
+  moderado: 'sb-green',
+  agresivo: 'sb-amber'
+};
+
+function goToStep(n) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  step = n;
+
+  const pct = (n / totalSteps) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('step-label').textContent = n <= totalSteps ? `Paso ${n} de ${totalSteps}` : '';
+
+  const btnBack = document.getElementById('btn-back');
+  const btnNext = document.getElementById('btn-next');
+
+  btnBack.style.display = n > 1 && n <= totalSteps ? 'block' : 'none';
+
+  if (n === totalSteps) {
+    btnNext.textContent = '¡Empezar! 🚀';
+  } else if (n > totalSteps) {
+    document.getElementById('ob-footer').style.display = 'none';
+  } else {
+    btnNext.textContent = 'Continuar →';
+  }
+
+  if (n === 3) updateSummaryStep();
+}
+
+function nextStep() {
+  if (step === 1) {
+    const nombre = document.getElementById('f-nombre').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    if (!nombre || !email) {
+      document.getElementById('f-nombre').focus();
+      document.getElementById('f-nombre').style.borderColor = nombre ? '' : '#dc2626';
+      document.getElementById('f-email').style.borderColor = email ? '' : '#dc2626';
+      return;
+    }
+    document.getElementById('f-nombre').style.borderColor = '';
+    document.getElementById('f-email').style.borderColor = '';
+    goToStep(2);
+  } else if (step === 2) {
+    if (!selectedMode) {
+      document.querySelectorAll('.mode-card, .mode-full').forEach(c => {
+        c.style.animation = 'shake .3s';
+        setTimeout(() => c.style.animation = '', 300);
+      });
+      return;
+    }
+    goToStep(3);
+  } else if (step === 3) {
+    launchSuccess();
+  }
+}
+
+function prevStep() {
+  if (step > 1) goToStep(step - 1);
+}
+
+function skipToStep(n) { goToStep(n); }
+
+function selectMode(mode) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-card, .mode-full').forEach(el => el.classList.remove('selected'));
+  document.getElementById('mode-' + mode).classList.add('selected');
+}
+
+function selectRisk(risk) {
+  selectedRisk = risk;
+  document.querySelectorAll('.risk-card').forEach(el => el.classList.remove('selected'));
+  document.getElementById('risk-' + risk).classList.add('selected');
+}
+
+function updateSummary() {}
+
+function updateSummaryStep() {
+  const nombre = document.getElementById('f-nombre').value.trim() || 'amigo';
+  const sn3 = document.getElementById('summary-nombre-3'); if(sn3) sn3.textContent = nombre.split(' ')[0];
+
+  const sumModo = document.getElementById('sum-modo');
+  sumModo.textContent = modeLabels[selectedMode] || '—';
+
+  const sumRiesgo = document.getElementById('sum-riesgo');
+  sumRiesgo.textContent = riskLabels[selectedRisk] || '—';
+  sumRiesgo.className = 'summary-badge ' + (riskBadgeClass[selectedRisk] || 'sb-green');
+}
+
+function launchSuccess() {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-success').classList.add('active');
+  document.getElementById('ob-footer').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('step-label').textContent = '¡Listo!';
+  setTimeout(() => {
+    document.getElementById('loading-bar').style.width = '100%';
+  }, 100);
+  setTimeout(() => {
+    window.location.href = 'finia_chat.html';
+  }, 3000);
+}
+
+// Shake animation
+const style = document.createElement('style');
+style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}';
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>
