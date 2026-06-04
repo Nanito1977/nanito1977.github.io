@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Conocete</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;
+  --bg:#f9fafb;--bg2:#ffffff;
+  --green:#059669;--green-dim:#ecfdf5;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+  --coral:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;
+  max-width:480px;margin:0 auto;
+}
+
+/* TOPBAR */
+.topbar{
+  background:var(--navy);padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.brand{font-size:18px;font-weight:800;color:#fff}
+.brand span{color:#60a5fa}
+.prog-wrap{display:flex;align-items:center;gap:8px}
+.prog-label{font-size:11px;color:rgba(255,255,255,0.45);white-space:nowrap}
+.prog-bar{width:72px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:#60a5fa;border-radius:2px;transition:width .5s ease}
+
+/* FASE BADGE */
+.fase-badge{
+  text-align:center;padding:10px 16px;
+  font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  flex-shrink:0;
+}
+
+/* CHAT */
+.chat-area{
+  flex:1;overflow-y:auto;padding:16px 16px 8px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.chat-area::-webkit-scrollbar{width:3px}
+.chat-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* MENSAJES */
+.msg-row{display:flex;gap:10px;align-items:flex-end}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;
+}
+.av-bot{background:var(--sky);color:var(--blue);border:1px solid #bfdbfe}
+.av-user{background:var(--navy);color:#fff}
+.bubble{
+  max-width:84%;padding:11px 15px;
+  font-size:15px;line-height:1.6;border-radius:18px;
+}
+.bubble.bot{
+  background:var(--bg2);border:1px solid var(--border);
+  color:var(--text2);border-bottom-left-radius:4px;
+}
+.bubble.user{
+  background:var(--blue);color:#fff;
+  border-bottom-right-radius:4px;
+}
+.bubble strong{font-weight:700}
+.bubble.bot strong{color:var(--navy)}
+.bubble.user strong{color:#bfdbfe}
+.bubble .edu-tip{
+  display:block;margin-top:10px;padding:10px 12px;
+  background:var(--sky);border-radius:10px;
+  font-size:13px;color:#1e3a8a;line-height:1.5;
+  border-left:3px solid var(--blue);
+}
+.bubble .edu-tip::before{content:'💡 ';font-style:normal}
+
+/* TYPING */
+.typing{display:flex;gap:5px;padding:12px 15px;align-items:center}
+.td{width:7px;height:7px;border-radius:50%;background:var(--border2);animation:tdB 1.1s infinite}
+.td:nth-child(2){animation-delay:.18s}
+.td:nth-child(3){animation-delay:.36s}
+@keyframes tdB{0%,80%,100%{transform:scale(1);background:var(--border2)}40%{transform:scale(1.35);background:var(--blue)}}
+
+/* OPCIONES */
+.options-wrap{padding:0 0 4px 40px;display:flex;flex-direction:column;gap:7px}
+.opt-btn{
+  padding:11px 16px;border-radius:14px;
+  border:1.5px solid var(--border2);background:var(--bg2);
+  font-family:inherit;font-size:14px;font-weight:600;
+  color:var(--text2);cursor:pointer;transition:all .15s;text-align:left;
+  display:flex;align-items:center;gap:8px;
+}
+.opt-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--sky)}
+.opt-btn.selected{border-color:var(--blue);color:var(--blue);background:var(--sky)}
+.opt-btn.confirm-btn{background:var(--blue);color:#fff;border-color:var(--blue);justify-content:center}
+.opt-btn.confirm-btn:hover{background:var(--blue2)}
+
+/* INPUT MONTO */
+.monto-wrap{padding:0 0 4px 40px}
+.monto-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:16px;
+}
+.monto-card label{font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.monto-row{display:flex;align-items:center;gap:6px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;padding:10px 14px;transition:border-color .2s}
+.monto-row:focus-within{border-color:var(--blue)}
+.currency{font-size:16px;font-weight:700;color:var(--muted)}
+.monto-input{border:none;background:none;outline:none;font-family:inherit;font-size:22px;font-weight:800;color:var(--navy);width:100%}
+.monto-sub{font-size:12px;color:var(--muted);margin-top:6px}
+.monto-btn{width:100%;margin-top:12px;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s}
+.monto-btn:hover{background:var(--blue2)}
+
+/* UPLOAD */
+.upload-wrap{padding:0 0 4px 40px;display:flex;flex-direction:column;gap:8px}
+.upload-card{
+  background:var(--bg2);border:1.5px dashed var(--border2);
+  border-radius:14px;padding:18px 16px;cursor:pointer;
+  transition:all .15s;display:flex;gap:12px;align-items:center;
+}
+.upload-card:hover{border-color:var(--blue);background:var(--sky)}
+.upload-icon{font-size:28px;flex-shrink:0}
+.upload-text h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.upload-text p{font-size:12px;color:var(--muted)}
+.upload-skip{text-align:center;font-size:13px;font-weight:600;color:var(--blue);cursor:pointer;padding:4px}
+
+/* RIESGO */
+.riesgo-wrap{padding:0 0 4px 40px;display:flex;flex-direction:column;gap:8px}
+.riesgo-card{
+  background:var(--bg2);border:1.5px solid var(--border);
+  border-radius:14px;padding:14px 16px;cursor:pointer;
+  display:flex;gap:12px;align-items:center;transition:all .15s;
+}
+.riesgo-card:hover{border-color:var(--blue);background:var(--sky)}
+.riesgo-emoji{font-size:24px;flex-shrink:0}
+.riesgo-text h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.riesgo-text p{font-size:12px;color:var(--muted);line-height:1.4}
+
+/* INPUT AREA */
+.input-area{
+  padding:10px 16px 18px;background:var(--bg2);
+  border-top:1px solid var(--border);flex-shrink:0;
+}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-field{
+  flex:1;border:1.5px solid var(--border2);border-radius:22px;
+  padding:10px 16px;font-family:inherit;font-size:15px;
+  color:var(--text);background:var(--bg);outline:none;
+  resize:none;line-height:1.4;max-height:90px;transition:border-color .2s;
+}
+.input-field:focus{border-color:var(--blue)}
+.input-field::placeholder{color:var(--muted)}
+.send-btn{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--blue);border:none;cursor:pointer;
+  font-size:17px;color:#fff;flex-shrink:0;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;
+}
+.send-btn:hover{background:var(--blue2);transform:scale(1.05)}
+.send-btn:disabled{background:var(--border2);transform:none;cursor:not-allowed}
+.skip-row{text-align:center;margin-top:8px;font-size:12px;color:var(--muted);cursor:pointer}
+.skip-row:hover{color:var(--blue)}
+
+/* ===== RESPONSIVE — tablet & desktop ===== */
+@media (min-width: 600px) {
+  body { padding-left: 16px; padding-right: 16px; }
+  .dos-col { gap: 16px; }
+  .quick { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mini-stats, .simple-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .agent-btns, .wb-actions, .agent-btns { flex-wrap: nowrap; }
+}
+
+@media (min-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .page-layout {
+    display: flex;
+    flex: 1;
+    gap: 0;
+  }
+  .desktop-sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    padding: 20px 14px;
+    display: flex !important;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .desktop-sidebar .ds-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 12px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    cursor: pointer; text-decoration: none; transition: all .15s;
+  }
+  .desktop-sidebar .ds-item:hover { background: var(--bg2); color: var(--navy); }
+  .desktop-sidebar .ds-item.active { background: var(--sky); color: var(--blue); }
+  .desktop-sidebar .ds-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--muted); padding: 14px 12px 4px;
+  }
+  .main-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px 40px;
+  }
+  .bottom-nav { display: none !important; }
+  .topbar { position: sticky; top: 0; z-index: 50; }
+  .dos-col { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .actores { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .venc-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quick { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .mini-stats { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+  .simple-grid { grid-template-columns: repeat(4, 1fr); }
+  .agent, .agent-banner { border-radius: 20px; }
+  .resultado { border-radius: 20px; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <div class="prog-wrap">
+    <div class="prog-label" id="prog-label">Empezando...</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:5%"></div></div>
+  </div>
+</div>
+
+<div class="chat-area" id="chat"></div>
+
+<div class="input-area">
+  <div class="input-row">
+    <textarea class="input-field" id="input" placeholder="Escribí tu respuesta..." rows="1"
+      onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send-btn" id="send-btn" onclick="sendFree()">→</button>
+  </div>
+  <div class="skip-row" onclick="skipStep()">Responder esto después →</div>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const inputEl = document.getElementById('input');
+let step = 0;
+let answers = {};
+let multiSelected = [];
+
+const STEPS = [
+  {
+    id:'bienvenida', prog:5, label:'Hola!',
+    bot:[
+      `¡Hola! 👋 Soy <strong>FinIA</strong>, tu asesor financiero personal.\n\nEstoy acá para ayudarte a entender tu plata, ahorrar más y hacer crecer lo que te sobra. Sin tecnicismos, sin formularios aburridos — solo una charla.\n\n¿Empezamos? 😊`
+    ],
+    type:'opciones',
+    opts:['¡Sí, arrancamos! 🚀','Primero contame más sobre vos']
+  },
+  {
+    id:'ocupacion', prog:15, label:'Conociéndote',
+    bot:[
+      `Genial! 💪\n\nPrimero lo primero: <strong>¿a qué te dedicás?</strong>`
+    ],
+    type:'opciones',
+    opts:['👔 Empleado/a en relación de dependencia','🛍️ Comerciante / negocio propio','💻 Profesional independiente / freelance','🏠 Ama/o de casa','👴 Jubilado/a o pensionado/a','🎓 Estudiante','🌎 Otro']
+  },
+  {
+    id:'fiscal', prog:25, label:'Situación fiscal',
+    bot:[
+      `Perfecto, gracias! 🙌\n\nAhora una pregunta que parece complicada pero es fácil: <strong>¿cómo estás frente a los impuestos?</strong>`,
+      `<span class="edu-tip">Esto me ayuda a saber cómo ayudarte con tus impuestos. No importa si no entendés bien la diferencia — elegí la que más se parezca a tu caso.</span>`
+    ],
+    type:'opciones',
+    opts:['📋 Me descuentan los impuestos del sueldo (relación de dependencia)','🟢 Soy monotributista','📊 Soy autónomo (Responsable Inscripto)','🏢 Tengo una empresa (SRL, SA u otra)','🤷 No sé / no pago impuestos','🌎 Estoy en otro país']
+  },
+  {
+    id:'ingresos', prog:38, label:'Tus ingresos',
+    bot:[
+      `Entendido! Ahora <strong>¿cuánto ganás por mes, más o menos?</strong>\n\nNo tiene que ser exacto — un aproximado está perfecto. Puede ser tu sueldo, lo que facturás, lo que entra en total.`,
+      `<span class="edu-tip">El ingreso es todo lo que entra a tu bolsillo: sueldos, ventas, alquileres, changas. Cuanto más preciso, mejor te puedo ayudar — pero un número aproximado ya sirve mucho.</span>`
+    ],
+    type:'monto',
+    montoLabel:'¿Cuánto entra por mes?',
+    montoPlaceholder:'0'
+  },
+  {
+    id:'gastos', prog:50, label:'Tus gastos',
+    bot:[
+      `Muy bien! Ahora <strong>¿cuánto gastás por mes, aproximadamente?</strong>\n\nAlquiler o cuota de la casa, supermercado, colegios, servicios, cuotas, lo que sea que sale regularmente.`,
+      `<span class="edu-tip">Los gastos fijos son los que pagás sí o sí todos los meses. Los variables cambian (supermercado, salidas). Juntos forman tu "gasto total mensual".</span>`
+    ],
+    type:'opciones',
+    opts:['Menos de $150.000','Entre $150K y $300K','Entre $300K y $500K','Entre $500K y $800K','Más de $800K','Prefiero ingresar el número exacto']
+  },
+  {
+    id:'gastos_extra', prog:58, label:'Gastos extra',
+    bot:[
+      `Casi listo con las preguntas! 😊\n\n<strong>¿Este mes tuviste algún gasto grande o poco habitual?</strong>\n\nVacaciones, arreglos en la casa, electrodoméstico, médico, ropa de temporada...`
+    ],
+    type:'opciones',
+    opts:['Sí, tuve un gasto grande','Sí, varios gastos extra','No, fue un mes normal']
+  },
+  {
+    id:'documentos', prog:68, label:'Tus documentos',
+    bot:[
+      `¡Excelente! 🎯 Ya te conozco bastante.\n\nAhora viene lo mejor: si me subís tus <strong>resúmenes de tarjeta o extractos bancarios</strong>, puedo ver exactamente en qué gastás, armarte las categorías reales y decirte cuánto te sobra de verdad.\n\nNo es obligatorio — pero cuanto más me des, más puedo ayudarte.`,
+      `<span class="edu-tip">Podés subir un PDF de tu tarjeta, una foto del resumen impreso, o el Excel que descargás del banco. Yo leo todo y lo organizo solo. Tus datos son privados y nunca se comparten.</span>`
+    ],
+    type:'upload'
+  },
+  {
+    id:'categorias_ok', prog:82, label:'Analizando',
+    bot:[
+      `¡Perfecto! 📊 Procesé tus documentos.\n\nAhora puedo ver tus <strong>categorías de gastos reales</strong>:\n\n🏠 Vivienda · 🛒 Supermercado · 📱 Servicios · 🚗 Auto · 🎓 Educación · 🍕 Salidas · 🛡️ Seguros · 💊 Salud · ✈️ Viajes\n\nSi querés podemos comparar varios meses para ver cómo van tus gastos. ¿Tenés otro resumen para subir?`
+    ],
+    type:'opciones',
+    opts:['Sí, subo otro mes para comparar 📄','No, está bien con este 👍']
+  },
+  {
+    id:'test_inversion', prog:92, label:'Tu perfil inversor',
+    bot:[
+      `Última parte, te lo prometo! 🙏\n\nYa sé cuánto ganás y cuánto gastás. Ahora quiero entender <strong>cómo sos con el dinero</strong> para recomendarte qué hacer con lo que te sobra.\n\n<strong>Imaginá que tenés $100.000 ahorrados y de repente bajan a $80.000. ¿Qué harías?</strong>`,
+      `<span class="edu-tip">Esto se llama "perfil de riesgo inversor". No hay respuesta correcta — es solo para entender qué tipo de inversiones se adaptan mejor a vos.</span>`
+    ],
+    type:'riesgo'
+  },
+  {
+    id:'listo', prog:100, label:'¡Listo!',
+    bot:[
+      `¡Listo! 🎉 <strong>Ya te conozco bien.</strong>\n\nAhora sí puedo ser tu asesor financiero de verdad. Voy a armar tu dashboard personalizado con:\n\n✅ Tus ingresos y gastos reales\n✅ Cuánto te sobra este mes\n✅ En qué categorías gastás más\n✅ Qué podés hacer con tu plata para que crezca\n\n¡Vamos al dashboard! 🚀`
+    ],
+    type:'final'
+  }
+];
+
+function scrollBottom(){setTimeout(()=>{chat.scrollTop=chat.scrollHeight},60)}
+
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,90)+'px'}
+
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendFree()}}
+
+function setProgress(s){
+  const st=STEPS[s];
+  document.getElementById('prog-fill').style.width=st.prog+'%';
+  document.getElementById('prog-label').textContent=st.label;
+}
+
+async function botSay(msgs, delay){
+  for(const txt of msgs){
+    const typing=document.createElement('div');
+    typing.className='msg-row';
+    typing.innerHTML=`<div class="msg-av av-bot">F</div><div class="bubble bot"><div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+    chat.appendChild(typing);
+    scrollBottom();
+    await wait(delay||1100);
+    typing.remove();
+    const row=document.createElement('div');
+    row.className='msg-row';
+    row.innerHTML=`<div class="msg-av av-bot">F</div><div class="bubble bot">${txt.replace(/\n/g,'<br>')}</div>`;
+    chat.appendChild(row);
+    scrollBottom();
+    if(msgs.length>1) await wait(400);
+  }
+}
+
+function userSay(txt){
+  clearWidgets();
+  const row=document.createElement('div');
+  row.className='msg-row user';
+  row.innerHTML=`<div class="msg-av av-user">N</div><div class="bubble user">${txt}</div>`;
+  chat.appendChild(row);
+  scrollBottom();
+}
+
+function wait(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function clearWidgets(){
+  document.getElementById('widget-area')?.remove();
+}
+
+function showWidget(html){
+  clearWidgets();
+  const div=document.createElement('div');
+  div.id='widget-area';
+  div.innerHTML=html;
+  chat.appendChild(div);
+  scrollBottom();
+}
+
+function showOpciones(opts){
+  const rows=opts.map(o=>`<button class="opt-btn" onclick="handleOpt('${o.replace(/'/g,"\\'")}')"><span>${o}</span></button>`).join('');
+  showWidget(`<div class="options-wrap">${rows}</div>`);
+}
+
+function showMonto(label,placeholder){
+  showWidget(`<div class="monto-wrap"><div class="monto-card">
+    <label>${label}</label>
+    <div class="monto-row">
+      <span class="currency">$</span>
+      <input class="monto-input" type="number" id="monto-inp" placeholder="${placeholder}" min="0">
+    </div>
+    <div class="monto-sub">Aproximado está bien — podés cambiarlo después</div>
+    <button class="monto-btn" onclick="submitMonto()">Confirmar →</button>
+  </div></div>`);
+  setTimeout(()=>document.getElementById('monto-inp')?.focus(),100);
+}
+
+function showUpload(){
+  showWidget(`<div class="upload-wrap">
+    <div class="upload-card" onclick="handleUpload('tarjeta')">
+      <div class="upload-icon">💳</div>
+      <div class="upload-text"><h4>Subir resumen de tarjeta</h4><p>PDF, foto o imagen — lo proceso automáticamente</p></div>
+    </div>
+    <div class="upload-card" onclick="handleUpload('banco')">
+      <div class="upload-icon">🏦</div>
+      <div class="upload-text"><h4>Subir extracto bancario</h4><p>PDF o Excel de cualquier banco argentino</p></div>
+    </div>
+    <div class="upload-card" onclick="handleUpload('ticket')">
+      <div class="upload-icon">🧾</div>
+      <div class="upload-text"><h4>Subir factura o ticket</h4><p>Foto de un ticket, factura AFIP, lo que tengas</p></div>
+    </div>
+    <div class="upload-skip" onclick="handleOpt('Prefiero cargarlo manualmente más tarde')">Prefiero ingresarlo a mano →</div>
+  </div>`);
+}
+
+function showRiesgo(){
+  const opts=[
+    {emoji:'🛡️',title:'Los saco inmediatamente',desc:'No soporto perder plata, prefiero ganar menos pero estar tranquilo/a',val:'Conservador'},
+    {emoji:'⚖️',title:'Espero a ver si remontan',desc:'Acepto que suba y baje si a largo plazo gana más',val:'Moderado'},
+    {emoji:'🚀',title:'Pongo más mientras están baratos',desc:'Entiendo el riesgo y busco la mayor ganancia posible',val:'Agresivo'}
+  ];
+  const cards=opts.map(o=>`<div class="riesgo-card" onclick="handleOpt('${o.emoji} ${o.val}')">
+    <div class="riesgo-emoji">${o.emoji}</div>
+    <div class="riesgo-text"><h4>${o.title}</h4><p>${o.desc}</p></div>
+  </div>`).join('');
+  showWidget(`<div class="riesgo-wrap">${cards}</div>`);
+}
+
+async function handleOpt(val){
+  userSay(val);
+  answers[STEPS[step].id]=val;
+  await advance();
+}
+
+async function submitMonto(){
+  const v=document.getElementById('monto-inp')?.value;
+  if(!v||v<=0){document.getElementById('monto-inp')?.focus();return}
+  const fmt='$'+parseInt(v).toLocaleString('es-AR');
+  userSay(fmt);
+  answers[STEPS[step].id]=fmt;
+  await advance();
+}
+
+async function handleUpload(tipo){
+  const labels={tarjeta:'📄 Subí el resumen de tarjeta',banco:'🏦 Subí el extracto bancario',ticket:'🧾 Subí una factura o ticket'};
+  userSay(labels[tipo]);
+  answers[STEPS[step].id]=labels[tipo];
+  await advance();
+}
+
+async function sendFree(){
+  const txt=inputEl.value.trim();
+  if(!txt)return;
+  inputEl.value='';inputEl.style.height='auto';
+  userSay(txt);
+  answers[STEPS[step].id]=txt;
+  await advance();
+}
+
+function skipStep(){
+  userSay('Respondo esto después');
+  answers[STEPS[step].id]='omitido';
+  advance();
+}
+
+async function advance(){
+  clearWidgets();
+  step++;
+  if(step>=STEPS.length){
+    await botSay([`¡Estamos listos! 🎉`],800);
+    setTimeout(()=>{window.location.href='finia_dashboard.html'},1800);
+    return;
+  }
+  setProgress(step);
+  const s=STEPS[step];
+  await botSay(s.bot, s.bot.length>1?900:1100);
+  renderStep();
+}
+
+function renderStep(){
+  const s=STEPS[step];
+  if(s.type==='opciones') showOpciones(s.opts);
+  else if(s.type==='monto') showMonto(s.montoLabel,s.montoPlaceholder);
+  else if(s.type==='upload') showUpload();
+  else if(s.type==='riesgo') showRiesgo();
+  else if(s.type==='final'){
+    clearWidgets();
+    document.getElementById('input').disabled=true;
+    document.getElementById('send-btn').disabled=true;
+  }
+}
+
+async function init(){
+  setProgress(0);
+  await botSay(STEPS[0].bot,700);
+  renderStep();
+}
+
+init();
+</script>
+</body>
+</html>

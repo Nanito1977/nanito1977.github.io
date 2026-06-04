@@ -206,6 +206,72 @@ body {
   .ob-footer { padding: 0 20px 28px; }
   .ob-header { padding: 20px; }
 }
+
+/* ===== RESPONSIVE — tablet & desktop ===== */
+@media (min-width: 600px) {
+  body { padding-left: 16px; padding-right: 16px; }
+  .dos-col { gap: 16px; }
+  .quick { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .mini-stats, .simple-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .agent-btns, .wb-actions, .agent-btns { flex-wrap: nowrap; }
+}
+
+@media (min-width: 900px) {
+  body {
+    display: flex;
+    flex-direction: column;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .page-layout {
+    display: flex;
+    flex: 1;
+    gap: 0;
+  }
+  .desktop-sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: #fff;
+    border-right: 1px solid var(--border);
+    padding: 20px 14px;
+    display: flex !important;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .desktop-sidebar .ds-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 12px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    cursor: pointer; text-decoration: none; transition: all .15s;
+  }
+  .desktop-sidebar .ds-item:hover { background: var(--bg2); color: var(--navy); }
+  .desktop-sidebar .ds-item.active { background: var(--sky); color: var(--blue); }
+  .desktop-sidebar .ds-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--muted); padding: 14px 12px 4px;
+  }
+  .main-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px 40px;
+  }
+  .bottom-nav { display: none !important; }
+  .topbar { position: sticky; top: 0; z-index: 50; }
+  .dos-col { grid-template-columns: 1fr 1fr; gap: 20px; }
+  .actores { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .venc-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quick { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .mini-stats { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .metrics-grid { grid-template-columns: repeat(4, 1fr); }
+  .simple-grid { grid-template-columns: repeat(4, 1fr); }
+  .agent, .agent-banner { border-radius: 20px; }
+  .resultado { border-radius: 20px; }
+}
+
 </style>
 </head>
 <body>
@@ -214,7 +280,7 @@ body {
   <!-- HEADER -->
   <div class="ob-header">
     <div class="ob-brand">Fin<span>IA</span></div>
-    <div class="ob-step-label" id="step-label">Paso 1 de 4</div>
+    <div class="ob-step-label" id="step-label">Paso 1 de 3</div>
   </div>
   <div class="ob-progress">
     <div class="ob-progress-fill" id="progress-bar" style="width:25%"></div>
@@ -241,7 +307,25 @@ body {
       </div>
 
       <div class="or-divider"><div class="or-line"></div><div class="or-text">o continuá con</div><div class="or-line"></div></div>
-      <button class="social-btn" onclick="skipToStep(2)">🌐 Continuar con Google</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.962L3.964 6.294C4.672 4.169 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M14.94 13.3c-.27.62-.58 1.19-.95 1.71-.5.71-.91 1.2-1.22 1.47-.49.45-1.01.68-1.57.69-.4 0-.88-.11-1.44-.34-.56-.23-1.07-.34-1.54-.34-.49 0-1.02.11-1.58.34-.57.23-1.02.35-1.38.36-.53.02-1.07-.22-1.6-.72-.34-.29-.77-.8-1.29-1.53C2.8 13.8 2.3 12.8 1.9 11.67c-.43-1.2-.65-2.37-.65-3.5 0-1.29.28-2.41.84-3.34A4.93 4.93 0 0 1 3.87 2.9a4.7 4.7 0 0 1 2.37-.67c.47 0 1.08.14 1.84.43.76.29 1.25.43 1.46.43.16 0 .7-.17 1.61-.5.86-.31 1.59-.44 2.19-.39 1.62.13 2.84.76 3.64 1.91-1.45.88-2.17 2.1-2.15 3.68.02 1.22.46 2.24 1.3 3.03.39.37.82.65 1.3.85-.1.3-.22.59-.35.87zM11.73.22C11.73 1.18 11.39 2.08 10.72 2.9c-.81.97-1.78 1.53-2.84 1.44a2.87 2.87 0 0 1-.02-.35c0-.92.4-1.9 1.11-2.7.35-.4.8-.74 1.34-1.01.54-.26 1.05-.41 1.52-.43.02.12.02.24.02.37z"/></svg>
+          Apple
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.031 0 0 4.031 0 9s4.031 9 9 9 9-4.031 9-9-4.031-9-9-9zm4.5 9.75h-3.75v3.75h-1.5V9.75H4.5v-1.5h3.75V4.5h1.5v3.75H13.5v1.5z" fill="#555"/><path d="M9.563 4.5H8.437v3.813H4.5v1.124h3.937V13.5h1.126V9.437H13.5V8.313H9.563z" fill="white"/><rect width="18" height="18" rx="2" fill="none"/><path d="M0 4a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4z" fill="#00A4EF"/><path d="M1 1h7.5v7.5H1zM9.5 1H17v7.5H9.5zM1 9.5h7.5V17H1zM9.5 9.5H17V17H9.5z" fill="white"/></svg>
+          Microsoft
+        </button>
+        <button class="social-btn" onclick="skipToStep(2)" style="margin-bottom:0">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor"><path d="M9 0C4.029 0 0 4.029 0 9s4.029 9 9 9 9-4.029 9-9S13.971 0 9 0zm4.388 6.356l-1.502 7.078c-.112.497-.408.617-.826.384l-2.287-1.685-1.103 1.062c-.122.122-.224.224-.459.224l.163-2.329 4.23-3.82c.184-.163-.04-.255-.285-.092L4.55 11.143l-2.255-.704c-.49-.153-.499-.49.103-.724l8.564-3.301c.408-.148.766.102.426 1.942z" fill="#229ED9"/></svg>
+          Telegram
+        </button>
+      </div>
+
     </div>
 
     <!-- STEP 2: MODO -->
@@ -271,43 +355,11 @@ body {
       </div>
     </div>
 
-    <!-- STEP 3: PERFIL DE RIESGO -->
+    <!-- STEP 3: RESUMEN -->
     <div class="ob-step" id="step-3">
-      <div class="ob-emoji">📈</div>
-      <div class="ob-title">¿Cómo sos con las inversiones?</div>
-      <div class="ob-sub">Esto define las carteras que te va a recomendar el agente. Lo podés cambiar después.</div>
-
-      <div class="risk-options">
-        <div class="risk-card" id="risk-conservador" onclick="selectRisk('conservador')">
-          <div class="risk-icon">🛡️</div>
-          <div>
-            <div class="risk-name">Conservador</div>
-            <div class="risk-desc">Priorizo no perder plata. Plazo fijo UVA, FCI money market, activos seguros.</div>
-          </div>
-        </div>
-        <div class="risk-card" id="risk-moderado" onclick="selectRisk('moderado')">
-          <div class="risk-icon">⚖️</div>
-          <div>
-            <div class="risk-name">Moderado</div>
-            <div class="risk-desc">Busco equilibrio entre seguridad y rentabilidad. Mix de renta fija y variable.</div>
-          </div>
-        </div>
-        <div class="risk-card" id="risk-agresivo" onclick="selectRisk('agresivo')">
-          <div class="risk-icon">🚀</div>
-          <div>
-            <div class="risk-name">Agresivo</div>
-            <div class="risk-desc">Quiero máxima rentabilidad. CEDEARs, acciones, ONs de mayor rendimiento.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- STEP 4: RESUMEN -->
-    <div class="ob-step" id="step-4">
       <div class="ob-emoji">✅</div>
-      <div class="ob-title">Todo listo, <span id="summary-nombre">amigo</span></div>
-      <div class="ob-sub">Así queda configurado tu FinIA:</div>
-
+      <div class="ob-title">Todo listo, <span id="summary-nombre-3">amigo</span></div>
+      <div class="ob-sub">Tu asesor financiero IA está configurado y listo para usar.</div>
       <div class="summary">
         <div class="summary-row">
           <span class="summary-label">Modo activo</span>
@@ -315,7 +367,7 @@ body {
         </div>
         <div class="summary-row">
           <span class="summary-label">Perfil de inversión</span>
-          <span class="summary-badge sb-green" id="sum-riesgo">—</span>
+          <span class="summary-badge sb-amber">Lo completás después, cuando quieras</span>
         </div>
         <div class="summary-row">
           <span class="summary-label">Taxation</span>
@@ -330,14 +382,15 @@ body {
           <span class="summary-badge sb-purple">Free · 30 días Pro gratis</span>
         </div>
       </div>
-
       <div class="feature-list">
-        <div class="feature-item">Tu agente IA ya conoce tu perfil y está listo para asesorarte</div>
-        <div class="feature-item">Podés subir facturas, tickets y extractos desde el primer día</div>
+        <div class="feature-item">El agente te va a pedir el perfil de inversión la primera vez que lo necesite</div>
+        <div class="feature-item">Podés subir facturas y extractos desde el primer día</div>
         <div class="feature-item">30 días del plan Pro gratis — sin tarjeta de crédito</div>
-        <div class="feature-item">Podés cambiar cualquier configuración desde tu perfil</div>
+        <div class="feature-item">Tu perfil se completa solo con el uso, sin formularios largos</div>
       </div>
     </div>
+
+
 
     <!-- SUCCESS -->
     <div class="ob-step" id="step-success">
@@ -364,7 +417,7 @@ body {
 let step = 1;
 let selectedMode = null;
 let selectedRisk = null;
-const totalSteps = 4;
+const totalSteps = 3;
 
 const modeLabels = {
   familia: '🏠 Familia',
@@ -404,8 +457,7 @@ function goToStep(n) {
     btnNext.textContent = 'Continuar →';
   }
 
-  // Update summary on step 4
-  if (n === 4) updateSummaryStep();
+  if (n === 3) updateSummaryStep();
 }
 
 function nextStep() {
@@ -431,9 +483,6 @@ function nextStep() {
     }
     goToStep(3);
   } else if (step === 3) {
-    if (!selectedRisk) return;
-    goToStep(4);
-  } else if (step === 4) {
     launchSuccess();
   }
 }
@@ -460,7 +509,7 @@ function updateSummary() {}
 
 function updateSummaryStep() {
   const nombre = document.getElementById('f-nombre').value.trim() || 'amigo';
-  document.getElementById('summary-nombre').textContent = nombre.split(' ')[0];
+  const sn3 = document.getElementById('summary-nombre-3'); if(sn3) sn3.textContent = nombre.split(' ')[0];
 
   const sumModo = document.getElementById('sum-modo');
   sumModo.textContent = modeLabels[selectedMode] || '—';
