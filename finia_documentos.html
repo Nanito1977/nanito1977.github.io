@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Subir comprobante</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;--green-dark:#065f46;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;color:#fff}.brand span{color:#60a5fa}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer}
+
+/* SCREENS */
+.screen{display:none;animation:fadeUp .3s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SCREEN 1: UPLOAD ===== */
+.upload-screen{padding:20px 16px}
+
+.agent{background:var(--navy);border-radius:16px;padding:16px 18px;margin-bottom:20px}
+.agent-top{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.agent-name{font-size:13px;font-weight:700;color:#fff}
+.agent-on{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:4px}
+.agent-on::before{content:'';width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block}
+.agent-msg{font-size:14px;color:rgba(255,255,255,.9);line-height:1.6}
+.agent-msg strong{color:#60a5fa}
+
+/* UPLOAD METHODS */
+.methods{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.method{background:var(--bg2);border:2px solid var(--border);border-radius:16px;padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .18s}
+.method:hover{border-color:var(--blue);box-shadow:0 3px 14px rgba(26,86,219,.08)}
+.method.primary{border-color:var(--blue);background:linear-gradient(135deg,#fff 0%,var(--sky) 100%)}
+.method-icon{font-size:32px;flex-shrink:0}
+.method-body h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.method-body p{font-size:13px;color:var(--muted);line-height:1.4}
+.method-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-top:5px;display:inline-block;background:var(--sky);color:var(--blue)}
+.method-arrow{font-size:18px;color:var(--muted);margin-left:auto;flex-shrink:0}
+
+/* TIPOS DE COMPROBANTE */
+.tipos-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.tipos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.tipo{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;transition:all .15s}
+.tipo:hover{border-color:var(--blue);background:var(--sky)}
+.tipo.selected{border-color:var(--blue);background:var(--sky)}
+.tipo-emoji{font-size:20px;margin-bottom:5px}
+.tipo-label{font-size:11px;font-weight:600;color:var(--navy)}
+
+/* ===== SCREEN 2: PROCESANDO ===== */
+.processing-screen{padding:20px 16px}
+.proc-header{text-align:center;margin-bottom:24px}
+.proc-emoji{font-size:52px;margin-bottom:14px}
+.proc-title{font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-.5px;margin-bottom:6px}
+.proc-sub{font-size:14px;color:var(--muted);line-height:1.5}
+
+/* PREVIEW */
+.preview-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
+.preview-img{width:100%;height:180px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.preview-img-inner{font-size:60px;opacity:.3}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#60a5fa,transparent);animation:scan 1.8s ease-in-out infinite;top:0}
+@keyframes scan{0%{top:0;opacity:1}100%{top:100%;opacity:.3}}
+.preview-overlay{position:absolute;bottom:10px;left:10px;right:10px;background:rgba(0,0,0,.5);border-radius:8px;padding:8px 12px}
+.preview-overlay p{font-size:12px;color:#fff;font-weight:600}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.step-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:13px;transition:all .3s}
+.step-row.active{border-color:var(--blue);background:var(--sky)}
+.step-row.done{border-color:var(--green);background:var(--green-dim)}
+.step-row.error{border-color:var(--amber);background:var(--amber-dim)}
+.step-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .3s}
+.step-row.active .step-icon{background:var(--blue);animation:pulse 1s infinite}
+.step-row.done .step-icon{background:var(--green-dim)}
+.step-row.error .step-icon{background:var(--amber-dim)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(26,86,219,.3)}50%{box-shadow:0 0 0 6px rgba(26,86,219,.1)}}
+.step-info{flex:1}
+.step-name{font-size:13px;font-weight:700;color:var(--navy)}
+.step-detail{font-size:11px;color:var(--muted);margin-top:2px;min-height:16px;transition:all .3s}
+.step-row.done .step-detail{color:var(--green)}
+.step-row.error .step-detail{color:var(--amber)}
+.step-status{font-size:18px;flex-shrink:0}
+
+/* ===== SCREEN 3: RESULTADO ===== */
+.result-screen{padding:20px 16px}
+
+.result-header{background:var(--green-dim);border:1px solid #a7f3d0;border-radius:16px;padding:16px 18px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start}
+.rh-icon{font-size:28px;flex-shrink:0}
+.rh-title{font-size:16px;font-weight:700;color:var(--green-dark);margin-bottom:3px}
+.rh-sub{font-size:13px;color:var(--green);line-height:1.4}
+
+.doc-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.doc-card-head{padding:13px 16px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.doc-card-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px}
+.doc-card-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.dcb-green{background:var(--green-dim);color:var(--green)}
+.dcb-blue{background:var(--sky);color:var(--blue)}
+.dcb-amber{background:var(--amber-dim);color:var(--amber)}
+.dcb-coral{background:var(--coral-dim);color:var(--coral)}
+.doc-card-body{padding:0}
+.doc-row{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;border-bottom:1px solid var(--border)}
+.doc-row:last-child{border-bottom:none}
+.dr-label{font-size:13px;color:var(--text2)}
+.dr-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.dr-val{font-size:13px;font-weight:700;text-align:right}
+.dr-val.green{color:var(--green)}
+.dr-val.blue{color:var(--blue)}
+.dr-val.coral{color:var(--coral)}
+.dr-val.amber{color:var(--amber)}
+
+/* ACCIONES */
+.actions{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.action-btn{width:100%;padding:13px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.ab-p{background:var(--blue);color:#fff;border:none}
+.ab-p:hover{background:var(--blue2)}
+.ab-s{background:var(--bg2);color:var(--navy);border:1px solid var(--border)}
+.ab-s:hover{border-color:var(--blue)}
+
+/* INSIGHT */
+.insight{background:var(--sky);border:1px solid #bfdbfe;border-radius:14px;padding:14px 16px;margin-bottom:14px;border-left:3px solid var(--blue)}
+.insight h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.insight p{font-size:13px;color:#1e40af;line-height:1.6}
+.insight strong{font-weight:700}
+
+/* HISTORIAL */
+.hist-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.hist-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .15s}
+.hist-item:hover{border-color:var(--blue)}
+.hi-icon{font-size:22px;flex-shrink:0}
+.hi-info{flex:1}
+.hi-name{font-size:13px;font-weight:700;color:var(--navy)}
+.hi-date{font-size:11px;color:var(--muted);margin-top:2px}
+.hi-right{text-align:right}
+.hi-val{font-size:13px;font-weight:700}
+.hi-val.out{color:var(--coral)}
+.hi-val.in{color:var(--green)}
+.hi-badge{font-size:10px;font-weight:600;padding:2px 6px;border-radius:20px;margin-top:3px;display:inline-block}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 16px;z-index:50}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <button class="back-btn" onclick="goBack()">← Volver</button>
+</div>
+
+<!-- ===== SCREEN 1: UPLOAD ===== -->
+<div class="screen active" id="s-upload">
+<div class="upload-screen">
+
+  <div class="agent">
+    <div class="agent-top">
+      <div class="av">F</div>
+      <div><div class="agent-name">FinIA — Document Ingestion</div><div class="agent-on">Lista para leer</div></div>
+    </div>
+    <div class="agent-msg">
+      Sacá una foto, subí un PDF o escaneá el QR de cualquier comprobante. <strong>Lo leo, lo interpreto y lo pongo en tu balance automáticamente.</strong> Sin tipear nada.
+    </div>
+  </div>
+
+  <!-- MÉTODOS -->
+  <div class="methods">
+    <div class="method primary" onclick="startProcess('foto')">
+      <div class="method-icon">📸</div>
+      <div class="method-body">
+        <h3>Sacar foto ahora</h3>
+        <p>Ticket, factura en papel o cualquier comprobante impreso. La cámara corrige perspectiva y borroneado automáticamente.</p>
+        <div class="method-badge">⭐ Lo más rápido</div>
+      </div>
+      <div class="method-arrow">→</div>
+    </div>
+
+    <div class="method" onclick="startProcess('qr')">
+      <div class="method-icon">📷</div>
+      <div class="method-body">
+        <h3>Escanear QR de ARCA</h3>
+        <p>Facturas electrónicas con QR al pie. Los datos vienen directo de ARCA — 100% precisos.</p>
+        <div class="method-badge" style="background:var(--teal-dim);color:var(--teal)">Máxima precisión</div>
+      </div>
+      <div class="method-arrow">→</div>
+    </div>
+
+    <div class="method" onclick="startProcess('pdf')">
+      <div class="method-icon">📄</div>
+      <div class="method-body">
+        <h3>Subir PDF</h3>
+        <p>Factura electrónica en PDF, resumen de tarjeta, extracto bancario o reporte Galicia Taxation.</p>
+      </div>
+      <div class="method-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- TIPOS -->
+  <div class="tipos-title">¿Qué tipo de comprobante es?</div>
+  <div class="tipos">
+    <div class="tipo selected" onclick="selectTipo(this,'factura_compra')">
+      <div class="tipo-emoji">🧾</div>
+      <div class="tipo-label">Factura de compra</div>
+    </div>
+    <div class="tipo" onclick="selectTipo(this,'factura_venta')">
+      <div class="tipo-emoji">📤</div>
+      <div class="tipo-label">Factura emitida</div>
+    </div>
+    <div class="tipo" onclick="selectTipo(this,'nota_credito')">
+      <div class="tipo-emoji">↩️</div>
+      <div class="tipo-label">Nota de crédito</div>
+    </div>
+    <div class="tipo" onclick="selectTipo(this,'ticket')">
+      <div class="tipo-emoji">🏪</div>
+      <div class="tipo-label">Ticket de compra</div>
+    </div>
+    <div class="tipo" onclick="selectTipo(this,'extracto')">
+      <div class="tipo-emoji">🏦</div>
+      <div class="tipo-label">Extracto banco</div>
+    </div>
+    <div class="tipo" onclick="selectTipo(this,'tarjeta')">
+      <div class="tipo-emoji">💳</div>
+      <div class="tipo-label">Resumen tarjeta</div>
+    </div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="hist-title">Últimos comprobantes procesados</div>
+  <div class="hist-list">
+    <div class="hist-item">
+      <div class="hi-icon">🧾</div>
+      <div class="hi-info"><div class="hi-name">Factura A — IGS · Gestión Comercial</div><div class="hi-date">04/05/2026 · PDF · CAE verificado</div></div>
+      <div class="hi-right"><div class="hi-val in">+$52.438.031</div><div class="hi-badge" style="background:var(--green-dim);color:var(--green)">Ingreso</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hi-icon">↩️</div>
+      <div class="hi-info"><div class="hi-name">NC A — IGS · Cese 50%</div><div class="hi-date">30/04/2026 · PDF · CAE verificado</div></div>
+      <div class="hi-right"><div class="hi-val coral">-$29.693.903</div><div class="hi-badge" style="background:var(--coral-dim);color:var(--coral)">NC</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hi-icon">🏪</div>
+      <div class="hi-info"><div class="hi-name">Coto Digital · Supermercado</div><div class="hi-date">04/06/2026 · Foto · OCR</div></div>
+      <div class="hi-right"><div class="hi-val out">-$744.797</div><div class="hi-badge" style="background:var(--sky);color:var(--blue)">Gasto</div></div>
+    </div>
+    <div class="hist-item">
+      <div class="hi-icon">🏪</div>
+      <div class="hi-info"><div class="hi-name">La Horqueta · Supermercado</div><div class="hi-date">01/06/2026 · Foto · OCR</div></div>
+      <div class="hi-right"><div class="hi-val out">-$162.014</div><div class="hi-badge" style="background:var(--sky);color:var(--blue)">Gasto</div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== SCREEN 2: PROCESANDO ===== -->
+<div class="screen" id="s-processing">
+<div class="processing-screen">
+
+  <div class="proc-header">
+    <div class="proc-emoji" id="proc-emoji">📸</div>
+    <div class="proc-title" id="proc-title">Leyendo el comprobante</div>
+    <div class="proc-sub" id="proc-sub">Estoy procesando la imagen. Un momento...</div>
+  </div>
+
+  <div class="preview-card">
+    <div class="preview-img">
+      <div class="preview-img-inner" id="preview-icon">🧾</div>
+      <div class="scan-line"></div>
+      <div class="preview-overlay">
+        <p id="preview-label">Analizando con IA...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps" id="steps-list"></div>
+
+</div>
+</div>
+
+<!-- ===== SCREEN 3: RESULTADO ===== -->
+<div class="screen" id="s-result">
+<div class="result-screen" id="result-content">
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item" onclick="window.location.href='finia_dashboard.html'"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
+  <div class="bn-item active"><div class="bn-icon">📸</div><div class="bn-label">Documentos</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_inversiones.html'"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
+</div>
+
+<script>
+let currentScreen = 'upload';
+let selectedTipo = 'factura_compra';
+let uploadMethod = 'foto';
+
+// RESULTADOS SIMULADOS por tipo de comprobante
+const RESULTADOS = {
+  foto: {
+    tipo: 'Ticket de compra — Supermercado',
+    subtipo: '🏪 Detectado: COTO CICSA · CUIT 30-54908315-6',
+    badge: 'Gasto procesado',
+    badgeClass: 'dcb-blue',
+    campos: [
+      {label:'Comercio',sub:'CUIT 30-54908315-6',val:'Coto Digital',clase:''},
+      {label:'Fecha',sub:'Detectada por OCR',val:'04/06/2026',clase:''},
+      {label:'Categoría',sub:'Auto-detectada',val:'🛒 Supermercado',clase:'blue'},
+      {label:'Total pagado',sub:'Con descuentos aplicados',val:'$744.797',clase:'coral'},
+      {label:'Neto sin IVA',sub:'Base imponible',val:'$539.997',clase:''},
+      {label:'IVA 21%',sub:'Crédito fiscal',val:'$113.399',clase:'green'},
+      {label:'Percep. IVA RI 3%',sub:'Crédito fiscal recuperable',val:'$16.200',clase:'green'},
+      {label:'Percep. IIBB',sub:'Crédito fiscal IIBB',val:'$43.200',clase:'green'},
+      {label:'Tarjeta usada',sub:'Detectada del ticket',val:'Visa xx3517',clase:''},
+    ],
+    fiscal: [
+      {label:'IVA crédito fiscal acumulado',val:'+$113.399',clase:'green'},
+      {label:'Percepciones recuperables',val:'+$59.400',clase:'green'},
+      {label:'Gasto deducible Ganancias',val:'$539.997',clase:'blue'},
+    ],
+    insight: {
+      titulo: '💡 Crédito fiscal detectado',
+      texto: 'Esta factura tiene <strong>$172.799</strong> de crédito fiscal (IVA + percepciones) que FinIA sumó automáticamente a tu posición de IVA y IIBB. Ese dinero lo recuperás en tu próxima declaración.',
+    },
+    destino: '🛒 Sumado a categoría Supermercado · Balance personal actualizado',
+    steps: [
+      {icon:'📷',name:'Captura de imagen',detail:'Perspectiva corregida · Contraste mejorado',status:'ok'},
+      {icon:'🔍',name:'OCR + lectura de texto',detail:'CUIT emisor identificado: 30-54908315-6',status:'ok'},
+      {icon:'🏛️',name:'Validación en ARCA',detail:'COTO CICSA verificada como Responsable Inscripto',status:'ok'},
+      {icon:'🧠',name:'Interpretación IA',detail:'Categoría: Supermercado · IVA crédito: $113.399',status:'ok'},
+      {icon:'📊',name:'Actualización del balance',detail:'Gasto registrado · Crédito fiscal sumado',status:'ok'},
+    ]
+  },
+  qr: {
+    tipo: 'Factura A emitida — Honorarios profesionales',
+    subtipo: '📤 AYERZA HERNAN LUIS → INTEGRAL GROUP SOLUTION S.A.',
+    badge: 'Ingreso procesado',
+    badgeClass: 'dcb-green',
+    campos: [
+      {label:'Tipo',sub:'Comprobante autorizado ARCA',val:'Factura A · COD 01',clase:''},
+      {label:'N° Comprobante',sub:'Punto de venta 00001',val:'00000153',clase:''},
+      {label:'Fecha emisión',sub:'Período facturado',val:'04/05/2026',clase:''},
+      {label:'Receptor',sub:'CUIT 30-70919861-7',val:'IGS S.A.',clase:''},
+      {label:'Concepto',sub:'Auto-categorizado',val:'💼 Gestión Comercial',clase:'blue'},
+      {label:'Neto gravado',sub:'Base IVA e IIBB',val:'$43.337.216',clase:''},
+      {label:'IVA 21%',sub:'IVA débito fiscal',val:'$9.100.815',clase:'coral'},
+      {label:'Total factura',sub:'A cobrar',val:'$52.438.031',clase:'green'},
+      {label:'Vto. de pago',sub:'Alerta activada',val:'27/05/2026',clase:'amber'},
+      {label:'CAE',sub:'Verificado ARCA ✓',val:'86173222682108',clase:''},
+    ],
+    fiscal: [
+      {label:'IVA débito fiscal',val:'+$9.100.815',clase:'coral'},
+      {label:'Base IIBB (act. 702099)',val:'$43.337.216',clase:'blue'},
+      {label:'Ingreso 4ta categoría',val:'+$43.337.216',clase:'green'},
+    ],
+    insight: {
+      titulo: '💡 Cuenta por cobrar activada',
+      texto: 'Esta factura vence el <strong>27/05/2026</strong>. FinIA va a alertarte si no se registra el cobro en los próximos días. El IVA débito de <strong>$9.100.815</strong> se sumó a tu posición del mes.',
+    },
+    destino: '💼 Sumado a Ingresos · IVA débito actualizado · Cuenta por cobrar activa',
+    steps: [
+      {icon:'📷',name:'Lectura QR',detail:'QR ARCA detectado',status:'ok'},
+      {icon:'🏛️',name:'Consulta ARCA',detail:'CAE 86173222682108 verificado ✓',status:'ok'},
+      {icon:'🧠',name:'Interpretación IA',detail:'Factura de ingreso · IVA débito: $9.100.815',status:'ok'},
+      {icon:'📊',name:'Balance actualizado',detail:'Ingreso registrado · IVA débito sumado',status:'ok'},
+      {icon:'🔔',name:'Alerta de cobro',detail:'Recordatorio activado para 27/05/2026',status:'ok'},
+    ]
+  },
+  pdf: {
+    tipo: 'Nota de Crédito A — Ajuste de factura',
+    subtipo: '↩️ AYERZA HERNAN LUIS → INTEGRAL GROUP SOLUTION S.A.',
+    badge: 'NC procesada',
+    badgeClass: 'dcb-amber',
+    campos: [
+      {label:'Tipo',sub:'Comprobante autorizado ARCA',val:'Nota de Crédito A · COD 03',clase:''},
+      {label:'Referencia',sub:'Factura original',val:'Fac. A 00001-00000147',clase:''},
+      {label:'Motivo',sub:'Detectado por IA',val:'Cese del negocio 50%',clase:''},
+      {label:'Período',sub:'Abril 2026',val:'01/04 al 30/04/2026',clase:''},
+      {label:'Neto',sub:'Ajuste de base imponible',val:'$24.540.416',clase:''},
+      {label:'IVA 21%',sub:'IVA a revertir',val:'$5.153.487',clase:'amber'},
+      {label:'Total NC',sub:'A descontar de la deuda',val:'$29.693.903',clase:''},
+      {label:'Método de pago',sub:'Detectado del documento',val:'Transferencia bancaria',clase:''},
+    ],
+    fiscal: [
+      {label:'IVA débito fiscal a revertir',val:'-$5.153.487',clase:'green'},
+      {label:'Ajuste ingreso 4ta categoría',val:'-$24.540.416',clase:'amber'},
+      {label:'Factura original ajustada',val:'Fac. A 00001-00000147',clase:''},
+    ],
+    insight: {
+      titulo: '💡 NC vinculada a la factura original',
+      texto: 'FinIA vinculó esta NC automáticamente con la Fac. A 00001-00000147. El IVA débito de esa factura se redujo en <strong>$5.153.487</strong>. El ingreso del período también se ajustó.',
+    },
+    destino: '↩️ NC registrada · IVA débito ajustado · Factura original actualizada',
+    steps: [
+      {icon:'📄',name:'Lectura PDF',detail:'Estructura ARCA detectada',status:'ok'},
+      {icon:'🔍',name:'Identificación de tipo',detail:'Nota de Crédito A · COD 03',status:'ok'},
+      {icon:'🔗',name:'Vinculación con factura',detail:'Fac. A 00001-00000147 encontrada',status:'ok'},
+      {icon:'🧠',name:'Ajuste fiscal',detail:'IVA débito reducido: -$5.153.487',status:'ok'},
+      {icon:'📊',name:'Balance actualizado',detail:'Ingreso y posición IVA ajustados',status:'ok'},
+    ]
+  }
+};
+
+function selectTipo(el, tipo){
+  document.querySelectorAll('.tipo').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedTipo = tipo;
+}
+
+function startProcess(method){
+  uploadMethod = method;
+  showScreen('processing');
+  document.getElementById('proc-emoji').textContent = method==='foto'?'📸':method==='qr'?'📷':'📄';
+  document.getElementById('proc-title').textContent = method==='foto'?'Leyendo la foto':method==='qr'?'Consultando ARCA':'Procesando PDF';
+  document.getElementById('proc-sub').textContent = method==='foto'?'Corrigiendo perspectiva y leyendo el texto...':method==='qr'?'Verificando CAE en ARCA...':'Extrayendo datos del documento...';
+  document.getElementById('preview-icon').textContent = method==='foto'?'🧾':method==='qr'?'📷':'📄';
+
+  const res = RESULTADOS[method];
+  const stepsList = document.getElementById('steps-list');
+  stepsList.innerHTML = '';
+
+  // Renderizar steps vacíos
+  res.steps.forEach((s,i)=>{
+    const div = document.createElement('div');
+    div.className = 'step-row';
+    div.id = 'step-'+i;
+    div.innerHTML = `
+      <div class="step-icon">${s.icon}</div>
+      <div class="step-info">
+        <div class="step-name">${s.name}</div>
+        <div class="step-detail" id="step-detail-${i}">Esperando...</div>
+      </div>
+      <div class="step-status" id="step-status-${i}">⏳</div>`;
+    stepsList.appendChild(div);
+  });
+
+  // Activar steps progresivamente
+  res.steps.forEach((s,i)=>{
+    setTimeout(()=>{
+      // Poner activo el anterior como done
+      if(i>0){
+        const prev = document.getElementById('step-'+(i-1));
+        prev.className='step-row done';
+        document.getElementById('step-status-'+(i-1)).textContent='✅';
+        document.getElementById('step-detail-'+(i-1)).textContent=res.steps[i-1].detail;
+      }
+      const curr = document.getElementById('step-'+i);
+      curr.className='step-row active';
+      document.getElementById('step-status-'+i).textContent='⚡';
+      document.getElementById('step-detail-'+i).textContent='Procesando...';
+      document.getElementById('preview-label').textContent = s.name+'...';
+
+      // Último step
+      if(i===res.steps.length-1){
+        setTimeout(()=>{
+          curr.className='step-row done';
+          document.getElementById('step-status-'+i).textContent='✅';
+          document.getElementById('step-detail-'+i).textContent=s.detail;
+          setTimeout(()=>showResult(method), 600);
+        }, 700);
+      }
+    }, i * 900);
+  });
+}
+
+function showResult(method){
+  const res = RESULTADOS[method];
+  showScreen('result');
+
+  const content = document.getElementById('result-content');
+  content.innerHTML = `
+    <div class="result-header">
+      <div class="rh-icon">✅</div>
+      <div>
+        <div class="rh-title">¡Comprobante procesado!</div>
+        <div class="rh-sub">${res.destino}</div>
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-head">
+        <div class="doc-card-title">📋 ${res.tipo}</div>
+        <div class="doc-card-badge ${res.badgeClass}">${res.badge}</div>
+      </div>
+      <div class="doc-card-body">
+        <div style="padding:10px 16px 4px;font-size:11px;color:var(--muted)">${res.subtipo}</div>
+        ${res.campos.map(c=>`
+          <div class="doc-row">
+            <div><div class="dr-label">${c.label}</div><div class="dr-sub">${c.sub}</div></div>
+            <div class="dr-val ${c.clase}">${c.val}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="doc-card">
+      <div class="doc-card-head">
+        <div class="doc-card-title">🧾 Impacto fiscal automático</div>
+        <div class="doc-card-badge dcb-blue">Auto-registrado</div>
+      </div>
+      <div class="doc-card-body">
+        ${res.fiscal.map(f=>`
+          <div class="doc-row">
+            <div class="dr-label">${f.label}</div>
+            <div class="dr-val ${f.clase}">${f.val}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="insight">
+      <h4>${res.insight.titulo}</h4>
+      <p>${res.insight.texto}</p>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn ab-p" onclick="window.location.href='finia_dashboard.html'">Ver en mi balance →</button>
+      <button class="action-btn ab-s" onclick="showScreen('upload')">📸 Subir otro comprobante</button>
+    </div>`;
+}
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  if(name==='upload') document.getElementById('s-upload').classList.add('active');
+  else if(name==='processing') document.getElementById('s-processing').classList.add('active');
+  else if(name==='result') document.getElementById('s-result').classList.add('active');
+  currentScreen = name;
+  window.scrollTo(0,0);
+}
+
+function goBack(){
+  if(currentScreen==='processing'||currentScreen==='result') showScreen('upload');
+  else window.location.href='finia_dashboard.html';
+}
+</script>
+</body>
+</html>
