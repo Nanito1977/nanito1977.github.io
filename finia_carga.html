@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Cargar gasto</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--blue:#1a56db;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.brand{font-size:18px;font-weight:800;color:#fff}.brand span{color:#60a5fa}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer}
+
+/* SCREENS */
+.screen{display:none;flex-direction:column;flex:1;animation:fadeUp .25s ease}
+.screen.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== SCREEN 0: SELECTOR ===== */
+.selector-wrap{padding:24px 16px;flex:1;display:flex;flex-direction:column}
+
+.sel-title{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.5px;margin-bottom:6px}
+.sel-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+
+.methods-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.method-card{background:var(--bg2);border:2px solid var(--border);border-radius:20px;padding:22px 16px;text-align:center;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:8px}
+.method-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,86,219,.08)}
+.method-card.featured{border-color:var(--blue);background:linear-gradient(135deg,#fff 0%,var(--sky) 100%)}
+.mc-icon{font-size:36px;margin-bottom:4px}
+.mc-label{font-size:14px;font-weight:700;color:var(--navy)}
+.mc-desc{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* TIPO SELECTOR */
+.tipo-row{display:flex;gap:8px;margin-bottom:0}
+.tipo-btn{flex:1;padding:12px;border-radius:14px;border:2px solid var(--border);background:var(--bg2);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.tipo-btn.gasto{color:var(--coral)}
+.tipo-btn.ingreso{color:var(--green)}
+.tipo-btn.gasto.active{border-color:var(--coral);background:var(--coral-dim)}
+.tipo-btn.ingreso.active{border-color:var(--green);background:var(--green-dim)}
+
+/* ===== SCREEN 1: FOTO ===== */
+.foto-wrap{flex:1;display:flex;flex-direction:column}
+.camara-area{flex:1;background:#0a0a0a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;min-height:320px;position:relative;overflow:hidden}
+.cam-frame{width:260px;height:180px;border:2px solid rgba(255,255,255,.5);border-radius:12px;position:relative}
+.cam-corner{position:absolute;width:20px;height:20px;border-color:#60a5fa;border-style:solid}
+.cam-corner.tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.cam-corner.tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 4px 0 0}
+.cam-corner.bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 4px}
+.cam-corner.br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.cam-label{font-size:13px;color:rgba(255,255,255,.7);text-align:center}
+.scan-anim{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#60a5fa,transparent);animation:scan 2s ease-in-out infinite;top:0}
+@keyframes scan{0%{top:10%}100%{top:90%}}
+.cam-bottom{padding:20px;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;gap:12px}
+.shutter{width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.3);cursor:pointer;transition:transform .1s;display:flex;align-items:center;justify-content:center}
+.shutter:active{transform:scale(.92)}
+.shutter-inner{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid #e5e7eb}
+.cam-hint{font-size:12px;color:rgba(255,255,255,.4);text-align:center}
+.cam-alt{display:flex;gap:16px}
+.cam-alt-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-family:inherit;font-size:12px;font-weight:600;padding:8px 16px;border-radius:20px;cursor:pointer}
+
+/* ===== SCREEN 2: MANUAL ===== */
+.manual-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.manual-top{padding:20px 16px 12px;background:var(--bg2);border-bottom:1px solid var(--border)}
+
+/* CATEGORÍAS */
+.cats-scroll{padding:12px 16px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.cats-label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cat-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:14px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.cat-btn:hover{border-color:var(--blue);background:var(--sky)}
+.cat-btn.selected{border-color:var(--blue);background:var(--sky)}
+.cat-btn.selected .cb-label{color:var(--blue)}
+.cb-emoji{font-size:22px;margin-bottom:4px}
+.cb-label{font-size:11px;font-weight:600;color:var(--navy);line-height:1.2}
+
+/* TECLADO */
+.teclado-wrap{padding:16px;flex:1;display:flex;flex-direction:column;gap:14px}
+.monto-display{text-align:center;padding:16px}
+.monto-prefix{font-size:28px;font-weight:700;color:var(--muted)}
+.monto-val{font-size:52px;font-weight:800;color:var(--navy);letter-spacing:-2px;line-height:1}
+.monto-cursor{display:inline-block;width:3px;height:48px;background:var(--blue);animation:blink .8s infinite;vertical-align:middle;border-radius:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.desc-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-family:inherit;font-size:15px;color:var(--text);outline:none;background:var(--bg2)}
+.desc-input:focus{border-color:var(--blue)}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.key{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;font-family:inherit;font-size:22px;font-weight:600;color:var(--navy);cursor:pointer;transition:all .12s;text-align:center;user-select:none}
+.key:active{transform:scale(.94);background:var(--sky)}
+.key.key-del{font-size:18px;color:var(--muted)}
+.key.key-ok{background:var(--blue);color:#fff;border-color:var(--blue);font-size:16px}
+.key.key-ok:active{background:#1e63f0}
+
+/* ===== SCREEN 3: CHAT ===== */
+.chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.chat-msgs{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg-agent{display:flex;gap:9px;align-items:flex-end}
+.av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bubble-agent{background:var(--navy);color:#fff;border-radius:16px 16px 16px 4px;padding:12px 15px;font-size:14px;line-height:1.6;max-width:86%}
+.bubble-agent strong{color:#60a5fa}
+.msg-user{display:flex;justify-content:flex-end}
+.bubble-user{background:var(--blue);color:#fff;border-radius:16px 16px 4px 16px;padding:11px 15px;font-size:14px;max-width:80%;line-height:1.5}
+.chat-chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 16px 10px}
+.chat-chip{padding:8px 14px;border-radius:50px;border:1.5px solid var(--border);background:var(--bg2);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s}
+.chat-chip:hover{border-color:var(--blue);background:var(--sky)}
+.chat-input-row{padding:12px 16px 28px;background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:10px;align-items:center}
+.chat-input{flex:1;padding:11px 16px;border:1.5px solid var(--border);border-radius:50px;font-family:inherit;font-size:14px;color:var(--text);outline:none;background:var(--bg2)}
+.chat-input:focus{border-color:var(--blue)}
+.chat-send{width:40px;height:40px;border-radius:50%;background:var(--blue);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.chat-send:hover{background:#1e63f0}
+
+/* ===== SCREEN 4: ARCHIVO ===== */
+.archivo-wrap{flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:16px}
+.drop-zone{border:2px dashed var(--border2);border-radius:20px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2)}
+.drop-zone:hover{border-color:var(--blue);background:var(--sky)}
+.dz-icon{font-size:48px;margin-bottom:12px}
+.dz-title{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.dz-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.dz-btn{margin-top:16px;padding:10px 24px;background:var(--blue);color:#fff;border:none;border-radius:50px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.fuentes-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px}
+.fuentes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fuente{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.fuente:hover{border-color:var(--blue);background:var(--sky)}
+.fuente-icon{font-size:22px;flex-shrink:0}
+.fuente-name{font-size:13px;font-weight:700;color:var(--navy)}
+.fuente-desc{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* ===== SCREEN 5: CONFIRMACIÓN ===== */
+.confirm-wrap{flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:14px}
+.confirm-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.cc-head{padding:14px 16px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.cc-emoji{font-size:24px}
+.cc-title{font-size:15px;font-weight:700;color:var(--navy)}
+.cc-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:auto}
+.cc-body{padding:0}
+.cc-row{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}
+.cc-row:last-child{border-bottom:none}
+.cc-label{font-size:13px;color:var(--text2)}
+.cc-val{font-size:14px;font-weight:700;color:var(--navy)}
+.cc-val.editable{color:var(--blue);cursor:pointer;display:flex;align-items:center;gap:5px}
+.edit-icon{font-size:12px}
+
+.confirm-btns{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.cbtn{width:100%;padding:14px;border-radius:14px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;border:none}
+.cbtn-p{background:var(--blue);color:#fff}
+.cbtn-p:hover{background:#1e63f0}
+.cbtn-s{background:var(--bg2);color:var(--navy);border:1.5px solid var(--border)}
+
+.edu-box{background:var(--sky);border:1px solid #bfdbfe;border-radius:14px;padding:13px 15px;font-size:13px;color:#1e40af;line-height:1.6;border-left:3px solid var(--blue)}
+
+/* BOTTOM NAV */
+.bottom-nav{background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 24px;flex-shrink:0}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <button class="back-btn" id="back-btn" onclick="goBack()">← Volver</button>
+</div>
+
+<!-- ===== S0: SELECTOR ===== -->
+<div class="screen active" id="s0">
+<div class="selector-wrap">
+  <div class="sel-title">¿Qué querés cargar?</div>
+  <div class="sel-sub">Elegí cómo querés hacerlo — todas las opciones llevan al mismo resultado.</div>
+
+  <!-- TIPO -->
+  <div class="tipo-row" style="margin-bottom:20px">
+    <button class="tipo-btn gasto active" id="btn-gasto" onclick="setTipo('gasto')">💸 Gasto</button>
+    <button class="tipo-btn ingreso" id="btn-ingreso" onclick="setTipo('ingreso')">💰 Ingreso</button>
+  </div>
+
+  <div class="methods-grid">
+    <div class="method-card featured" onclick="showScreen('s1')">
+      <div class="mc-icon">📸</div>
+      <div class="mc-label">Sacar foto</div>
+      <div class="mc-desc">Ticket, factura o cualquier comprobante</div>
+    </div>
+    <div class="method-card" onclick="showScreen('s3')">
+      <div class="mc-icon">💬</div>
+      <div class="mc-label">Decirle a FinIA</div>
+      <div class="mc-desc">"Gasté $5.000 en taxi"</div>
+    </div>
+    <div class="method-card" onclick="showScreen('s2')">
+      <div class="mc-icon">✏️</div>
+      <div class="mc-label">Cargar a mano</div>
+      <div class="mc-desc">Elegí categoría y ponés el monto</div>
+    </div>
+    <div class="method-card" onclick="showScreen('s4')">
+      <div class="mc-icon">📄</div>
+      <div class="mc-label">Subir archivo</div>
+      <div class="mc-desc">PDF, Excel, resumen de tarjeta</div>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;padding-top:16px">
+    <div class="edu-box">💡 <strong>¿No tenés ticket?</strong> No importa — podés decirle a FinIA lo que gastaste en lenguaje normal, o cargarlo a mano en 10 segundos.</div>
+  </div>
+</div>
+</div>
+
+<!-- ===== S1: FOTO ===== -->
+<div class="screen" id="s1">
+<div class="foto-wrap">
+  <div class="camara-area">
+    <div class="cam-frame">
+      <div class="cam-corner tl"></div>
+      <div class="cam-corner tr"></div>
+      <div class="cam-corner bl"></div>
+      <div class="cam-corner br"></div>
+      <div class="scan-anim"></div>
+    </div>
+    <div class="cam-label">Apuntá al ticket o factura</div>
+  </div>
+  <div class="cam-bottom">
+    <div class="cam-hint">Centrate en el total y el nombre del comercio</div>
+    <div class="shutter" onclick="dispararFoto()">
+      <div class="shutter-inner"></div>
+    </div>
+    <div class="cam-alt">
+      <button class="cam-alt-btn" onclick="showScreen('s4')">📄 Subir PDF</button>
+      <button class="cam-alt-btn" onclick="showScreen('s3')">💬 Decírselo a FinIA</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== S2: MANUAL ===== -->
+<div class="screen" id="s2">
+<div class="manual-wrap">
+
+  <!-- CATEGORÍAS -->
+  <div class="cats-scroll">
+    <div class="cats-label">¿En qué?</div>
+    <div class="cats-grid" id="cats-grid">
+      <div class="cat-btn selected" onclick="selectCat(this,'🛒','Supermercado')"><div class="cb-emoji">🛒</div><div class="cb-label">Supermercado</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🍕','Salidas')"><div class="cb-emoji">🍕</div><div class="cb-label">Salidas</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🚕','Transporte')"><div class="cb-emoji">🚕</div><div class="cb-label">Transporte</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🏥','Salud')"><div class="cb-emoji">🏥</div><div class="cb-label">Salud</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🎓','Educación')"><div class="cb-emoji">🎓</div><div class="cb-label">Educación</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🛡️','Seguros')"><div class="cb-emoji">🛡️</div><div class="cb-label">Seguros</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'📱','Servicios')"><div class="cb-emoji">📱</div><div class="cb-label">Servicios</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🏠','Vivienda')"><div class="cb-emoji">🏠</div><div class="cb-label">Vivienda</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'💊','Farmacia')"><div class="cb-emoji">💊</div><div class="cb-label">Farmacia</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🐾','Mascotas')"><div class="cb-emoji">🐾</div><div class="cb-label">Mascotas</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'🏋️','Deporte')"><div class="cb-emoji">🏋️</div><div class="cb-label">Deporte</div></div>
+      <div class="cat-btn" onclick="selectCat(this,'➕','Otro')"><div class="cb-emoji">➕</div><div class="cb-label">Otro</div></div>
+    </div>
+  </div>
+
+  <!-- TECLADO NUMÉRICO -->
+  <div class="teclado-wrap">
+    <div class="monto-display">
+      <span class="monto-prefix">$</span>
+      <span class="monto-val" id="monto-display">0</span>
+      <span class="monto-cursor"></span>
+    </div>
+    <input class="desc-input" type="text" placeholder="¿Dónde fue? (opcional)" id="desc-manual">
+    <div class="numpad">
+      <button class="key" onclick="numKey('1')">1</button>
+      <button class="key" onclick="numKey('2')">2</button>
+      <button class="key" onclick="numKey('3')">3</button>
+      <button class="key" onclick="numKey('4')">4</button>
+      <button class="key" onclick="numKey('5')">5</button>
+      <button class="key" onclick="numKey('6')">6</button>
+      <button class="key" onclick="numKey('7')">7</button>
+      <button class="key" onclick="numKey('8')">8</button>
+      <button class="key" onclick="numKey('9')">9</button>
+      <button class="key" onclick="numKey('000')">000</button>
+      <button class="key" onclick="numKey('0')">0</button>
+      <button class="key key-del" onclick="numDel()">⌫</button>
+    </div>
+    <button class="key key-ok" onclick="confirmarManual()">Guardar →</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== S3: CHAT ===== -->
+<div class="screen" id="s3">
+<div class="chat-wrap">
+  <div class="chat-msgs" id="chat-msgs">
+    <div class="msg-agent">
+      <div class="av">F</div>
+      <div class="bubble-agent">Contame — ¿qué querés cargar? Podés escribirlo como quieras: <strong>"gasté $8.500 en nafta"</strong>, <strong>"me pagaron $50.000 de honorarios"</strong>, lo que sea. 👇</div>
+    </div>
+  </div>
+  <div class="chat-chips" id="chat-chips">
+    <div class="chat-chip" onclick="sendChatChip(this,'💊 Gasté en farmacia')">💊 Farmacia</div>
+    <div class="chat-chip" onclick="sendChatChip(this,'🚕 Pagué un taxi')">🚕 Taxi</div>
+    <div class="chat-chip" onclick="sendChatChip(this,'🍕 Salí a comer')">🍕 Salida</div>
+    <div class="chat-chip" onclick="sendChatChip(this,'💰 Me pagaron algo')">💰 Ingreso</div>
+    <div class="chat-chip" onclick="sendChatChip(this,'📦 Compré en Mercado Libre')">📦 MercadoLibre</div>
+  </div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" type="text" placeholder="Escribí acá..." onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send" onclick="sendChat()">↑</button>
+  </div>
+</div>
+</div>
+
+<!-- ===== S4: ARCHIVO ===== -->
+<div class="screen" id="s4">
+<div class="archivo-wrap">
+
+  <div class="drop-zone" onclick="simularArchivo()">
+    <div class="dz-icon">📎</div>
+    <div class="dz-title">Arrastrá o tocá para subir</div>
+    <div class="dz-sub">PDF, Excel, imagen<br>Resúmenes de tarjeta · Extractos · Facturas</div>
+    <button class="dz-btn">Elegir archivo</button>
+  </div>
+
+  <div class="fuentes-title">O conectá directamente</div>
+  <div class="fuentes">
+    <div class="fuente" onclick="simularArchivo()">
+      <div class="fuente-icon">🏦</div>
+      <div><div class="fuente-name">Galicia</div><div class="fuente-desc">Reporte Taxation</div></div>
+    </div>
+    <div class="fuente" onclick="simularArchivo()">
+      <div class="fuente-icon">💳</div>
+      <div><div class="fuente-name">Visa / Mastercard</div><div class="fuente-desc">Resumen mensual</div></div>
+    </div>
+    <div class="fuente" onclick="simularArchivo()">
+      <div class="fuente-icon">🟡</div>
+      <div><div class="fuente-name">MercadoPago</div><div class="fuente-desc">Movimientos</div></div>
+    </div>
+    <div class="fuente" onclick="simularArchivo()">
+      <div class="fuente-icon">🟠</div>
+      <div><div class="fuente-name">Naranja X</div><div class="fuente-desc">Extracto</div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ===== S5: CONFIRMACIÓN ===== -->
+<div class="screen" id="s5">
+<div class="confirm-wrap">
+
+  <div class="confirm-card">
+    <div class="cc-head">
+      <div class="cc-emoji" id="conf-emoji">🛒</div>
+      <div class="cc-title" id="conf-title">Supermercado</div>
+      <div class="cc-badge" id="conf-badge" style="background:var(--coral-dim);color:var(--coral)">Gasto</div>
+    </div>
+    <div class="cc-body">
+      <div class="cc-row">
+        <div class="cc-label">Monto</div>
+        <div class="cc-val" id="conf-monto">$8.500</div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-label">Categoría</div>
+        <div class="cc-val editable" id="conf-cat" onclick="showScreen('s2')">🛒 Supermercado <span class="edit-icon">✏️</span></div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-label">Fecha</div>
+        <div class="cc-val" id="conf-fecha">Hoy, 05/06/2026</div>
+      </div>
+      <div class="cc-row">
+        <div class="cc-label">Descripción</div>
+        <div class="cc-val editable" id="conf-desc">Coto Digital <span class="edit-icon">✏️</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="edu-box" id="conf-edu">
+    💡 Este gasto se sumó a tu categoría <strong>Supermercado</strong> del mes. Ya llevás $1.520.000 en supermercado — 12% de tus ingresos del mes.
+  </div>
+
+  <div class="confirm-btns">
+    <button class="cbtn cbtn-p" onclick="guardarFinal()">✅ Sí, está bien — guardar</button>
+    <button class="cbtn cbtn-s" onclick="showScreen('s0')">Corregir</button>
+  </div>
+
+</div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item" onclick="window.location.href='finia_dashboard.html'"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
+  <div class="bn-item active"><div class="bn-icon">➕</div><div class="bn-label">Cargar</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_inversiones.html'"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
+</div>
+
+<script>
+let tipo = 'gasto';
+let catSeleccionada = {emoji:'🛒', label:'Supermercado'};
+let montoStr = '0';
+
+// TIPO
+function setTipo(t){
+  tipo = t;
+  document.getElementById('btn-gasto').className = 'tipo-btn gasto' + (t==='gasto'?' active':'');
+  document.getElementById('btn-ingreso').className = 'tipo-btn ingreso' + (t==='ingreso'?' active':'');
+}
+
+// SCREENS
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goBack(){
+  const current = document.querySelector('.screen.active').id;
+  if(current==='s0') window.location.href='finia_dashboard.html';
+  else showScreen('s0');
+}
+
+// FOTO
+function dispararFoto(){
+  // Simular procesamiento
+  showConfirmacion({
+    emoji:'🏪', title:'Ticket detectado',
+    monto:'$744.797', cat:'🛒 Supermercado',
+    desc:'Coto Digital',
+    edu:'💡 FinIA detectó que es un gasto en supermercado de <strong>Coto Digital</strong>. El IVA crédito de <strong>$113.399</strong> se sumó a tu posición fiscal.'
+  });
+}
+
+// MANUAL
+function selectCat(el, emoji, label){
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  catSeleccionada = {emoji, label};
+}
+
+function numKey(k){
+  if(montoStr==='0') montoStr = k;
+  else montoStr += k;
+  if(montoStr.length > 10) montoStr = montoStr.slice(0,-k.length);
+  updateMontoDisplay();
+}
+
+function numDel(){
+  if(montoStr.length <= 1) montoStr = '0';
+  else montoStr = montoStr.slice(0,-1);
+  updateMontoDisplay();
+}
+
+function updateMontoDisplay(){
+  const n = parseInt(montoStr)||0;
+  document.getElementById('monto-display').textContent = n.toLocaleString('es-AR');
+}
+
+function confirmarManual(){
+  const n = parseInt(montoStr)||0;
+  if(n===0) return;
+  const desc = document.getElementById('desc-manual').value || catSeleccionada.label;
+  showConfirmacion({
+    emoji: catSeleccionada.emoji,
+    title: catSeleccionada.label,
+    monto: '$'+n.toLocaleString('es-AR'),
+    cat: catSeleccionada.emoji+' '+catSeleccionada.label,
+    desc: desc,
+    edu: `💡 Este ${tipo} se sumó a <strong>${catSeleccionada.label}</strong> en tu balance de junio.`
+  });
+  montoStr = '0';
+  updateMontoDisplay();
+}
+
+// CHAT
+const chatResponses = {
+  farmacia: {emoji:'💊', title:'Farmacia', monto:'', cat:'💊 Farmacia', desc:'Farmacia', edu:'💡 Gastos en farmacia sumados a tu categoría Salud.'},
+  taxi: {emoji:'🚕', title:'Transporte', monto:'', cat:'🚕 Transporte', desc:'Taxi / Uber', edu:'💡 Gasto en transporte registrado.'},
+  comer: {emoji:'🍕', title:'Salidas', monto:'', cat:'🍕 Salidas y ocio', desc:'Restaurante', edu:'💡 Salida registrada en tu categoría Ocio.'},
+  ingreso: {emoji:'💰', title:'Ingreso', monto:'', cat:'💰 Honorarios', desc:'Pago recibido', edu:'💡 Ingreso sumado a tu balance del mes.'},
+  meli: {emoji:'📦', title:'Compras online', monto:'', cat:'📦 MercadoLibre', desc:'Compra en MeLi', edu:'💡 Compra registrada como gasto online.'},
+};
+
+function sendChatChip(el, text){
+  document.getElementById('chat-chips').style.display = 'none';
+  addUserMsg(text);
+  const key = text.toLowerCase().includes('farma')?'farmacia':
+    text.toLowerCase().includes('taxi')?'taxi':
+    text.toLowerCase().includes('comer')?'comer':
+    text.toLowerCase().includes('pagaron')?'ingreso':'meli';
+  setTimeout(()=>{
+    addAgentMsg('Entendido! ¿Cuánto fue?');
+    setTimeout(()=>{
+      addAgentMsg('Escribí el monto o usá el teclado 👇');
+      // Pedir monto
+      const inp = document.getElementById('chat-input');
+      inp.placeholder = 'Monto en pesos...';
+      inp.type = 'number';
+      inp._pendingKey = key;
+    },800);
+  },600);
+}
+
+function sendChat(){
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  addUserMsg(text);
+
+  if(inp._pendingKey){
+    const key = inp._pendingKey;
+    const n = parseInt(text.replace(/\D/g,''))||5000;
+    inp._pendingKey = null;
+    inp.type = 'text';
+    inp.placeholder = 'Escribí acá...';
+    setTimeout(()=>{
+      addAgentMsg(`Perfecto — <strong>$${n.toLocaleString('es-AR')}</strong>. ¿Confirmo?`);
+      const data = {...chatResponses[key], monto:'$'+n.toLocaleString('es-AR')};
+      setTimeout(()=>showConfirmacion(data), 1000);
+    },600);
+    return;
+  }
+
+  // Parseo simple
+  const montoMatch = text.match(/\$?([\d.,]+)/);
+  const monto = montoMatch ? parseInt(montoMatch[1].replace(/\D/g,'')) : null;
+  setTimeout(()=>{
+    if(monto){
+      addAgentMsg(`Entendido! <strong>$${monto.toLocaleString('es-AR')}</strong> — ¿lo categorizo como <strong>${detectarCat(text)}</strong>?`);
+      setTimeout(()=>{
+        showConfirmacion({
+          emoji: detectarEmoji(text),
+          title: detectarCat(text),
+          monto: '$'+monto.toLocaleString('es-AR'),
+          cat: detectarEmoji(text)+' '+detectarCat(text),
+          desc: text,
+          edu: `💡 Registré tu ${tipo} de <strong>$${monto.toLocaleString('es-AR')}</strong> en la categoría <strong>${detectarCat(text)}</strong>.`
+        });
+      },1200);
+    } else {
+      addAgentMsg('¿Cuánto fue? Decime el monto y lo registro.');
+    }
+  },700);
+}
+
+function addAgentMsg(html){
+  const msgs = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg-agent';
+  div.innerHTML = `<div class="av">F</div><div class="bubble-agent">${html}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMsg(text){
+  const msgs = document.getElementById('chat-msgs');
+  const div = document.createElement('div');
+  div.className = 'msg-user';
+  div.innerHTML = `<div class="bubble-user">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function detectarCat(text){
+  const t = text.toLowerCase();
+  if(t.includes('nafta')||t.includes('combustible')||t.includes('taxi')||t.includes('uber')) return 'Transporte';
+  if(t.includes('farma')||t.includes('medic')) return 'Farmacia';
+  if(t.includes('super')||t.includes('coto')||t.includes('disco')) return 'Supermercado';
+  if(t.includes('restau')||t.includes('comi')||t.includes('pizza')) return 'Salidas';
+  if(t.includes('luz')||t.includes('gas')||t.includes('internet')) return 'Servicios';
+  if(t.includes('honor')||t.includes('pagaron')||t.includes('cobré')) return 'Honorarios';
+  return 'Otros';
+}
+
+function detectarEmoji(text){
+  const cat = detectarCat(text);
+  const map = {Transporte:'🚕',Farmacia:'💊',Supermercado:'🛒',Salidas:'🍕',Servicios:'📱',Honorarios:'💰',Otros:'📌'};
+  return map[cat]||'📌';
+}
+
+// ARCHIVO
+function simularArchivo(){
+  setTimeout(()=>{
+    showConfirmacion({
+      emoji:'📄', title:'Archivo procesado',
+      monto:'$52.438.031', cat:'💼 Factura emitida',
+      desc:'IGS — Gestión Comercial Provi',
+      edu:'💡 FinIA procesó la factura y sumó el ingreso a tu balance. El IVA débito de <strong>$9.100.815</strong> se registró en tu posición fiscal.'
+    });
+  }, 800);
+}
+
+// CONFIRMACIÓN
+function showConfirmacion(data){
+  document.getElementById('conf-emoji').textContent = data.emoji;
+  document.getElementById('conf-title').textContent = data.title;
+  document.getElementById('conf-monto').textContent = data.monto;
+  document.getElementById('conf-cat').innerHTML = data.cat + ' <span class="edit-icon">✏️</span>';
+  document.getElementById('conf-desc').innerHTML = data.desc + ' <span class="edit-icon">✏️</span>';
+  document.getElementById('conf-edu').innerHTML = data.edu;
+  const badge = document.getElementById('conf-badge');
+  if(tipo==='ingreso'){
+    badge.textContent='Ingreso';
+    badge.style.cssText='background:var(--green-dim);color:var(--green)';
+  } else {
+    badge.textContent='Gasto';
+    badge.style.cssText='background:var(--coral-dim);color:var(--coral)';
+  }
+  showScreen('s5');
+}
+
+function guardarFinal(){
+  // Simular guardado y volver al dashboard
+  window.location.href='finia_dashboard.html';
+}
+</script>
+</body>
+</html>
