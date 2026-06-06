@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Demo Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;--green-dark:#065f46;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;color:#fff}.brand span{color:#60a5fa}
+.demo-badge{background:rgba(96,165,250,0.2);border:1px solid rgba(96,165,250,0.3);color:#60a5fa;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.05em}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.notif{font-size:19px;position:relative;cursor:pointer}
+.notif::after{content:'4';position:absolute;top:-5px;right:-6px;width:16px;height:16px;background:var(--coral);border-radius:50%;border:2px solid var(--navy);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;line-height:12px;text-align:center}
+
+/* MES NAV */
+.mes-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 20px 8px}
+.mes-arrow{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;padding:4px 8px}
+.mes-label{font-size:15px;font-weight:700;color:var(--navy)}
+.source-badge{font-size:10px;font-weight:600;color:var(--teal);background:var(--teal-dim);border:1px solid #99f6e4;padding:3px 10px;border-radius:20px}
+
+/* AGENTE */
+.agent{margin:0 16px 14px;background:var(--navy);border-radius:16px;padding:16px 18px}
+.agent-top{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.agent-av{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.15);flex-shrink:0}
+.agent-name{font-size:13px;font-weight:700;color:#fff}
+.agent-on{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:4px}
+.agent-on::before{content:'';width:5px;height:5px;border-radius:50%;background:#4ade80;display:inline-block}
+.agent-msg{font-size:14px;color:rgba(255,255,255,0.9);line-height:1.65;margin-bottom:12px}
+.agent-msg strong{color:#60a5fa}
+.agent-btns{display:flex;gap:7px;flex-wrap:wrap}
+.abtn{padding:7px 13px;border-radius:9px;border:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.abtn-p{background:var(--blue);color:#fff}
+.abtn-s{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.85)}
+
+/* TABS */
+.tabs{display:flex;gap:0;padding:0 16px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:10px 8px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* PATRIMONIO */
+.patrimonio{margin:0 16px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:18px}
+.pat-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.pat-val{font-size:38px;font-weight:800;color:var(--navy);letter-spacing:-1.5px;line-height:1;margin-bottom:4px}
+.pat-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.pat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pat-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.pat-item-label{font-size:11px;color:var(--muted);margin-bottom:3px}
+.pat-item-val{font-size:14px;font-weight:700;color:var(--navy)}
+.pat-item-val.green{color:var(--green)}
+.pat-item-val.blue{color:var(--blue)}
+.pat-item-val.amber{color:var(--amber)}
+
+/* DISPONIBLE */
+.disponible{margin:0 16px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px}
+.disp-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.disp-row:last-child{border-bottom:none}
+.disp-label{color:var(--text2);display:flex;align-items:center;gap:6px}
+.disp-val{font-weight:700}
+.disp-val.green{color:var(--green)}
+.disp-val.red{color:var(--coral)}
+.disp-val.blue{color:var(--blue)}
+.disp-btn{width:100%;margin-top:12px;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+
+/* ALERTAS */
+.alert-card{margin:0 16px 10px;border-radius:14px;padding:13px 15px;display:flex;gap:11px;align-items:flex-start}
+.alert-card.amber{background:var(--amber-dim);border:1px solid #fde68a}
+.alert-card.coral{background:var(--coral-dim);border:1px solid #fca5a5}
+.alert-card.green{background:var(--green-dim);border:1px solid #a7f3d0}
+.alert-card.blue{background:var(--sky);border:1px solid #bfdbfe}
+.al-icon{font-size:20px;flex-shrink:0}
+.al-body h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px}
+.al-body p{font-size:12px;color:var(--muted);line-height:1.5}
+.al-btn{display:inline-block;margin-top:5px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+
+/* CATEGORÍAS */
+.sec-header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:10px}
+.sec-title{font-size:15px;font-weight:700;color:var(--navy)}
+.sec-link{font-size:12px;font-weight:600;color:var(--blue);cursor:pointer}
+.cats{padding:0 16px;display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px 14px;cursor:pointer;transition:all .15s}
+.cat-card:hover{border-color:var(--blue);box-shadow:0 2px 10px rgba(26,86,219,0.07)}
+.cat-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cat-icon{font-size:24px;flex-shrink:0}
+.cat-info{flex:1}
+.cat-name{font-size:13px;font-weight:700;color:var(--navy)}
+.cat-items{font-size:11px;color:var(--muted);margin-top:1px}
+.cat-right{text-align:right}
+.cat-val{font-size:15px;font-weight:800;color:var(--navy)}
+.cat-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:3px}
+.cb-up{background:var(--coral-dim);color:var(--coral)}
+.cb-down{background:var(--green-dim);color:var(--green)}
+.cb-neutral{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.cat-bar-wrap{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.cat-bar{height:100%;border-radius:3px;transition:width .6s}
+
+/* TAXATION */
+.tax-card{margin:0 16px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.tax-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg)}
+.tax-title{font-size:14px;font-weight:700;color:var(--navy)}
+.tax-body{padding:0}
+.tax-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--border);cursor:pointer;transition:all .15s}
+.tax-row:hover{background:var(--bg)}
+.tax-icon{font-size:18px;flex-shrink:0}
+.tax-info{flex:1}
+.tax-name{font-size:13px;font-weight:600;color:var(--navy)}
+.tax-desc{font-size:11px;color:var(--muted);margin-top:1px}
+.tax-right{text-align:right;flex-shrink:0}
+.tax-val{font-size:13px;font-weight:700}
+.tax-val.ok{color:var(--green)}
+.tax-val.warn{color:var(--amber)}
+.tax-val.due{color:var(--coral)}
+.tax-days{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block}
+.td-ok{background:var(--green-dim);color:var(--green)}
+.td-warn{background:var(--amber-dim);color:var(--amber)}
+.td-due{background:var(--coral-dim);color:var(--coral)}
+
+/* INVERSIONES */
+.inv-card{margin:0 16px 16px;background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:16px;padding:18px}
+.inv-label{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.inv-val{font-size:26px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:4px}
+.inv-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:14px;line-height:1.5}
+.inv-sub strong{color:#60a5fa}
+.inv-fci{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.inv-fci-row{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.inv-fci-name{font-size:12px;font-weight:700;color:#fff}
+.inv-fci-type{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px}
+.inv-fci-val{text-align:right}
+.inv-fci-amount{font-size:13px;font-weight:700;color:#fff}
+.inv-fci-gain{font-size:11px;color:#4ade80;margin-top:2px}
+.inv-btn{width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ACCIONES */
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 16px;margin-bottom:16px}
+.q-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.q-card:hover{border-color:var(--blue);background:var(--sky);transform:translateY(-1px)}
+.q-icon{font-size:20px;margin-bottom:5px}
+.q-label{font-size:10px;font-weight:600;color:var(--navy);line-height:1.3}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 16px;z-index:50}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:88vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.modal-item{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border)}
+.modal-item:last-child{border-bottom:none}
+.mi-name{font-size:13px;color:var(--text2)}
+.mi-date{font-size:11px;color:var(--muted);margin-top:2px}
+.mi-val{font-size:14px;font-weight:700}
+.mi-val.out{color:var(--coral)}
+.mi-val.in{color:var(--green)}
+.modal-edu{margin-top:14px;background:var(--sky);border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e3a8a;line-height:1.55;border-left:3px solid var(--blue)}
+.modal-close{width:100%;margin-top:14px;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+
+/* SECTION SCREEN */
+.screen{display:none}.screen.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div class="brand">Fin<span>IA</span></div>
+    <div class="demo-badge">DEMO REAL</div>
+  </div>
+  <div class="topbar-right">
+    <div class="notif">🔔</div>
+  </div>
+</div>
+
+<!-- MES NAV -->
+<div class="mes-nav">
+  <button class="mes-arrow">‹</button>
+  <div class="mes-label">Junio 2026</div>
+  <button class="mes-arrow">›</button>
+  <div class="source-badge">📊 Datos Galicia</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('resumen',this)">Resumen</div>
+  <div class="tab" onclick="switchTab('gastos',this)">Gastos</div>
+  <div class="tab" onclick="switchTab('taxation',this)">Impuestos</div>
+  <div class="tab" onclick="switchTab('inversiones',this)">Inversiones</div>
+</div>
+
+<!-- ===== TAB: RESUMEN ===== -->
+<div class="screen active" id="tab-resumen">
+
+  <!-- AGENTE -->
+  <div class="agent">
+    <div class="agent-top">
+      <div class="agent-av">F</div>
+      <div><div class="agent-name">FinIA — tu asesor</div><div class="agent-on">En línea</div></div>
+    </div>
+    <div class="agent-msg">
+      Hola! 👋 Este mes tus <strong>3 tarjetas Galicia</strong> totalizaron <strong>$12.608.015</strong>. Ya procesé todos los resúmenes y los classifiqué por categorías.<br><br>
+      Tenés <strong>4 alertas importantes</strong>: el IVA vence en 12 días, las cuotas de UDESA y St. Mary vencen el 10/06, y tu seguro Sudam subió 43%.
+    </div>
+    <div class="agent-btns">
+      <button class="abtn abtn-p" onclick="switchTab('taxation',document.querySelectorAll('.tab')[2])">Ver impuestos 🧾</button>
+      <button class="abtn abtn-s" onclick="switchTab('inversiones',document.querySelectorAll('.tab')[3])">Ver inversiones 📈</button>
+    </div>
+  </div>
+
+  <!-- PATRIMONIO -->
+  <div class="patrimonio">
+    <div class="pat-label">💼 Patrimonio financiero Galicia al 31/05/2026</div>
+    <div class="pat-val">$19.823.785</div>
+    <div class="pat-sub">cuentas + inversiones + USD valorizado</div>
+    <div class="pat-grid">
+      <div class="pat-item">
+        <div class="pat-item-label">💰 Cuentas pesos</div>
+        <div class="pat-item-val">$98.166</div>
+      </div>
+      <div class="pat-item">
+        <div class="pat-item-label">💵 Cuentas USD</div>
+        <div class="pat-item-val blue">USD 12.139</div>
+      </div>
+      <div class="pat-item">
+        <div class="pat-item-label">📈 FCI Galicia</div>
+        <div class="pat-item-val green">$1.779.749</div>
+      </div>
+      <div class="pat-item">
+        <div class="pat-item-label">📈 FCI ICBC Alpha</div>
+        <div class="pat-item-val green">$3.590.000</div>
+      </div>
+    </div>
+    <div style="background:var(--sky);border-radius:10px;padding:10px 12px;font-size:12px;color:#1e40af;line-height:1.5">
+      💡 Tu Fima Premium es tu cuenta de liquidez — rescatable en 24hs. Lo usás perfectamente: suscribís y rescatás según tus necesidades. Eso es eficiencia financiera real.
+    </div>
+  </div>
+
+  <!-- DISPONIBLE -->
+  <div class="sec-header" style="margin-top:4px">
+    <div class="sec-title">¿Cuánto te sobra este mes?</div>
+  </div>
+  <div class="disponible">
+    <div class="disp-row"><div class="disp-label">📥 Ingresos estimados (4ta cat.)</div><div class="disp-val green">+$3.065.406</div></div>
+    <div class="disp-row"><div class="disp-label">💳 Tarjetas (3 Galicia)</div><div class="disp-val red">-$12.608.015</div></div>
+    <div class="disp-row"><div class="disp-label">🧾 Impuestos este mes</div><div class="disp-val red">-$3.523.296</div></div>
+    <div class="disp-row"><div class="disp-label">📈 Rendimientos FCI</div><div class="disp-val green">+$285.000</div></div>
+    <div class="disp-row" style="padding-top:10px;margin-top:4px">
+      <div class="disp-label" style="font-weight:700;color:var(--navy)">✅ Disponible para invertir</div>
+      <div class="disp-val blue" style="font-size:16px">Ver inversiones →</div>
+    </div>
+    <button class="disp-btn" onclick="switchTab('inversiones',document.querySelectorAll('.tab')[3])">¿Qué hago con lo que me sobra? →</button>
+  </div>
+
+  <!-- ALERTAS -->
+  <div class="sec-header">
+    <div class="sec-title">Alertas activas</div>
+    <div class="sec-link">Ver todas</div>
+  </div>
+
+  <div class="alert-card coral">
+    <div class="al-icon">🏛️</div>
+    <div class="al-body">
+      <h4>IVA vence en 12 días — 18/06</h4>
+      <p>Posición técnica a favor de ARCA: $2.097.884. Preparar el pago antes del 18/06.</p>
+      <button class="al-btn" onclick="switchTab('taxation',document.querySelectorAll('.tab')[2])">Ver posición IVA →</button>
+    </div>
+  </div>
+
+  <div class="alert-card amber">
+    <div class="al-icon">🎓</div>
+    <div class="al-body">
+      <h4>Educación vence el 05/06 — $5.048.558</h4>
+      <p>St. Mary (Paz + Sofía): $3.020.424 · UDESA (Nachi, cuota 4/54): $2.028.000</p>
+      <button class="al-btn">Ver detalle →</button>
+    </div>
+  </div>
+
+  <div class="alert-card amber">
+    <div class="al-icon">🛡️</div>
+    <div class="al-body">
+      <h4>Seguros Sudam subieron 43%</h4>
+      <p>Dos pólizas pasaron de $183.000 a $254.729/mes total. Encontré opciones más baratas.</p>
+      <button class="al-btn">Ver alternativas →</button>
+    </div>
+  </div>
+
+  <div class="alert-card green">
+    <div class="al-icon">💰</div>
+    <div class="al-body">
+      <h4>Saldo a favor IIBB: $1.834.603</h4>
+      <p>Tenés saldo acumulado en IIBB CABA. Se imputa automáticamente en los próximos períodos.</p>
+      <button class="al-btn">Ver detalle →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TAB: GASTOS ===== -->
+<div class="screen" id="tab-gastos">
+  <div style="padding:16px 0 0">
+    <div class="sec-header">
+      <div class="sec-title">En qué gastaste</div>
+      <div class="sec-link">3 tarjetas · jun 2026</div>
+    </div>
+    <div class="cats" id="cats"></div>
+  </div>
+</div>
+
+<!-- ===== TAB: TAXATION ===== -->
+<div class="screen" id="tab-taxation">
+  <div style="padding:16px 0 0">
+
+    <div class="agent" style="margin-top:0">
+      <div class="agent-top">
+        <div class="agent-av">F</div>
+        <div><div class="agent-name">Posición fiscal — Junio 2026</div><div class="agent-on">Datos ARCA/AGIP</div></div>
+      </div>
+      <div class="agent-msg" style="margin-bottom:0">
+        Sos <strong>Responsable Inscripto en IVA</strong> y contribuyente de <strong>IIBB CABA</strong>. Actividad: asesoramiento y gestión empresarial. Presenté la posición de septiembre 2025 como referencia.
+      </div>
+    </div>
+
+    <!-- IVA -->
+    <div class="tax-card" style="margin-top:14px">
+      <div class="tax-header">
+        <div class="tax-title">🏛️ IVA — Impuesto al Valor Agregado</div>
+        <span style="font-size:11px;font-weight:600;color:var(--coral);background:var(--coral-dim);padding:3px 8px;border-radius:20px">Vence 18/06</span>
+      </div>
+      <div class="tax-body">
+        <div class="tax-row">
+          <div class="tax-icon">📤</div>
+          <div class="tax-info"><div class="tax-name">Débito fiscal (IVA ventas)</div><div class="tax-desc">21% sobre honorarios facturados</div></div>
+          <div class="tax-right"><div class="tax-val due">$25.213.945</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">📥</div>
+          <div class="tax-info"><div class="tax-name">Crédito fiscal (IVA compras)</div><div class="tax-desc">Facturas recibidas + percepciones tarjetas</div></div>
+          <div class="tax-right"><div class="tax-val ok">$15.661.392</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">🔄</div>
+          <div class="tax-info"><div class="tax-name">Saldo técnico período anterior</div><div class="tax-desc">A favor del contribuyente</div></div>
+          <div class="tax-right"><div class="tax-val ok">$7.397.090</div></div>
+        </div>
+        <div class="tax-row" style="background:var(--coral-dim)">
+          <div class="tax-icon">💸</div>
+          <div class="tax-info"><div class="tax-name" style="color:var(--coral)">A pagar — 18/06/2026</div><div class="tax-desc">Transferir a ARCA antes del vencimiento</div></div>
+          <div class="tax-right"><div class="tax-val due" style="font-size:16px">$2.097.884</div><div class="tax-days td-due">En 12 días</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- edu tip IVA -->
+    <div style="margin:0 16px 14px;background:var(--sky);border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e3a8a;line-height:1.55;border-left:3px solid var(--blue)">
+      💡 <strong>¿Qué es el IVA?</strong> Cuando facturás tus honorarios cobrás el 21% extra (IVA débito). Cuando comprás cosas para tu trabajo pagás IVA también (IVA crédito). La diferencia es lo que le pagás a ARCA. Si compraste más de lo que cobraste, el saldo queda a tu favor para el mes siguiente.
+    </div>
+
+    <!-- IIBB -->
+    <div class="tax-card">
+      <div class="tax-header">
+        <div class="tax-title">🏙️ IIBB — Ingresos Brutos CABA</div>
+        <span style="font-size:11px;font-weight:600;color:var(--green);background:var(--green-dim);padding:3px 8px;border-radius:20px">Saldo a favor</span>
+      </div>
+      <div class="tax-body">
+        <div class="tax-row">
+          <div class="tax-icon">📊</div>
+          <div class="tax-info"><div class="tax-name">Base imponible sep-25</div><div class="tax-desc">Asesoramiento y gestión empresarial · 3%</div></div>
+          <div class="tax-right"><div class="tax-val">$47.593.781</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">✅</div>
+          <div class="tax-info"><div class="tax-name">Impuesto determinado</div><div class="tax-desc">$1.427.813 − retenciones y saldo anterior</div></div>
+          <div class="tax-right"><div class="tax-val ok">$0 a pagar</div></div>
+        </div>
+        <div class="tax-row" style="background:var(--green-dim)">
+          <div class="tax-icon">💚</div>
+          <div class="tax-info"><div class="tax-name" style="color:var(--green)">Saldo a tu favor acumulado</div><div class="tax-desc">Se imputa automáticamente en próximos períodos</div></div>
+          <div class="tax-right"><div class="tax-val ok" style="font-size:16px">$1.834.603</div><div class="tax-days td-ok">Activo</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ganancias -->
+    <div class="tax-card">
+      <div class="tax-header">
+        <div class="tax-title">📋 Ganancias Personas Físicas 2025</div>
+        <span style="font-size:11px;font-weight:600;color:var(--green);background:var(--green-dim);padding:3px 8px;border-radius:20px">Presentada ✓</span>
+      </div>
+      <div class="tax-body">
+        <div class="tax-row">
+          <div class="tax-icon">💼</div>
+          <div class="tax-info"><div class="tax-name">Ingresos 4ta categoría</div><div class="tax-desc">Honorarios profesionales</div></div>
+          <div class="tax-right"><div class="tax-val">$36.784.868</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">➖</div>
+          <div class="tax-info"><div class="tax-name">Gastos y deducciones</div><div class="tax-desc">Gastos profesionales + educación</div></div>
+          <div class="tax-right"><div class="tax-val">$22.640.612</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">🧮</div>
+          <div class="tax-info"><div class="tax-name">Deducciones personales</div><div class="tax-desc">MNI + cargas de familia</div></div>
+          <div class="tax-right"><div class="tax-val ok">$14.144.256</div></div>
+        </div>
+        <div class="tax-row" style="background:var(--green-dim)">
+          <div class="tax-icon">🎉</div>
+          <div class="tax-info"><div class="tax-name" style="color:var(--green)">Impuesto determinado</div><div class="tax-desc">Presentada 20/05/2026 · Período 2025</div></div>
+          <div class="tax-right"><div class="tax-val ok" style="font-size:16px">$0</div><div class="tax-days td-ok">Saldo a favor $75.378</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin:0 16px 14px;background:var(--sky);border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e3a8a;line-height:1.55;border-left:3px solid var(--blue)">
+      💡 <strong>Tip para 2026:</strong> Los rendimientos de tus FCI (Fima Premium, Alpha Pesos) generan resultados gravados en Ganancias. FinIA los acumula automáticamente durante el año para que no te sorprenda la DDJJ de 2026.
+    </div>
+
+    <!-- Percepciones tarjeta -->
+    <div class="tax-card" style="margin-bottom:16px">
+      <div class="tax-header">
+        <div class="tax-title">💳 Percepciones en tarjetas — crédito fiscal</div>
+      </div>
+      <div class="tax-body">
+        <div class="tax-row">
+          <div class="tax-icon">💳</div>
+          <div class="tax-info"><div class="tax-name">RG 5617 (30%) — Visa</div><div class="tax-desc">Percepciones sobre consumos en USD</div></div>
+          <div class="tax-right"><div class="tax-val ok">$200.443</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">💳</div>
+          <div class="tax-info"><div class="tax-name">RG 5617 (30%) — Amex</div><div class="tax-desc">Percepciones sobre consumos en USD</div></div>
+          <div class="tax-right"><div class="tax-val ok">$8.765</div></div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-icon">💳</div>
+          <div class="tax-info"><div class="tax-name">AFIP RG 4815 (30%) — Mastercard</div><div class="tax-desc">Percepciones servicios digitales</div></div>
+          <div class="tax-right"><div class="tax-val ok">$59.937</div></div>
+        </div>
+        <div class="tax-row" style="background:var(--green-dim)">
+          <div class="tax-icon">✅</div>
+          <div class="tax-info"><div class="tax-name" style="color:var(--green)">Total crédito fiscal recuperable</div><div class="tax-desc">Computable en IVA o Ganancias</div></div>
+          <div class="tax-right"><div class="tax-val ok" style="font-size:15px">$269.145</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== TAB: INVERSIONES ===== -->
+<div class="screen" id="tab-inversiones">
+  <div style="padding:16px 0 0">
+
+    <div class="inv-card" style="margin-top:0">
+      <div class="inv-label">📈 Portfolio total al 31/05/2026</div>
+      <div class="inv-val">$5.369.749</div>
+      <div class="inv-sub">Fima Premium + Fima Acciones + Alpha Pesos · <strong>Rentabilidad 2025: ~48% anual</strong></div>
+      <div class="inv-fci">
+        <div class="inv-fci-row">
+          <div>
+            <div class="inv-fci-name">🛡️ Fima Premium Clase A</div>
+            <div class="inv-fci-type">Money market · Rescate inmediato · Galicia</div>
+          </div>
+          <div class="inv-fci-val">
+            <div class="inv-fci-amount">$1.320.001</div>
+            <div class="inv-fci-gain">~46% TNA</div>
+          </div>
+        </div>
+        <div class="inv-fci-row">
+          <div>
+            <div class="inv-fci-name">📊 Fima Acciones Clase A</div>
+            <div class="inv-fci-type">Renta variable · Acciones argentinas · Galicia</div>
+          </div>
+          <div class="inv-fci-val">
+            <div class="inv-fci-amount">$459.748</div>
+            <div class="inv-fci-gain">Variable</div>
+          </div>
+        </div>
+        <div class="inv-fci-row">
+          <div>
+            <div class="inv-fci-name">💧 Alpha Pesos (ICBC)</div>
+            <div class="inv-fci-type">Money market · Cuenta de paso · ICBC</div>
+          </div>
+          <div class="inv-fci-val">
+            <div class="inv-fci-amount">$3.590.000</div>
+            <div class="inv-fci-gain">~46% TNA</div>
+          </div>
+        </div>
+      </div>
+      <button class="inv-btn" onclick="window.location.href='finia_inversiones.html'">Ver recomendaciones personalizadas →</button>
+    </div>
+
+    <div class="sec-header" style="margin-top:4px">
+      <div class="sec-title">Compraventa de divisas 2025</div>
+    </div>
+    <div style="margin:0 16px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px">
+      <div style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:10px">
+        Durante 2025 operaste USD regularmente. Tu mayor operación fue la venta de <strong>USD 9.960 a $1.465</strong> en diciembre = <strong>$14.591.400</strong>. Al 31/12/25 mantenés <strong>USD 12.139</strong> en caja de ahorro dólares.
+      </div>
+      <div style="background:var(--amber-dim);border:1px solid #fde68a;border-radius:10px;padding:10px 12px;font-size:12px;color:#92400e;line-height:1.5">
+        ⚠️ Las diferencias de cambio de compraventa de divisas generan resultados gravados en Ganancias. FinIA los acumula automáticamente para la DDJJ 2026.
+      </div>
+    </div>
+
+    <div class="sec-header">
+      <div class="sec-title">Oportunidad — entre vencimientos</div>
+    </div>
+    <div style="margin:0 16px 16px;background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:16px;padding:18px">
+      <div style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.65;margin-bottom:14px">
+        El IVA vence el <strong style="color:#60a5fa">18/06 — en 12 días</strong>. Tenés $2.097.884 reservados para ese pago.<br><br>
+        Si los ponés hoy en el <strong style="color:#4ade80">Fima Premium</strong> (rescatable en 24hs), ganás ~<strong style="color:#4ade80">$32.500</strong> sin riesgo y los tenés listos para pagar.
+      </div>
+      <button class="inv-btn">Invertir hasta el 17/06 →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ACCIONES RÁPIDAS -->
+<div class="sec-header">
+  <div class="sec-title">¿Qué querés hacer?</div>
+</div>
+<div class="quick">
+  <div class="q-card"><div class="q-icon">📸</div><div class="q-label">Subir factura</div></div>
+  <div class="q-card" onclick="window.location.href='finia_chat.html'"><div class="q-icon">💬</div><div class="q-label">Hablar con asesor</div></div>
+  <div class="q-card" onclick="switchTab('taxation',document.querySelectorAll('.tab')[2])"><div class="q-icon">🧾</div><div class="q-label">Ver impuestos</div></div>
+  <div class="q-card" onclick="switchTab('inversiones',document.querySelectorAll('.tab')[3])"><div class="q-icon">📈</div><div class="q-label">Invertir</div></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item active"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_pyme.html'"><div class="bn-icon">🏢</div><div class="bn-label">Negocio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_inversiones.html'"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+// CATEGORÍAS REALES
+const CATS = [
+  {icon:'🎓',name:'Educación',val:5048558,prev:4800000,color:'#1a56db',pct:40,
+   items:[{n:'UDESA — Licenciatura Adm. Empresas (cuota 4/54)',d:'Visa 5318 · 05/03/26',v:'$2.028.000'},{n:'St. Mary — Paz (4º año E.S.)',d:'Factura directa · 01/06/26',v:'$1.744.071'},{n:'St. Mary — Sofía (6º año E.P.)',d:'Factura directa · 01/06/26',v:'$1.334.487'},{n:'Descuento 2º hijo',d:'St. Mary',v:'-$133.449'},{n:'Asoc. de Padres + Seguro escolar',d:'St. Mary',v:'$75.314'}],
+   edu:'La educación es tu mayor gasto fijo — $5M/mes. UDESA tiene 50 cuotas más por delante. Estas facturas son deducibles en Ganancias.'},
+  {icon:'🏥',name:'Salud',val:1042221,prev:980000,color:'#059669',pct:8,
+   items:[{n:'OSDE (débito automático)',d:'Visa 3566 · 20/03/26',v:'$1.042.221'}],
+   edu:'La prepaga familiar es el segundo gasto más importante en salud. Verificá que el plan cubra todo lo que necesitás — OSDE tiene varios niveles.'},
+  {icon:'🛡️',name:'Seguros',val:522858,prev:365000,color:'#d97706',pct:4,
+   items:[{n:'Seguros Sudam (póliza 1)',d:'Mastercard · 23/01/26',v:'$138.589'},{n:'Seguros Sudam (póliza 2)',d:'Mastercard · 23/01/26',v:'$116.140'},{n:'Assistcard (cuota 5/9)',d:'Mastercard · 04/09/25',v:'$132.978'},{n:'Life Seguros (póliza 1)',d:'Visa · 27/02/26',v:'$261.226'},{n:'Life Seguros (póliza 2)',d:'Visa · 27/02/26',v:'$219.058'}],
+   edu:'Tus seguros subieron 43% vs el período anterior. Tenés 5 pólizas activas en 3 compañías. Vale la pena revisar si hay superposición de coberturas.'},
+  {icon:'🏌️',name:'Club y recreación',val:850700,prev:720000,color:'#7c3aed',pct:7,
+   items:[{n:'Jockey Club Asoc.',d:'Visa 3566 · 06/03/26',v:'$589.700'},{n:'Carilo Golf SA (x3)',d:'Visa 3566 · 06-08/03/26',v:'$165.000'},{n:'Carpe Diem',d:'Visa 3566 · 06/03/26',v:'$181.000'},{n:'DF Festival (x3)',d:'Visa 3566 · 03-12/03/26',v:'$481.250'}],
+   edu:'Los gastos de club y ocio suman ~$850K este mes. El Jockey Club solo es $590K. Son gastos de calidad de vida — importante tenerlos visibles para entender el presupuesto real.'},
+  {icon:'🛒',name:'Supermercado y despensa',val:1520000,prev:1380000,color:'#0d9488',pct:12,
+   items:[{n:'Coto Digital (x5)',d:'Visa 5318 · varios',v:'$928.628'},{n:'Disco (x3)',d:'Visa 5318 · varios',v:'$95.985'},{n:'Puma La Horqueta (x3)',d:'Visa 5318 · varios',v:'$430.020'},{n:'Grupo Fabole / proveeduría',d:'Visa 5318 · varios',v:'$65.000'}],
+   edu:'El supermercado online (Coto Digital) es tu canal principal. Comprás frecuentemente — quizás vale consolidar pedidos para ahorrar en costos de envío.'},
+  {icon:'🍕',name:'Salidas y delivery',val:780000,prev:620000,color:'#f59e0b',pct:6,
+   items:[{n:'PedidosYa (múltiples)',d:'Visa · varios',v:'$420.000'},{n:'Bollo Galpón de Pizzas',d:'Visa 3566 · varios',v:'$184.375'},{n:'Melé / Mele Fuegos',d:'Visa 5318 · varios',v:'$180.000'}],
+   edu:'Tus salidas subieron 26% vs el mes anterior. PedidosYa es la categoría más frecuente — muchas órdenes chicas que suman.'},
+  {icon:'💊',name:'Farmacia y salud',val:285000,prev:180000,color:'#dc2626',pct:2,
+   items:[{n:'Farmacia Grupo Fabole',d:'Visa 5318 · varios',v:'$187.000'},{n:'Farmacia Alesel',d:'Visa · varios',v:'$98.000'}],
+   edu:'El gasto en farmacia subió 58% vs el mes anterior. Si no tenés prepaga que cubra medicamentos, puede valer revisar el plan de OSDE.'},
+  {icon:'📱',name:'Telefonía y servicios',val:245034,prev:230000,color:'#6366f1',pct:2,
+   items:[{n:'Claro (débito automático)',d:'Visa · varios',v:'$174.061'},{n:'Personal',d:'Visa 3517 · 23/03/26',v:'$70.973'}],
+   edu:'Tenés dos líneas móviles activas. Claro y Personal — ¿son las dos necesarias? Verificá si hay mejores planes disponibles.'},
+  {icon:'💻',name:'Suscripciones digitales',val:95000,prev:88000,color:'#8b5cf6',pct:1,
+   items:[{n:'Netflix · Disney+ · Apple (x3)',d:'Visa · varios',v:'USD 29,47'},{n:'Spotify · Google · Amazon Prime',d:'Visa/Mastercard',v:'USD 8,95'},{n:'Microsoft 365 (x2)',d:'Visa 3566 · varios',v:'USD 64,48'}],
+   edu:'Tenés 8 suscripciones digitales activas por ~USD 100/mes. Microsoft aparece dos veces — puede ser duplicado. Vale la pena revisar.'},
+];
+
+function renderCats(){
+  const c=document.getElementById('cats');
+  if(!c)return;
+  c.innerHTML='';
+  CATS.forEach((cat,i)=>{
+    const diff=cat.val-cat.prev;
+    const pct=cat.prev>0?Math.round((diff/cat.prev)*100):0;
+    const bc=diff>0?'cb-up':diff<0?'cb-down':'cb-neutral';
+    const bt=diff>0?`↑ ${pct}%`:diff<0?`↓ ${Math.abs(pct)}%`:'Sin cambios';
+    const d=document.createElement('div');
+    d.className='cat-card';
+    d.onclick=()=>openCat(i);
+    d.innerHTML=`
+      <div class="cat-top">
+        <div class="cat-icon">${cat.icon}</div>
+        <div class="cat-info"><div class="cat-name">${cat.name}</div><div class="cat-items">${cat.items.length} ítem${cat.items.length>1?'s':''}</div></div>
+        <div class="cat-right"><div class="cat-val">$${cat.val.toLocaleString('es-AR')}</div><div class="cat-badge ${bc}">${bt}</div></div>
+      </div>
+      <div class="cat-bar-wrap"><div class="cat-bar" style="width:${cat.pct}%;background:${cat.color}"></div></div>`;
+    c.appendChild(d);
+  });
+}
+
+function openCat(i){
+  const c=CATS[i];
+  document.getElementById('modal-title').textContent=c.icon+' '+c.name;
+  document.getElementById('modal-sub').textContent=`$${c.val.toLocaleString('es-AR')} este mes · Datos de 3 tarjetas Galicia`;
+  const body=document.getElementById('modal-body');
+  body.innerHTML='';
+  c.items.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='modal-item';
+    d.innerHTML=`<div><div class="mi-name">${item.n}</div><div class="mi-date">${item.d}</div></div><div class="mi-val out">${item.v}</div>`;
+    body.appendChild(d);
+  });
+  if(c.edu){
+    const e=document.createElement('div');
+    e.className='modal-edu';
+    e.textContent='💡 '+c.edu;
+    body.appendChild(e);
+  }
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal')){
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+
+function switchTab(id, el){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='gastos') renderCats();
+  window.scrollTo(0,0);
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+renderCats();
+</script>
+</body>
+</html>
