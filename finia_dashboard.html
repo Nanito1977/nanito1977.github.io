@@ -334,10 +334,20 @@ body{
     </div>
   </div>
 
+  <!-- VISTA CONSOLIDADA CTA -->
+  <div style="margin:0 16px 16px;background:linear-gradient(135deg,var(--navy) 0%,#1a3a6b 100%);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer" onclick="window.location.href='finia_consolidado.html'">
+    <div style="font-size:28px;flex-shrink:0">📊</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px">Vista consolidada</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.6)">Todos tus gastos e ingresos, por categoría y en una línea de tiempo</div>
+    </div>
+    <div style="font-size:18px;color:rgba(255,255,255,.5)">→</div>
+  </div>
+
   <!-- CATEGORÍAS -->
   <div class="sec-header">
     <div class="sec-title">En qué gastaste</div>
-    <div class="sec-link">Ver todo</div>
+    <div class="sec-link" onclick="window.location.href='finia_consolidado.html'">Ver todo</div>
   </div>
   <div class="cats" id="cats"></div>
 
@@ -427,7 +437,7 @@ body{
   <div class="bn-item active"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
   <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
   <div class="bn-item" onclick="window.location.href='finia_pyme.html'"><div class="bn-icon">🏢</div><div class="bn-label">Negocio</div></div>
-  <div class="bn-item"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_inversiones.html'"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
   <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
 </div>
 

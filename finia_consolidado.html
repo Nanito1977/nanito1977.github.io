@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinIA — Vista consolidada</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a1f44;--blue:#1a56db;--blue2:#1e63f0;--sky:#e8f0fe;
+  --text:#111827;--text2:#374151;--muted:#6b7280;
+  --border:#e5e7eb;--border2:#d1d5db;--bg:#f9fafb;--bg2:#fff;
+  --green:#059669;--green-dim:#ecfdf5;--green-dark:#065f46;
+  --amber:#d97706;--amber-dim:#fffbeb;
+  --coral:#dc2626;--coral-dim:#fef2f2;
+  --teal:#0d9488;--teal-dim:#f0fdfa;
+  --purple:#7c3aed;--purple-dim:#f5f3ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{background:var(--navy);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.brand{font-size:18px;font-weight:800;color:#fff}.brand span{color:#60a5fa}
+.back-btn{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:13px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer}
+
+/* PERIOD SELECTOR */
+.period-row{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 8px}
+.period-arrow{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;padding:4px 8px}
+.period-label{font-size:15px;font-weight:700;color:var(--navy)}
+.period-toggle{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:3px;gap:3px}
+.pt-btn{padding:5px 12px;border-radius:16px;border:none;background:none;font-family:inherit;font-size:11px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .15s}
+.pt-btn.active{background:var(--blue);color:#fff}
+
+/* HERO NETO */
+.neto-card{margin:8px 16px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:20px}
+.neto-label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.neto-val{font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1;margin-bottom:4px}
+.neto-val.pos{color:var(--green)}
+.neto-val.neg{color:var(--coral)}
+.neto-sub{font-size:12px;color:var(--muted)}
+
+.bar-track{height:14px;background:var(--bg);border-radius:7px;overflow:hidden;display:flex;margin:16px 0 8px}
+.bar-in{background:var(--green);transition:width .6s}
+.bar-out{background:var(--coral);transition:width .6s}
+.bar-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);font-weight:600}
+.bl-in{color:var(--green)}
+.bl-out{color:var(--coral)}
+
+/* DOS COLUMNAS RESUMEN */
+.dos-resumen{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px 14px}
+.res-card{border-radius:14px;padding:14px}
+.res-card.in{background:var(--green-dim);border:1px solid #a7f3d0}
+.res-card.out{background:var(--coral-dim);border:1px solid #fca5a5}
+.res-card-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.res-card.in .res-card-label{color:var(--green-dark)}
+.res-card.out .res-card-label{color:#991b1b}
+.res-card-val{font-size:20px;font-weight:800}
+.res-card.in .res-card-val{color:var(--green)}
+.res-card.out .res-card-val{color:var(--coral)}
+.res-card-count{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* TABS */
+.tabs{display:flex;gap:0;padding:0 16px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:10px 8px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* CATEGORIAS LIST */
+.sec-header{display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:10px}
+.sec-title{font-size:15px;font-weight:700;color:var(--navy)}
+.sec-link{font-size:12px;font-weight:600;color:var(--blue);cursor:pointer}
+.cats{padding:0 16px;display:flex;flex-direction:column;gap:9px;margin-bottom:16px}
+.cat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:13px 14px;cursor:pointer;transition:all .15s}
+.cat-card:hover{border-color:var(--blue);box-shadow:0 2px 10px rgba(26,86,219,0.07)}
+.cat-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.cat-icon{font-size:24px;flex-shrink:0}
+.cat-info{flex:1}
+.cat-name{font-size:13px;font-weight:700;color:var(--navy)}
+.cat-items{font-size:11px;color:var(--muted);margin-top:1px}
+.cat-right{text-align:right}
+.cat-val{font-size:15px;font-weight:800;color:var(--navy)}
+.cat-pct{font-size:11px;color:var(--muted);margin-top:2px}
+.cat-bar-wrap{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.cat-bar{height:100%;border-radius:3px;transition:width .6s}
+
+/* TIMELINE / MOVIMIENTOS RECIENTES */
+.mov-list{padding:0 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.mov-item{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:11px}
+.mov-icon{font-size:20px;flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.mov-icon.in{background:var(--green-dim)}
+.mov-icon.out{background:var(--coral-dim)}
+.mov-info{flex:1}
+.mov-name{font-size:13px;font-weight:700;color:var(--navy)}
+.mov-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.mov-val{font-size:13px;font-weight:800;flex-shrink:0}
+.mov-val.in{color:var(--green)}
+.mov-val.out{color:var(--coral)}
+
+/* INSIGHT */
+.insight{margin:0 16px 16px;background:var(--sky);border:1px solid #bfdbfe;border-radius:14px;padding:14px 16px;border-left:3px solid var(--blue)}
+.insight h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.insight p{font-size:13px;color:#1e40af;line-height:1.6}
+.insight strong{font-weight:700}
+
+/* CTA */
+.cta-add{margin:0 16px 16px;width:calc(100% - 32px);padding:14px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:10px 0 16px;z-index:50}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bn-icon{font-size:20px}
+.bn-label{font-size:10px;font-weight:600;color:var(--muted)}
+.bn-item.active .bn-label{color:var(--blue)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);border-radius:24px 24px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:88vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
+.modal-title{font-size:17px;font-weight:800;color:var(--navy);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.modal-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.modal-item:last-child{border-bottom:none}
+.mi-name{font-size:13px;color:var(--text2)}
+.mi-date{font-size:11px;color:var(--muted);margin-top:1px}
+.mi-val{font-size:14px;font-weight:700}
+.mi-val.in{color:var(--green)}
+.mi-val.out{color:var(--coral)}
+.modal-close{width:100%;margin-top:14px;padding:13px;background:var(--navy);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+
+/* RESPONSIVE */
+@media(min-width:600px){body{padding-left:12px;padding-right:12px}}
+@media(min-width:900px){
+  body{display:grid;grid-template-columns:220px 1fr;grid-template-rows:54px 1fr;max-width:1100px;padding:0}
+  .topbar{grid-column:1/-1}
+  .desktop-nav{display:flex!important;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);padding:20px 14px;gap:3px}
+  .desktop-nav a{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none}
+  .desktop-nav a.active{background:var(--sky);color:var(--blue)}
+  .bottom-nav{display:none!important}
+  .dos-resumen{grid-template-columns:1fr 1fr 1fr 1fr}
+  .cats{display:grid;grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Fin<span>IA</span></div>
+  <button class="back-btn" onclick="window.location.href='finia_dashboard.html'">← Volver</button>
+</div>
+
+<nav class="desktop-nav" style="display:none">
+  <a href="finia_dashboard.html">🏠 Inicio</a>
+  <a href="finia_consolidado.html" class="active">📊 Consolidado</a>
+  <a href="finia_chat.html">💬 Asesor IA</a>
+  <a href="finia_carga.html">➕ Cargar</a>
+  <a href="finia_inversiones.html">📈 Invertir</a>
+</nav>
+
+<div>
+
+<!-- PERIOD -->
+<div class="period-row">
+  <button class="period-arrow">‹</button>
+  <div class="period-label">Junio 2026</div>
+  <button class="period-arrow">›</button>
+</div>
+<div style="padding:0 16px 12px;display:flex;justify-content:center">
+  <div class="period-toggle">
+    <button class="pt-btn active" onclick="setView(this,'mes')">Mes</button>
+    <button class="pt-btn" onclick="setView(this,'trimestre')">Trimestre</button>
+    <button class="pt-btn" onclick="setView(this,'anual')">Año</button>
+  </div>
+</div>
+
+<!-- NETO -->
+<div class="neto-card">
+  <div class="neto-label">📊 Vista consolidada — todo lo que entró y salió</div>
+  <div class="neto-val pos" id="neto-val">+$284.500</div>
+  <div class="neto-sub">Lo que te quedó libre este mes</div>
+
+  <div class="bar-track">
+    <div class="bar-in" id="bar-in" style="width:63%"></div>
+    <div class="bar-out" id="bar-out" style="width:37%"></div>
+  </div>
+  <div class="bar-labels">
+    <span class="bl-in">📥 $680.000</span>
+    <span class="bl-out">📤 $395.500</span>
+  </div>
+</div>
+
+<!-- RESUMEN 2 COLS -->
+<div class="dos-resumen">
+  <div class="res-card in">
+    <div class="res-card-label">Ingresos</div>
+    <div class="res-card-val">$680.000</div>
+    <div class="res-card-count">3 movimientos</div>
+  </div>
+  <div class="res-card out">
+    <div class="res-card-label">Gastos</div>
+    <div class="res-card-val">$395.500</div>
+    <div class="res-card-count">14 movimientos</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchView('categorias',this)">Por categoría</div>
+  <div class="tab" onclick="switchView('movimientos',this)">Movimientos</div>
+</div>
+
+<!-- CATEGORIAS VIEW -->
+<div id="view-categorias">
+  <div class="sec-header">
+    <div class="sec-title">En qué se fue la plata</div>
+    <div class="sec-link">Ver todo</div>
+  </div>
+  <div class="cats" id="cats-list"></div>
+</div>
+
+<!-- MOVIMIENTOS VIEW -->
+<div id="view-movimientos" style="display:none">
+  <div class="sec-header">
+    <div class="sec-title">Todos los movimientos</div>
+    <div class="sec-link">14 este mes</div>
+  </div>
+  <div class="mov-list" id="mov-list"></div>
+</div>
+
+<div class="insight">
+  <h4>💡 Tu mes en una frase</h4>
+  <p>Gastaste un <strong>12% más</strong> que el mes pasado, principalmente en supermercado y seguros. Lo bueno: te siguen sobrando <strong>$284.500</strong> — más que en mayo.</p>
+</div>
+
+<button class="cta-add" onclick="window.location.href='finia_carga.html'">➕ Cargar un gasto o ingreso</button>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="bn-item" onclick="window.location.href='finia_dashboard.html'"><div class="bn-icon">🏠</div><div class="bn-label">Inicio</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_chat.html'"><div class="bn-icon">💬</div><div class="bn-label">Asesor</div></div>
+  <div class="bn-item active"><div class="bn-icon">📊</div><div class="bn-label">Consolidado</div></div>
+  <div class="bn-item" onclick="window.location.href='finia_inversiones.html'"><div class="bn-icon">📈</div><div class="bn-label">Invertir</div></div>
+  <div class="bn-item"><div class="bn-icon">👤</div><div class="bn-label">Perfil</div></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div id="modal-body"></div>
+    <button class="modal-close" onclick="closeModal()">Cerrar</button>
+  </div>
+</div>
+
+<script>
+const CATS = [
+  {icon:'🛒',name:'Supermercado',val:128000,pct:32,color:'#059669',items:[{n:'Coto Digital',d:'04/06',v:'$74.480'},{n:'La Horqueta',d:'01/06',v:'$53.520'}]},
+  {icon:'🛡️',name:'Seguros',val:85000,pct:21,color:'#d97706',items:[{n:'Seguro auto Sancor',d:'01/06',v:'$67.000'},{n:'Vida — Life Seguros',d:'27/05',v:'$18.000'}]},
+  {icon:'🍕',name:'Salidas y delivery',val:62000,pct:16,color:'#f59e0b',items:[{n:'PedidosYa (varios)',d:'jun',v:'$38.000'},{n:'Restaurantes',d:'jun',v:'$24.000'}]},
+  {icon:'📱',name:'Servicios',val:42000,pct:10,color:'#7c3aed',items:[{n:'Internet + cable',d:'20/06',v:'$24.500'},{n:'Celular',d:'10/06',v:'$17.500'}]},
+  {icon:'💊',name:'Farmacia y salud',val:38500,pct:9,color:'#dc2626',items:[{n:'Farmacia Alesel',d:'jun',v:'$22.500'},{n:'Farmacia Grupo Fabole',d:'jun',v:'$16.000'}]},
+  {icon:'🚕',name:'Transporte',val:25000,pct:6,color:'#0d9488',items:[{n:'Uber (varios)',d:'jun',v:'$18.000'},{n:'Peajes',d:'jun',v:'$7.000'}]},
+  {icon:'🎓',name:'Educación',val:15000,pct:4,color:'#1a56db',items:[{n:'Cuota mensual',d:'01/06',v:'$15.000'}]},
+];
+
+const MOVS = [
+  {icon:'💰',name:'Sueldo',sub:'Acreditado · Honorarios',date:'01/06',val:'+$520.000',type:'in'},
+  {icon:'💼',name:'Freelance',sub:'Honorarios cobrados',date:'10/06',val:'+$120.000',type:'in'},
+  {icon:'💵',name:'Otros ingresos',sub:'Varios',date:'jun',val:'+$40.000',type:'in'},
+  {icon:'🛒',name:'Coto Digital',sub:'Supermercado',date:'04/06',val:'-$74.480',type:'out'},
+  {icon:'🛡️',name:'Seguro auto',sub:'Sancor',date:'01/06',val:'-$67.000',type:'out'},
+  {icon:'🛒',name:'La Horqueta',sub:'Supermercado',date:'01/06',val:'-$53.520',type:'out'},
+  {icon:'🍕',name:'PedidosYa',sub:'Delivery',date:'varios',val:'-$38.000',type:'out'},
+  {icon:'📱',name:'Internet + cable',sub:'Servicios',date:'20/06',val:'-$24.500',type:'out'},
+  {icon:'🍕',name:'Restaurante',sub:'Salidas',date:'15/06',val:'-$24.000',type:'out'},
+  {icon:'💊',name:'Farmacia Alesel',sub:'Salud',date:'12/06',val:'-$22.500',type:'out'},
+  {icon:'🚕',name:'Uber',sub:'Transporte',date:'varios',val:'-$18.000',type:'out'},
+  {icon:'🛡️',name:'Life Seguros',sub:'Vida',date:'27/05',val:'-$18.000',type:'out'},
+  {icon:'💊',name:'Farmacia Fabole',sub:'Salud',date:'08/06',val:'-$16.000',type:'out'},
+  {icon:'🎓',name:'Cuota educación',sub:'Mensual',date:'01/06',val:'-$15.000',type:'out'},
+];
+
+function renderCats(){
+  const c = document.getElementById('cats-list');
+  c.innerHTML = '';
+  CATS.forEach((cat,i)=>{
+    const d = document.createElement('div');
+    d.className = 'cat-card';
+    d.onclick = ()=>openCat(i);
+    d.innerHTML = `
+      <div class="cat-top">
+        <div class="cat-icon">${cat.icon}</div>
+        <div class="cat-info"><div class="cat-name">${cat.name}</div><div class="cat-items">${cat.items.length} movimiento${cat.items.length>1?'s':''}</div></div>
+        <div class="cat-right"><div class="cat-val">$${cat.val.toLocaleString('es-AR')}</div><div class="cat-pct">${cat.pct}% del total</div></div>
+      </div>
+      <div class="cat-bar-wrap"><div class="cat-bar" style="width:${cat.pct*2.5}%;background:${cat.color}"></div></div>`;
+    c.appendChild(d);
+  });
+}
+
+function renderMovs(){
+  const m = document.getElementById('mov-list');
+  m.innerHTML = '';
+  MOVS.forEach(mov=>{
+    const d = document.createElement('div');
+    d.className = 'mov-item';
+    d.innerHTML = `
+      <div class="mov-icon ${mov.type}">${mov.icon}</div>
+      <div class="mov-info"><div class="mov-name">${mov.name}</div><div class="mov-sub">${mov.sub} · ${mov.date}</div></div>
+      <div class="mov-val ${mov.type}">${mov.val}</div>`;
+    m.appendChild(d);
+  });
+}
+
+function openCat(i){
+  const c = CATS[i];
+  document.getElementById('modal-title').textContent = c.icon+' '+c.name;
+  document.getElementById('modal-sub').textContent = `$${c.val.toLocaleString('es-AR')} · ${c.pct}% de tus gastos de junio`;
+  const body = document.getElementById('modal-body');
+  body.innerHTML = '';
+  c.items.forEach(it=>{
+    const d = document.createElement('div');
+    d.className = 'modal-item';
+    d.innerHTML = `<div><div class="mi-name">${it.n}</div><div class="mi-date">${it.d}</div></div><div class="mi-val out">${it.v}</div>`;
+    body.appendChild(d);
+  });
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e){
+  if(!e || e.target===document.getElementById('modal')){
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function switchView(view, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-categorias').style.display = view==='categorias' ? 'block' : 'none';
+  document.getElementById('view-movimientos').style.display = view==='movimientos' ? 'block' : 'none';
+}
+
+function setView(el, period){
+  document.querySelectorAll('.pt-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+
+renderCats();
+renderMovs();
+</script>
+
+</body>
+</html>
