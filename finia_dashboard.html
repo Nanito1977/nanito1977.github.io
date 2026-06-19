@@ -596,6 +596,7 @@ const FINIA_TOUR_STEPS = [
   { page:'finia_welcome.html', title:'2 · FinIA te conoce', body:'Chat conversacional. Con tu CUIL/CUIT consultamos <strong>ARCA, RENAPER y ANSES</strong> para armar tu perfil sin que escribas nada.' },
   { page:'finia_dashboard.html', title:'3 · Tu balance, claro', body:'Un número grande: cuánto te sobra. Categorías, vencimientos e inversión del excedente — todo en una pantalla.' },
   { page:'finia_carga.html', title:'4 · Cargar es instantáneo', body:'Foto, chat, manual o archivo. <strong>FinIA lee, interpreta y lo suma a tu balance</strong> automáticamente.' },
+  { page:'finia_consolidado.html', title:'5 · El consolidado', body:'Todo lo que entró y salió, por categoría y en línea de tiempo. <strong>El cierre del recorrido.</strong>' },
 ];
 
 function finiaTourState(){
@@ -642,7 +643,9 @@ function finiaTourNext(){
   const state = finiaTourState();
   const i = state ? state.step : 0;
   if(i >= FINIA_TOUR_STEPS.length - 1){
+    const wasFromDemo = state && state.fromDemo;
     finiaTourEnd();
+    if(wasFromDemo) window.location.href = 'finia_demo.html';
     return;
   }
   finiaTourGoToStep(i+1);
@@ -650,11 +653,12 @@ function finiaTourNext(){
 
 function finiaTourEnd(){
   finiaTourClear();
-  document.getElementById('finia-tour-overlay').classList.remove('show');
-  document.getElementById('finia-tour-fab').classList.remove('hide');
+  const overlay = document.getElementById('finia-tour-overlay');
+  const fab = document.getElementById('finia-tour-fab');
+  if(overlay) overlay.classList.remove('show');
+  if(fab) fab.classList.remove('hide');
 }
 
-// Auto-resume al cargar la página
 (function(){
   const params = new URLSearchParams(window.location.search);
   const state = finiaTourState();

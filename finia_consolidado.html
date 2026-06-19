@@ -357,5 +357,122 @@ renderCats();
 renderMovs();
 </script>
 
+<!-- ===== FINIA TOUR GUIADO ===== -->
+<style>
+.finia-tour-fab{position:fixed;bottom:96px;right:16px;z-index:200;background:linear-gradient(135deg,#1a56db,#1e63f0);color:#fff;border:none;border-radius:50px;padding:11px 18px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(26,86,219,.35);display:flex;align-items:center;gap:7px;animation:tourPulse 2.4s infinite}
+@keyframes tourPulse{0%,100%{box-shadow:0 6px 20px rgba(26,86,219,.35)}50%{box-shadow:0 6px 28px rgba(26,86,219,.55)}}
+.finia-tour-fab.hide{display:none}
+
+.finia-tour-overlay{position:fixed;inset:0;background:rgba(10,31,68,.45);z-index:300;display:none;align-items:flex-end;justify-content:center}
+.finia-tour-overlay.show{display:flex}
+.finia-tour-card{background:#0a1f44;color:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 22px 28px;font-family:'Plus Jakarta Sans',sans-serif;animation:tourUp .3s ease}
+@keyframes tourUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.finia-tour-progress{display:flex;gap:5px;margin-bottom:14px}
+.finia-tour-dot{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.15)}
+.finia-tour-dot.done{background:#60a5fa}
+.finia-tour-dot.active{background:#60a5fa;opacity:.5}
+.finia-tour-step{font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.finia-tour-title{font-size:18px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px}
+.finia-tour-body{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:18px}
+.finia-tour-body strong{color:#60a5fa}
+.finia-tour-btns{display:flex;gap:8px}
+.finia-tour-next{flex:1;padding:13px;background:#1a56db;color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.finia-tour-skip{padding:13px 16px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;border-radius:12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+</style>
+
+<div class="finia-tour-overlay" id="finia-tour-overlay">
+  <div class="finia-tour-card">
+    <div class="finia-tour-progress" id="finia-tour-progress"></div>
+    <div class="finia-tour-step" id="finia-tour-step"></div>
+    <div class="finia-tour-title" id="finia-tour-title"></div>
+    <div class="finia-tour-body" id="finia-tour-body"></div>
+    <div class="finia-tour-btns">
+      <button class="finia-tour-skip" onclick="finiaTourEnd()">Salir del tour</button>
+      <button class="finia-tour-next" id="finia-tour-next-btn" onclick="finiaTourNext()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<button class="finia-tour-fab" id="finia-tour-fab" onclick="finiaTourStart()">▶ Ver demo guiada</button>
+
+<script>
+const FINIA_TOUR_STEPS = [
+  { page:'finia_onboarding.html', title:'1 · Te registrás', body:'Google, Apple, Microsoft o LinkedIn. <strong>Menos de 1 minuto</strong> — sin formularios largos.' },
+  { page:'finia_welcome.html', title:'2 · FinIA te conoce', body:'Chat conversacional. Con tu CUIL/CUIT consultamos <strong>ARCA, RENAPER y ANSES</strong> para armar tu perfil sin que escribas nada.' },
+  { page:'finia_dashboard.html', title:'3 · Tu balance, claro', body:'Un número grande: cuánto te sobra. Categorías, vencimientos e inversión del excedente — todo en una pantalla.' },
+  { page:'finia_carga.html', title:'4 · Cargar es instantáneo', body:'Foto, chat, manual o archivo. <strong>FinIA lee, interpreta y lo suma a tu balance</strong> automáticamente.' },
+  { page:'finia_consolidado.html', title:'5 · El consolidado', body:'Todo lo que entró y salió, por categoría y en línea de tiempo. <strong>El cierre del recorrido.</strong>' },
+];
+
+function finiaTourState(){
+  try { return JSON.parse(localStorage.getItem('finia_tour')||'null'); }
+  catch(e){ return null; }
+}
+function finiaTourSave(s){ localStorage.setItem('finia_tour', JSON.stringify(s)); }
+function finiaTourClear(){ localStorage.removeItem('finia_tour'); }
+
+function finiaTourStart(){
+  finiaTourSave({ step: 0, active: true });
+  finiaTourGoToStep(0);
+}
+
+function finiaTourGoToStep(i){
+  const step = FINIA_TOUR_STEPS[i];
+  const here = window.location.pathname.split('/').pop() || 'index.html';
+  if(here !== step.page){
+    window.location.href = step.page + '?tour=1';
+    return;
+  }
+  finiaTourShowOverlay(i);
+}
+
+function finiaTourShowOverlay(i){
+  const step = FINIA_TOUR_STEPS[i];
+  document.getElementById('finia-tour-step').textContent = `Paso ${i+1} de ${FINIA_TOUR_STEPS.length}`;
+  document.getElementById('finia-tour-title').textContent = step.title;
+  document.getElementById('finia-tour-body').innerHTML = step.body;
+  document.getElementById('finia-tour-next-btn').textContent = (i === FINIA_TOUR_STEPS.length-1) ? 'Terminar tour ✓' : 'Siguiente →';
+  const prog = document.getElementById('finia-tour-progress');
+  prog.innerHTML = '';
+  FINIA_TOUR_STEPS.forEach((s,idx)=>{
+    const d = document.createElement('div');
+    d.className = 'finia-tour-dot' + (idx<i?' done':idx===i?' active':'');
+    prog.appendChild(d);
+  });
+  document.getElementById('finia-tour-overlay').classList.add('show');
+  document.getElementById('finia-tour-fab').classList.add('hide');
+  finiaTourSave({ step: i, active: true });
+}
+
+function finiaTourNext(){
+  const state = finiaTourState();
+  const i = state ? state.step : 0;
+  if(i >= FINIA_TOUR_STEPS.length - 1){
+    const wasFromDemo = state && state.fromDemo;
+    finiaTourEnd();
+    if(wasFromDemo) window.location.href = 'finia_demo.html';
+    return;
+  }
+  finiaTourGoToStep(i+1);
+}
+
+function finiaTourEnd(){
+  finiaTourClear();
+  const overlay = document.getElementById('finia-tour-overlay');
+  const fab = document.getElementById('finia-tour-fab');
+  if(overlay) overlay.classList.remove('show');
+  if(fab) fab.classList.remove('hide');
+}
+
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const state = finiaTourState();
+  if(params.get('tour')==='1' && state && state.active){
+    window.addEventListener('DOMContentLoaded', ()=> finiaTourShowOverlay(state.step));
+  }
+})();
+</script>
+<!-- ===== FIN FINIA TOUR GUIADO ===== -->
+
 </body>
 </html>
