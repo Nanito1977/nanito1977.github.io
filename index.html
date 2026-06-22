@@ -3,336 +3,754 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinIA — Nani Fintech Project</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>FinIA · Dashboard de Finanzas y Administración</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-:root {
-  --navy:#0a1f44;--blue:#1a56db;--sky:#e8f0fe;
-  --text:#111827;--muted:#6b7280;--border:#e5e7eb;
-  --bg:#f9fafb;--bg2:#fff;
-  --green:#059669;--green-dim:#ecfdf5;
-  --amber:#d97706;--amber-dim:#fffbeb;
-  --teal:#0d9488;--teal-dim:#f0fdfa;
-  --purple:#7c3aed;--purple-dim:#f5f3ff;
-  --coral:#dc2626;--coral-dim:#fef2f2;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  :root {
+    --bg: #ffffff; --bg2: #f4f5f7; --border: #e2e1d9; --border2: #d3d1c7;
+    --text: #1a1a18; --text2: #73726c; --radius: 8px; --radius2: 12px;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: #f0f1f3; color: var(--text); min-height: 100vh; }
+  .shell { max-width: 1100px; margin: 0 auto; padding: 24px 20px; }
 
-/* HERO */
-.hero{background:linear-gradient(160deg,var(--navy) 0%,#132a5a 55%,#1a3a6b 100%);padding:56px 24px 48px;text-align:center}
-.hero-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#93c5fd;background:rgba(147,197,253,0.12);border:1px solid rgba(147,197,253,0.25);padding:4px 16px;border-radius:20px;margin-bottom:20px}
-.hero-brand{font-size:42px;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:8px}
-.hero-brand span{color:#60a5fa}
-.hero-sub{font-size:16px;color:rgba(255,255,255,0.6);max-width:480px;margin:0 auto;line-height:1.6}
+  /* topbar */
+  .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+  .logo { font-size:22px; font-weight:600; color:#0D1B40; }
+  .logo span { color:#185FA5; }
+  .topbar-meta { font-size:12px; color:var(--text2); margin-top:2px; }
+  .conn-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px; font-size:11px; font-weight:500; }
+  .conn-ok { background:#EAF3DE; color:#3B6D11; }
+  .conn-dot { width:6px; height:6px; border-radius:50%; background:#1D9E75; }
 
-/* CONTENT */
-.content{max-width:640px;margin:0 auto;padding:32px 16px 60px}
+  /* nav — botones pill */
+  .nav { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+  .nav-btn {
+    padding:10px 18px; font-size:13px; border:1.5px solid var(--border2);
+    background:var(--bg); cursor:pointer; color:var(--text2);
+    border-radius:10px; white-space:nowrap; font-family:var(--font);
+    transition:all .15s; font-weight:500; display:inline-flex; align-items:center; gap:7px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .nav-btn:hover { background:var(--bg2); color:var(--text); border-color:#aaa; }
+  .nav-btn.active { background:#185FA5; color:#fff; border-color:#185FA5; box-shadow:0 2px 8px rgba(24,95,165,.3); }
+  .nav-btn i { font-size:15px; }
 
-/* SECTION */
-.sec-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:28px 0 12px 4px}
+  /* screens */
+  .screen { display:none; } .screen.active { display:block; }
 
-/* LINK CARDS */
-.link-card{
-  background:var(--bg2);border:1px solid var(--border);border-radius:16px;
-  padding:16px 18px;margin-bottom:10px;
-  display:flex;align-items:center;gap:14px;
-  text-decoration:none;transition:all .18s;
-  cursor:pointer;
-}
-.link-card:hover{border-color:var(--blue);box-shadow:0 3px 16px rgba(26,86,219,0.09);transform:translateY(-1px)}
-.lc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.lc-body{flex:1}
-.lc-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
-.lc-sub{font-size:12px;color:var(--muted);line-height:1.4}
-.lc-arrow{font-size:18px;color:var(--muted);flex-shrink:0;transition:transform .15s}
-.link-card:hover .lc-arrow{transform:translateX(3px);color:var(--blue)}
+  /* kpis */
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:16px; }
+  .kpi { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius2); padding:13px 15px; }
+  .kpi-label { font-size:11px; color:var(--text2); margin-bottom:5px; }
+  .kpi-val { font-size:20px; font-weight:500; }
+  .kpi-sub { font-size:11px; color:var(--text2); margin-top:3px; }
+  .green{color:#1D9E75}.red{color:#E24B4A}.blue{color:#185FA5}.amber{color:#BA7517}.purple{color:#534AB7}
 
-/* BADGE */
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
-.b-blue{background:var(--sky);color:var(--blue)}
-.b-green{background:var(--green-dim);color:var(--green)}
-.b-amber{background:var(--amber-dim);color:var(--amber)}
-.b-purple{background:var(--purple-dim);color:var(--purple)}
-.b-teal{background:var(--teal-dim);color:var(--teal)}
-.b-coral{background:var(--coral-dim);color:var(--coral)}
+  /* cards */
+  .card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius2); padding:14px 16px; margin-bottom:12px; }
+  .card-title { font-size:11px; font-weight:500; color:var(--text2); text-transform:uppercase; letter-spacing:.05em; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+  @media(max-width:700px){ .row2,.row3{ grid-template-columns:1fr; } }
 
-/* FOOTER */
-.footer{text-align:center;padding:24px 16px 40px;font-size:12px;color:var(--muted)}
-.footer strong{color:var(--text)}
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { text-align:left; font-weight:500; color:var(--text2); padding:6px 8px; border-bottom:1px solid var(--border); font-size:11px; }
+  td { padding:6px 8px; border-bottom:1px solid var(--border); }
+  tr:last-child td { border-bottom:none; }
+  tr.trt td { font-weight:500; background:var(--bg2); border-top:1px solid var(--border2); }
 
-/* RESPONSIVE */
-@media(min-width:700px){
-  .hero{padding:72px 32px 60px}
-  .hero-brand{font-size:56px}
-  .content{padding:40px 24px 80px}
-}
+  /* badges */
+  .badge { display:inline-block; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:500; }
+  .bg{background:#EAF3DE;color:#3B6D11}.br{background:#FCEBEB;color:#A32D2D}
+  .ba{background:#FAEEDA;color:#854F0B}.bb{background:#E6F1FB;color:#185FA5}
+  .bp{background:#EEEDFE;color:#3C3489}.bgr{background:var(--bg2);color:var(--text2)}
+
+  /* alerts */
+  .alert { padding:9px 13px; border-radius:var(--radius); font-size:12px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .aw{background:#FAEEDA;color:#854F0B}.ao{background:#EAF3DE;color:#3B6D11}
+  .ae{background:#FCEBEB;color:#A32D2D}.ai{background:#E6F1FB;color:#185FA5}
+
+  /* progress bars */
+  .pr-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .pr-label { min-width:110px; font-size:11px; color:var(--text2); }
+  .pr-bar { flex:1; height:6px; background:var(--bg2); border-radius:3px; overflow:hidden; }
+  .pr-fill { height:100%; border-radius:3px; }
+  .pr-val { min-width:55px; text-align:right; font-size:11px; font-weight:500; }
+
+  /* chart */
+  .chart-wrap { position:relative; width:100%; height:175px; }
+
+  /* sueldo rows */
+  .sr { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .sr:last-child { border-bottom:none; }
+  .sl { color:var(--text2); }
+  .divider { border:none; border-top:1px solid var(--border); margin:8px 0; }
+
+  /* sub-tabs */
+  .subtab-row { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
+  .subtab { padding:6px 13px; border-radius:var(--radius); border:1px solid var(--border2); font-size:12px; cursor:pointer; background:transparent; color:var(--text2); font-family:var(--font); }
+  .subtab.active { background:var(--bg2); color:var(--text); font-weight:500; border-color:#888; }
+  .sub-panel { display:none; } .sub-panel.active { display:block; }
+
+  /* upload zone */
+  .upload-z { border:2px dashed var(--border2); border-radius:var(--radius2); padding:28px; text-align:center; cursor:pointer; margin-bottom:12px; transition:background .15s; }
+  .upload-z:hover { background:var(--bg2); }
+
+  /* imp card hover */
+  .imp-card { cursor:pointer; transition:border-color .15s, box-shadow .15s; }
+  .imp-card:hover { border-color:#185FA5; box-shadow:0 0 0 3px rgba(24,95,165,.1); }
+  .imp-hint { font-size:11px; color:#185FA5; margin-top:10px; display:flex; align-items:center; gap:5px; }
+
+  /* imp sub-panels nav */
+  .imp-nav { display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap; }
+  .in {
+    padding:7px 13px; font-size:11.5px; border:1.5px solid var(--border2);
+    background:var(--bg); cursor:pointer; color:var(--text2);
+    border-radius:8px; white-space:nowrap; font-family:var(--font);
+    transition:all .15s; font-weight:500; display:inline-flex; align-items:center; gap:5px;
+  }
+  .in:hover { background:var(--bg2); color:var(--text); }
+  .in.active { background:#0D1B40; color:#fff; border-color:#0D1B40; }
+  .ip { display:none; } .ip.active { display:block; }
+
+  /* source rows */
+  .src { display:flex; align-items:center; gap:9px; padding:8px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .src:last-child { border-bottom:none; }
+  .si { width:30px; height:30px; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .padr-item { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .padr-item:last-child { border-bottom:none; }
+  .pl { color:var(--text2); }
+  .cal-r { display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--border); font-size:11px; }
+  .cal-r:last-child { border-bottom:none; }
+
+  input[type=text] { border:1px solid var(--border2); border-radius:var(--radius); padding:6px 10px; font-size:12px; font-family:var(--font); outline:none; }
+  input[type=text]:focus { border-color:#185FA5; }
+  button.qbtn { font-size:12px; padding:6px 13px; border-radius:var(--radius); border:1px solid var(--border2); background:var(--bg2); cursor:pointer; font-family:var(--font); }
+  button.qbtn:hover { background:var(--border2); }
 </style>
 </head>
 <body>
+<div class="shell">
 
-<div class="hero">
-  <div class="hero-tag">Nani Fintech Project · Junio 2026</div>
-  <div class="hero-brand">Fin<span>IA</span></div>
-  <div class="hero-sub">Asesor financiero inteligente para familias y pymes argentinas</div>
-</div>
-
-<div class="content">
-
-  <!-- DOCUMENTOS -->
-  <div class="sec-label">📋 Documentos del proyecto</div>
-
-  <a class="link-card" href="plan_maestro_asesor_financiero.html">
-    <div class="lc-icon" style="background:#e8f0fe">📄</div>
-    <div class="lc-body">
-      <div class="lc-title">Plan Maestro v2.0 <span class="badge b-blue">actualizado</span></div>
-      <div class="lc-sub">Visión, módulos, modelo de negocio, roadmap y stack técnico completo</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_deck.html">
-    <div class="lc-icon" style="background:#f5f3ff">🎯</div>
-    <div class="lc-body">
-      <div class="lc-title">Deck para inversores</div>
-      <div class="lc-sub">9 slides navegables · Problema, solución, mercado, modelo y ask</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <!-- FLUJO DE LA APP -->
-  <div class="sec-label">📱 Flujo de la app — probalo en vivo</div>
-
-  <a class="link-card" href="finia_onboarding.html">
-    <div class="lc-icon" style="background:#ecfdf5">👋</div>
-    <div class="lc-body">
-      <div class="lc-title">1 · Registro y onboarding <span class="badge b-green">3 pasos</span></div>
-      <div class="lc-sub">Google, Apple, Microsoft, LinkedIn · Elige modo Familia o Negocio</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_welcome.html">
-    <div class="lc-icon" style="background:#fffbeb">💬</div>
-    <div class="lc-body">
-      <div class="lc-title">2 · Welcome — conocerte <span class="badge b-amber">7 preguntas</span></div>
-      <div class="lc-sub">Conversación guiada · Ocupación, ingresos, gastos, documentos, inversión</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_dashboard.html">
-    <div class="lc-icon" style="background:#e8f0fe">🏠</div>
-    <div class="lc-body">
-      <div class="lc-title">3 · Dashboard personal <span class="badge b-blue">familia</span></div>
-      <div class="lc-sub">Categorías de gastos · Variaciones · Vencimientos · Inversión del excedente</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_pyme.html">
-    <div class="lc-icon" style="background:#f0fdfa">🏢</div>
-    <div class="lc-body">
-      <div class="lc-title">4 · Dashboard pyme <span class="badge b-teal">negocio</span></div>
-      <div class="lc-sub">Clientes · Proveedores · Empleados · Impuestos · Excedente para invertir</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_chat.html">
-    <div class="lc-icon" style="background:#f5f3ff">🤖</div>
-    <div class="lc-body">
-      <div class="lc-title">5 · Chat con el asesor IA <span class="badge b-purple">IA real</span></div>
-      <div class="lc-sub">Agente conversacional con Claude API · Memoria de contexto financiero</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_inversiones.html">
-    <div class="lc-icon" style="background:#ecfdf5">📈</div>
-    <div class="lc-body">
-      <div class="lc-title">6 · Inversiones <span class="badge b-green">nuevo</span></div>
-      <div class="lc-sub">Test de inversor ultra simple + fondos FIMA reales + cartera recomendada</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_documentos.html">
-    <div class="lc-icon" style="background:#f0fdfa">📸</div>
-    <div class="lc-body">
-      <div class="lc-title">7 · Document Ingestion <span class="badge b-teal">nuevo</span></div>
-      <div class="lc-sub">Foto · QR ARCA · PDF — lee, interpreta y registra automáticamente</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_carga.html">
-    <div class="lc-icon" style="background:#ecfdf5">➕</div>
-    <div class="lc-body">
-      <div class="lc-title">8 · Cargar gasto o ingreso <span class="badge b-green">nuevo</span></div>
-      <div class="lc-sub">Foto · Chat con FinIA · Manual · Archivo — 4 caminos, un resultado</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_consolidado.html">
-    <div class="lc-icon" style="background:#e8f0fe">📊</div>
-    <div class="lc-body">
-      <div class="lc-title">9 · Vista consolidada <span class="badge b-blue">nuevo</span></div>
-      <div class="lc-sub">Todos los gastos e ingresos, por categoría y en línea de tiempo</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_demo_real.html">
-    <div class="lc-icon" style="background:#fef2f2">⭐</div>
-    <div class="lc-body">
-      <div class="lc-title">10 · Demo real <span class="badge b-coral">datos reales</span></div>
-      <div class="lc-sub">Dashboard con datos fiscales y de tarjetas reales · 4 tabs</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <!-- PRÓXIMAMENTE -->
-  <div class="sec-label">🚧 Próximamente</div>
-
-  <a class="link-card" href="finia_inversiones.html">
-    <div class="lc-icon" style="background:#ecfdf5">📈</div>
-    <div class="lc-body">
-      <div class="lc-title">6 · Inversiones <span class="badge b-green">nuevo</span></div>
-      <div class="lc-sub">Test de inversor ultra simple + fondos FIMA reales + cartera recomendada</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-  <a class="link-card" href="finia_landing.html">
-    <div class="lc-icon" style="background:#fef2f2">🌐</div>
-    <div class="lc-body">
-      <div class="lc-title">Landing page pública <span class="badge b-coral">nuevo</span></div>
-      <div class="lc-sub">Página de captación para familias y pymes · Con selector de perfil</div>
-    </div>
-    <div class="lc-arrow">→</div>
-  </a>
-
-</div>
-
-<div class="footer">
-  <strong>FinIA</strong> · Nani Fintech Project · Junio 2026<br>
-  <span style="margin-top:4px;display:block">Construido con Claude (Anthropic)</span>
-</div>
-
-<!-- ===== FINIA TOUR GUIADO ===== -->
-<style>
-.finia-tour-fab{position:fixed;bottom:24px;right:16px;z-index:200;background:linear-gradient(135deg,#1a56db,#1e63f0);color:#fff;border:none;border-radius:50px;padding:11px 18px;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(26,86,219,.35);display:flex;align-items:center;gap:7px;animation:tourPulse 2.4s infinite}
-@keyframes tourPulse{0%,100%{box-shadow:0 6px 20px rgba(26,86,219,.35)}50%{box-shadow:0 6px 28px rgba(26,86,219,.55)}}
-.finia-tour-fab.hide{display:none}
-
-.finia-tour-overlay{position:fixed;inset:0;background:rgba(10,31,68,.45);z-index:300;display:none;align-items:flex-end;justify-content:center}
-.finia-tour-overlay.show{display:flex}
-.finia-tour-card{background:#0a1f44;color:#fff;border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 22px 28px;font-family:'Plus Jakarta Sans',sans-serif;animation:tourUp .3s ease}
-@keyframes tourUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.finia-tour-progress{display:flex;gap:5px;margin-bottom:14px}
-.finia-tour-dot{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.15)}
-.finia-tour-dot.done{background:#60a5fa}
-.finia-tour-dot.active{background:#60a5fa;opacity:.5}
-.finia-tour-step{font-size:11px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.finia-tour-title{font-size:18px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px}
-.finia-tour-body{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:18px}
-.finia-tour-body strong{color:#60a5fa}
-.finia-tour-btns{display:flex;gap:8px}
-.finia-tour-next{flex:1;padding:13px;background:#1a56db;color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer}
-.finia-tour-skip{padding:13px 16px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:none;border-radius:12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
-</style>
-
-<div class="finia-tour-overlay" id="finia-tour-overlay">
-  <div class="finia-tour-card">
-    <div class="finia-tour-progress" id="finia-tour-progress"></div>
-    <div class="finia-tour-step" id="finia-tour-step"></div>
-    <div class="finia-tour-title" id="finia-tour-title"></div>
-    <div class="finia-tour-body" id="finia-tour-body"></div>
-    <div class="finia-tour-btns">
-      <button class="finia-tour-skip" onclick="finiaTourEnd()">Salir del tour</button>
-      <button class="finia-tour-next" id="finia-tour-next-btn" onclick="finiaTourNext()">Siguiente →</button>
-    </div>
+<!-- topbar -->
+<div class="topbar">
+  <div>
+    <div class="logo">Fin<span>IA</span></div>
+    <div class="topbar-meta">NEVRONES S.R.L. · CUIT 30-71234567-8 · Lunes 22 de junio de 2026</div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span class="conn-badge conn-ok"><span class="conn-dot"></span>ARCA conectado</span>
+    <span class="conn-badge" style="background:#FAEEDA;color:#854F0B"><span style="width:6px;height:6px;border-radius:50%;background:#BA7517"></span>Clave fiscal — fase 2</span>
   </div>
 </div>
 
-<button class="finia-tour-fab" id="finia-tour-fab" onclick="finiaTourStart()">▶ Ver demo guiada</button>
+<!-- main nav -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showScreen('caja',this)"><i class="ti ti-cash"></i>Control de caja</button>
+  <button class="nav-btn" onclick="showScreen('cobr',this)"><i class="ti ti-file-invoice"></i>Cobranzas</button>
+  <button class="nav-btn" onclick="showScreen('prov',this)"><i class="ti ti-truck-delivery"></i>Proveedores</button>
+  <button class="nav-btn" onclick="showScreen('suel',this)"><i class="ti ti-users"></i>Sueldos</button>
+  <button class="nav-btn" onclick="showScreen('imp',this)"><i class="ti ti-receipt-tax"></i>Impuestos</button>
+</div>
+
+<!-- ═══ CAJA ═══ -->
+<div id="s-caja" class="screen active">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Saldo actual</div><div class="kpi-val green">$ 2.847.500</div><div class="kpi-sub">al 22/06/2026</div></div>
+    <div class="kpi"><div class="kpi-label">Ingresos hoy</div><div class="kpi-val blue">$ 680.000</div><div class="kpi-sub">+12% vs ayer</div></div>
+    <div class="kpi"><div class="kpi-label">Egresos hoy</div><div class="kpi-val red">$ 410.000</div><div class="kpi-sub">3 pagos</div></div>
+    <div class="kpi"><div class="kpi-label">Resultado diario</div><div class="kpi-val green">$ 270.000</div><div class="kpi-sub">positivo</div></div>
+  </div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">movimientos del día</div>
+      <table><thead><tr><th>Hora</th><th>Concepto</th><th style="text-align:right">Importe</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--text2)">09:15</td><td>Cobro cliente ACME</td><td style="text-align:right;color:#1D9E75;font-weight:500">+$ 320.000</td></tr>
+        <tr><td style="color:var(--text2)">10:30</td><td>Pago proveedor TechCo</td><td style="text-align:right;color:#E24B4A;font-weight:500">-$ 180.000</td></tr>
+        <tr><td style="color:var(--text2)">11:00</td><td>Transferencia Galicia</td><td style="text-align:right;color:#1D9E75;font-weight:500">+$ 210.000</td></tr>
+        <tr><td style="color:var(--text2)">13:45</td><td>Honorarios contador</td><td style="text-align:right;color:#E24B4A;font-weight:500">-$ 85.000</td></tr>
+        <tr><td style="color:var(--text2)">15:20</td><td>Cobro suscripciones</td><td style="text-align:right;color:#1D9E75;font-weight:500">+$ 150.000</td></tr>
+        <tr><td style="color:var(--text2)">16:00</td><td>IIBB — AGIP</td><td style="text-align:right;color:#E24B4A;font-weight:500">-$ 145.000</td></tr>
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-title">flujo semanal</div>
+      <div class="chart-wrap"><canvas id="cajachart"></canvas></div>
+      <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#1D9E75"></span>Ingresos</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#E24B4A"></span>Egresos</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">proyección próximos 7 días</div>
+    <div class="pr-row"><span class="pr-label">Lun 23/06</span><div class="pr-bar"><div class="pr-fill" style="width:72%;background:#185FA5"></div></div><span class="pr-val blue">$ 3.2M</span></div>
+    <div class="pr-row"><span class="pr-label">Mar 24/06</span><div class="pr-bar"><div class="pr-fill" style="width:58%;background:#185FA5"></div></div><span class="pr-val blue">$ 2.6M</span></div>
+    <div class="pr-row"><span class="pr-label">Mié 25/06</span><div class="pr-bar"><div class="pr-fill" style="width:40%;background:#BA7517"></div></div><span class="pr-val amber">$ 1.8M</span></div>
+    <div class="pr-row"><span class="pr-label">Jue 26/06</span><div class="pr-bar"><div class="pr-fill" style="width:85%;background:#185FA5"></div></div><span class="pr-val blue">$ 3.8M</span></div>
+    <div class="pr-row"><span class="pr-label">Vie 27/06 ⚠</span><div class="pr-bar"><div class="pr-fill" style="width:30%;background:#E24B4A"></div></div><span class="pr-val red">$ 1.3M</span></div>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px"><i class="ti ti-info-circle" style="font-size:12px;margin-right:4px"></i>Viernes: vencimiento impositivo. Considerar refuerzo de fondos.</div>
+  </div>
+</div>
+
+<!-- ═══ COBRANZAS ═══ -->
+<div id="s-cobr" class="screen">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Total a cobrar</div><div class="kpi-val blue">$ 8.420.000</div><div class="kpi-sub">32 facturas</div></div>
+    <div class="kpi"><div class="kpi-label">Vencido</div><div class="kpi-val red">$ 1.950.000</div><div class="kpi-sub">8 facturas</div></div>
+    <div class="kpi"><div class="kpi-label">Por vencer 30d</div><div class="kpi-val amber">$ 3.210.000</div><div class="kpi-sub">próximos 30 días</div></div>
+    <div class="kpi"><div class="kpi-label">Cobrado mes</div><div class="kpi-val green">$ 5.680.000</div><div class="kpi-sub">efectividad 87%</div></div>
+  </div>
+  <div class="alert ae"><i class="ti ti-alert-circle" style="font-size:14px"></i>3 facturas vencidas hace más de 60 días — gestión urgente</div>
+  <div class="alert aw"><i class="ti ti-clock" style="font-size:14px"></i>5 facturas vencen esta semana — programar recordatorio</div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">cartera por antigüedad</div>
+      <div class="pr-row"><span class="pr-label">Al día</span><div class="pr-bar"><div class="pr-fill" style="width:55%;background:#1D9E75"></div></div><span class="pr-val green">55%</span></div>
+      <div class="pr-row"><span class="pr-label">1–30 días</span><div class="pr-bar"><div class="pr-fill" style="width:22%;background:#185FA5"></div></div><span class="pr-val blue">22%</span></div>
+      <div class="pr-row"><span class="pr-label">31–60 días</span><div class="pr-bar"><div class="pr-fill" style="width:12%;background:#BA7517"></div></div><span class="pr-val amber">12%</span></div>
+      <div class="pr-row"><span class="pr-label">+60 días</span><div class="pr-bar"><div class="pr-fill" style="width:11%;background:#E24B4A"></div></div><span class="pr-val red">11%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">cobranzas del mes</div>
+      <div class="chart-wrap"><canvas id="cobrchart"></canvas></div>
+      <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#1D9E75"></span>Cobrado</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;border-radius:2px;background:#E24B4A"></span>Vencido</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">facturas pendientes — prioridad alta</div>
+    <table><thead><tr><th>Cliente</th><th>Factura</th><th>Vto.</th><th>Días</th><th style="text-align:right">Neto</th><th style="text-align:right">IVA 21%</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Grupo Nexo SA</td><td>FC-0841</td><td>28/04</td><td style="color:#E24B4A;font-weight:500">55</td><td style="text-align:right">$ 561.983</td><td style="text-align:right;color:#BA7517">$ 118.017</td><td><span class="badge br">Vencida</span></td></tr>
+      <tr><td>Distribuidora Sur</td><td>FC-0855</td><td>15/05</td><td style="color:#E24B4A;font-weight:500">38</td><td style="text-align:right">$ 347.107</td><td style="text-align:right;color:#BA7517">$ 72.893</td><td><span class="badge br">Vencida</span></td></tr>
+      <tr><td>Comercial Norte</td><td>FC-0862</td><td>30/05</td><td style="color:#BA7517;font-weight:500">23</td><td style="text-align:right">$ 256.198</td><td style="text-align:right;color:#BA7517">$ 53.802</td><td><span class="badge ba">Gestión</span></td></tr>
+      <tr><td>TechSol SRL</td><td>FC-0881</td><td>25/06</td><td style="color:#185FA5">3</td><td style="text-align:right">$ 446.281</td><td style="text-align:right;color:#BA7517">$ 93.719</td><td><span class="badge bb">Vigente</span></td></tr>
+      <tr><td>Importadora BA</td><td>FC-0883</td><td>30/06</td><td style="color:#185FA5">8</td><td style="text-align:right">$ 231.405</td><td style="text-align:right;color:#BA7517">$ 48.595</td><td><span class="badge bg">Al día</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- ═══ PROVEEDORES ═══ -->
+<div id="s-prov" class="screen">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Total a pagar</div><div class="kpi-val blue">$ 5.130.000</div><div class="kpi-sub">18 facturas</div></div>
+    <div class="kpi"><div class="kpi-label">Esta semana</div><div class="kpi-val amber">$ 1.840.000</div><div class="kpi-sub">6 facturas</div></div>
+    <div class="kpi"><div class="kpi-label">Vencido</div><div class="kpi-val red">$ 320.000</div><div class="kpi-sub">2 facturas</div></div>
+    <div class="kpi"><div class="kpi-label">Pagado mes</div><div class="kpi-val green">$ 3.920.000</div><div class="kpi-sub">a tiempo 94%</div></div>
+  </div>
+  <div class="alert ae"><i class="ti ti-alert-circle" style="font-size:14px"></i>2 facturas vencidas — riesgo de mora e intereses</div>
+  <div class="alert ao"><i class="ti ti-circle-check" style="font-size:14px"></i>Fondos disponibles cubren 100% de los vencimientos de esta semana</div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">pagos por categoría</div>
+      <div class="pr-row"><span class="pr-label">Servicios IT</span><div class="pr-bar"><div class="pr-fill" style="width:35%;background:#185FA5"></div></div><span class="pr-val blue">35%</span></div>
+      <div class="pr-row"><span class="pr-label">Marketing</span><div class="pr-bar"><div class="pr-fill" style="width:22%;background:#185FA5"></div></div><span class="pr-val blue">22%</span></div>
+      <div class="pr-row"><span class="pr-label">Logística</span><div class="pr-bar"><div class="pr-fill" style="width:18%;background:#185FA5"></div></div><span class="pr-val blue">18%</span></div>
+      <div class="pr-row"><span class="pr-label">Honorarios</span><div class="pr-bar"><div class="pr-fill" style="width:15%;background:#185FA5"></div></div><span class="pr-val blue">15%</span></div>
+      <div class="pr-row"><span class="pr-label">Otros</span><div class="pr-bar"><div class="pr-fill" style="width:10%;background:#888780"></div></div><span class="pr-val" style="color:#888780">10%</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">vencimientos próx. 30 días</div>
+      <div class="chart-wrap"><canvas id="provchart"></canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">órdenes de pago — pendientes</div>
+    <table><thead><tr><th>Proveedor</th><th>Factura</th><th>Vto.</th><th>Categoría</th><th style="text-align:right">Neto</th><th style="text-align:right">IVA</th><th>Estado</th></tr></thead>
+    <tbody>
+      <tr><td>CloudHost SA</td><td>FP-2241</td><td>15/06</td><td>Servicios IT</td><td style="text-align:right">$ 148.760</td><td style="text-align:right;color:#BA7517">$ 31.240</td><td><span class="badge br">Vencida</span></td></tr>
+      <tr><td>Publimark SRL</td><td>FP-2249</td><td>18/06</td><td>Marketing</td><td style="text-align:right">$ 115.702</td><td style="text-align:right;color:#BA7517">$ 24.298</td><td><span class="badge br">Vencida</span></td></tr>
+      <tr><td>DataCenter BA</td><td>FP-2255</td><td>24/06</td><td>Servicios IT</td><td style="text-align:right">$ 429.752</td><td style="text-align:right;color:#BA7517">$ 90.248</td><td><span class="badge ba">Esta semana</span></td></tr>
+      <tr><td>LogiExpress</td><td>FP-2258</td><td>25/06</td><td>Logística</td><td style="text-align:right">$ 256.198</td><td style="text-align:right;color:#BA7517">$ 53.802</td><td><span class="badge ba">Esta semana</span></td></tr>
+      <tr><td>Estudio García</td><td>FP-2261</td><td>27/06</td><td>Honorarios</td><td style="text-align:right">$ 214.876</td><td style="text-align:right;color:#BA7517">$ 45.124</td><td><span class="badge ba">Esta semana</span></td></tr>
+      <tr><td>SaaS Tools Inc</td><td>FP-2264</td><td>30/06</td><td>Servicios IT</td><td style="text-align:right">$ 355.372</td><td style="text-align:right;color:#BA7517">$ 74.628</td><td><span class="badge bb">Próximo</span></td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- ═══ SUELDOS ═══ -->
+<div id="s-suel" class="screen">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">Masa salarial bruta</div><div class="kpi-val blue">$ 4.820.000</div><div class="kpi-sub">junio 2026</div></div>
+    <div class="kpi"><div class="kpi-label">Cargas sociales</div><div class="kpi-val amber">$ 1.157.000</div><div class="kpi-sub">24% empleador</div></div>
+    <div class="kpi"><div class="kpi-label">Neto a pagar</div><div class="kpi-val green">$ 3.614.000</div><div class="kpi-sub">11 empleados</div></div>
+    <div class="kpi"><div class="kpi-label">Fecha de pago</div><div class="kpi-val" style="font-size:15px">30/06/2026</div><div class="kpi-sub">8 días hábiles</div></div>
+  </div>
+  <div class="alert aw"><i class="ti ti-clock" style="font-size:14px"></i>SAC 1° cuota vence 30/06 — incluir $ 410.000 adicionales en liquidación</div>
+  <div class="row2">
+    <div class="card">
+      <div class="card-title">resumen de liquidación</div>
+      <div class="sr"><span class="sl">Sueldo bruto total</span><span style="font-weight:500">$ 4.820.000</span></div>
+      <div class="sr"><span class="sl">(-) Aportes empleado (18%)</span><span style="color:#E24B4A">-$ 867.600</span></div>
+      <div class="sr"><span class="sl">(-) Retención Ganancias</span><span style="color:#E24B4A">-$ 338.400</span></div>
+      <div class="sr"><span style="font-weight:500">Neto a depositar</span><span style="font-weight:500;color:#1D9E75">$ 3.614.000</span></div>
+      <div class="divider"></div>
+      <div class="sr"><span class="sl">(+) Cargas empleador (24%)</span><span style="color:#BA7517">$ 1.157.000</span></div>
+      <div class="sr"><span class="sl">(+) SAC 1° cuota</span><span style="color:#BA7517">$ 410.000</span></div>
+      <div class="sr" style="border:none"><span style="font-weight:500">Costo laboral total</span><span style="font-weight:500;color:#185FA5">$ 5.181.000</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">distribución por área</div>
+      <div class="chart-wrap"><canvas id="suelchart"></canvas></div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#185FA5"></span>Tecnología 42%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#1D9E75"></span>Comercial 28%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#BA7517"></span>Administración 18%</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:2px;background:#888780"></span>Operaciones 12%</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">detalle de empleados</div>
+    <table><thead><tr><th>Empleado</th><th>Área</th><th style="text-align:right">Bruto</th><th style="text-align:right">Aportes</th><th style="text-align:right">Ganancias</th><th style="text-align:right">Neto</th><th>SAC</th></tr></thead>
+    <tbody>
+      <tr><td>Lucía Fernández</td><td><span class="badge bb">Tecnología</span></td><td style="text-align:right">$ 680.000</td><td style="text-align:right;color:#E24B4A">-$ 122.400</td><td style="text-align:right;color:#E24B4A">-$ 58.000</td><td style="text-align:right;font-weight:500;color:#1D9E75">$ 499.600</td><td style="text-align:center"><span class="badge ba">Sí</span></td></tr>
+      <tr><td>Matías Roca</td><td><span class="badge bb">Tecnología</span></td><td style="text-align:right">$ 620.000</td><td style="text-align:right;color:#E24B4A">-$ 111.600</td><td style="text-align:right;color:#E24B4A">-$ 42.000</td><td style="text-align:right;font-weight:500;color:#1D9E75">$ 466.400</td><td style="text-align:center"><span class="badge ba">Sí</span></td></tr>
+      <tr><td>Valeria Torres</td><td><span class="badge bg">Comercial</span></td><td style="text-align:right">$ 540.000</td><td style="text-align:right;color:#E24B4A">-$ 97.200</td><td style="text-align:right;color:#E24B4A">-$ 28.000</td><td style="text-align:right;font-weight:500;color:#1D9E75">$ 414.800</td><td style="text-align:center"><span class="badge ba">Sí</span></td></tr>
+      <tr><td>Diego Salas</td><td><span class="badge ba">Administración</span></td><td style="text-align:right">$ 480.000</td><td style="text-align:right;color:#E24B4A">-$ 86.400</td><td style="text-align:right;color:#E24B4A">-$ 18.000</td><td style="text-align:right;font-weight:500;color:#1D9E75">$ 375.600</td><td style="text-align:center"><span class="badge ba">Sí</span></td></tr>
+      <tr><td>Carolina López</td><td><span class="badge bgr">Operaciones</span></td><td style="text-align:right">$ 390.000</td><td style="text-align:right;color:#E24B4A">-$ 70.200</td><td style="text-align:right;color:var(--text2)">—</td><td style="text-align:right;font-weight:500;color:#1D9E75">$ 319.800</td><td style="text-align:center"><span class="badge ba">Sí</span></td></tr>
+    </tbody></table>
+    <div style="font-size:11px;color:var(--text2);margin-top:8px">Mostrando 5 de 11 empleados · Acreditación vía transferencia bancaria</div>
+  </div>
+</div>
+
+<!-- ═══ IMPUESTOS ═══ -->
+<div id="s-imp" class="screen">
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-label">IVA saldo a pagar</div><div class="kpi-val red">$ 154.319</div><div class="kpi-sub">vence 20/07</div></div>
+    <div class="kpi"><div class="kpi-label">IIBB saldo a favor</div><div class="kpi-val green">$ 15.913</div><div class="kpi-sub">CABA junio</div></div>
+    <div class="kpi"><div class="kpi-label">Cargas soc. (30/06)</div><div class="kpi-val amber">$ 338.600</div><div class="kpi-sub">próximo venc.</div></div>
+    <div class="kpi"><div class="kpi-label">Imp. bancario</div><div class="kpi-val amber">$ 31.480</div><div class="kpi-sub">del extracto</div></div>
+    <div class="kpi"><div class="kpi-label">Gcias 5° anticipo</div><div class="kpi-val amber">$ 127.500</div><div class="kpi-sub">vence 26/06</div></div>
+    <div class="kpi"><div class="kpi-label">Carga fiscal julio</div><div class="kpi-val red">$ 747.384</div><div class="kpi-sub">proyectado</div></div>
+  </div>
+
+  <div class="imp-nav">
+    <button class="in active" onclick="swImp('estado',this)"><i class="ti ti-id-badge" style="font-size:11px;margin-right:3px"></i>Estado tributario</button>
+    <button class="in" onclick="swImp('iva',this)"><i class="ti ti-receipt" style="font-size:11px;margin-right:3px"></i>IVA</button>
+    <button class="in" onclick="swImp('iibb',this)"><i class="ti ti-map-pin" style="font-size:11px;margin-right:3px"></i>IIBB</button>
+    <button class="in" onclick="swImp('ganancias',this)"><i class="ti ti-trending-up" style="font-size:11px;margin-right:3px"></i>Ganancias</button>
+    <button class="in" onclick="swImp('ret',this)"><i class="ti ti-arrows-exchange" style="font-size:11px;margin-right:3px"></i>Retenciones</button>
+    <button class="in" onclick="swImp('banco',this)"><i class="ti ti-building-bank" style="font-size:11px;margin-right:3px"></i>Extracto</button>
+    <button class="in" onclick="swImp('cal',this)"><i class="ti ti-calendar-event" style="font-size:11px;margin-right:3px"></i>Vencimientos</button>
+    <button class="in" onclick="swImp('pos',this)"><i class="ti ti-chart-pie" style="font-size:11px;margin-right:3px"></i>Posición fiscal</button>
+  </div>
+
+  <!-- ESTADO -->
+  <div id="ip-estado" class="ip active">
+    <div class="alert ai"><i class="ti ti-info-circle" style="font-size:13px"></i>Datos del padrón ARCA — API pública · Actualizado hoy 08:14 hs</div>
+    <div class="row2">
+      <div class="card">
+        <div class="card-title">datos del contribuyente <span class="conn-badge conn-ok" style="font-size:9px"><span class="conn-dot"></span>ARCA</span></div>
+        <div class="padr-item"><span class="pl">CUIT</span><span style="font-weight:500">30-71234567-8</span></div>
+        <div class="padr-item"><span class="pl">Razón social</span><span style="font-weight:500">NEVRONES S.R.L.</span></div>
+        <div class="padr-item"><span class="pl">Tipo persona</span><span style="font-weight:500">Jurídica</span></div>
+        <div class="padr-item"><span class="pl">Inicio actividad</span><span style="font-weight:500">15/03/2022</span></div>
+        <div class="padr-item"><span class="pl">Actividad ppal.</span><span style="font-weight:500">749900 — Servicios</span></div>
+        <div class="padr-item"><span class="pl">Domicilio fiscal</span><span style="font-weight:500">CABA</span></div>
+        <div class="padr-item"><span class="pl">Estado ARCA</span><span class="badge bg">Activo</span></div>
+        <div class="padr-item"><span class="pl">Empleador</span><span class="badge bg">Sí · 11 empleados</span></div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-title">inscripciones vigentes</div>
+          <div class="src"><div class="si" style="background:#E6F1FB;color:#185FA5"><i class="ti ti-file-certificate"></i></div><div style="flex:1"><div style="font-weight:500;font-size:12px">IVA — Responsable Inscripto</div><div style="font-size:11px;color:var(--text2)">Desde 15/03/2022</div></div><span class="badge bg">Activo</span></div>
+          <div class="src"><div class="si" style="background:#EEEDFE;color:#534AB7"><i class="ti ti-map-2"></i></div><div style="flex:1"><div style="font-weight:500;font-size:12px">IIBB — CABA (AGIP)</div><div style="font-size:11px;color:var(--text2)">Alícuota 3% · Régimen general</div></div><span class="badge bg">Activo</span></div>
+          <div class="src"><div class="si" style="background:#EAF3DE;color:#3B6D11"><i class="ti ti-trending-up"></i></div><div style="flex:1"><div style="font-weight:500;font-size:12px">Ganancias — 3ra categoría</div><div style="font-size:11px;color:var(--text2)">Anticipos activos</div></div><span class="badge bg">Activo</span></div>
+          <div class="src"><div class="si" style="background:#FAEEDA;color:#854F0B"><i class="ti ti-users"></i></div><div style="flex:1"><div style="font-weight:500;font-size:12px">SUSS / Cargas sociales</div><div style="font-size:11px;color:var(--text2)">SICOSS activo</div></div><span class="badge bg">Activo</span></div>
+        </div>
+        <div class="card">
+          <div class="card-title">condición como agente</div>
+          <div class="src"><div style="flex:1"><div style="font-weight:500;font-size:12px">Agente retención Ganancias (RG 830)</div></div><span class="badge bg">Sí</span></div>
+          <div class="src"><div style="flex:1"><div style="font-weight:500;font-size:12px">Agente retención SUSS</div></div><span class="badge bg">Sí</span></div>
+          <div class="src"><div style="flex:1"><div style="font-weight:500;font-size:12px">Agente percepción IIBB</div></div><span class="badge bgr">No designado</span></div>
+          <div class="src"><div style="flex:1"><div style="font-weight:500;font-size:12px">Sujeto retención IVA especial</div></div><span class="badge bgr">No incluido</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">verificar CUIT en padrón ARCA <span class="conn-badge conn-ok" style="font-size:9px"><span class="conn-dot"></span>API tiempo real</span></div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cuit-in" placeholder="Ingresá CUIT (ej: 30-71234567-8)" style="flex:1">
+        <button class="qbtn" onclick="checkCuit()">Consultar ↗</button>
+      </div>
+      <div id="cuit-res" style="font-size:12px;margin-top:8px;color:var(--text2)"></div>
+    </div>
+  </div>
+
+  <!-- IVA -->
+  <div id="ip-iva" class="ip">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="kpi"><div class="kpi-label">Débito fiscal</div><div class="kpi-val amber">$ 377.475</div><div class="kpi-sub">ventas junio</div></div>
+      <div class="kpi"><div class="kpi-label">Crédito fiscal</div><div class="kpi-val green">$ 214.036</div><div class="kpi-sub">compras junio</div></div>
+      <div class="kpi"><div class="kpi-label">75% imp. crédito</div><div class="kpi-val green">$ 9.120</div><div class="kpi-sub">cómputo bancario</div></div>
+      <div class="kpi"><div class="kpi-label">Saldo a pagar</div><div class="kpi-val red">$ 154.319</div><div class="kpi-sub">vence 20/07</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">libro IVA ventas — junio 2026</div>
+      <div style="overflow-x:auto"><table style="min-width:580px">
+        <thead><tr><th>Fecha</th><th>Comprobante</th><th>Cliente</th><th style="text-align:right">Neto 21%</th><th style="text-align:right">IVA 21%</th><th style="text-align:right">Neto 10,5%</th><th style="text-align:right">IVA 10,5%</th><th style="text-align:right">Exento</th><th style="text-align:right">Total</th></tr></thead>
+        <tbody>
+          <tr><td>02/06</td><td><span class="badge bb">FA 0001-0241</span></td><td>Grupo Nexo SA</td><td style="text-align:right">480.000</td><td style="text-align:right;color:#BA7517">100.800</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">580.800</td></tr>
+          <tr><td>05/06</td><td><span class="badge bb">FA 0001-0242</span></td><td>TechSol SRL</td><td style="text-align:right">320.000</td><td style="text-align:right;color:#BA7517">67.200</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">387.200</td></tr>
+          <tr><td>14/06</td><td><span class="badge bb">FA 0001-0244</span></td><td>Comercial Norte</td><td style="text-align:right">540.000</td><td style="text-align:right;color:#BA7517">113.400</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">653.400</td></tr>
+          <tr><td>18/06</td><td><span class="badge bb">FA 0001-0245</span></td><td>Importadora BA</td><td style="text-align:right">120.000</td><td style="text-align:right;color:#BA7517">25.200</td><td style="text-align:right">45.000</td><td style="text-align:right;color:#BA7517">4.725</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">194.925</td></tr>
+          <tr><td>20/06</td><td><span class="badge bb">FA 0001-0246</span></td><td>LogiExpress</td><td style="text-align:right">105.000</td><td style="text-align:right;color:#BA7517">22.050</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">25.000</td><td style="text-align:right;font-weight:500">152.050</td></tr>
+          <tr class="trt"><td colspan="3">TOTALES</td><td style="text-align:right">1.565.000</td><td style="text-align:right;color:#BA7517">328.650</td><td style="text-align:right">45.000</td><td style="text-align:right;color:#BA7517">4.725</td><td style="text-align:right">25.000</td><td style="text-align:right;color:#185FA5">1.968.375</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">libro IVA compras — junio 2026</div>
+      <div style="overflow-x:auto"><table style="min-width:540px">
+        <thead><tr><th>Fecha</th><th>Comprobante</th><th>Proveedor</th><th style="text-align:right">Neto</th><th style="text-align:right">IVA 21%</th><th style="text-align:right">IVA 10,5%</th><th style="text-align:right">No comp.</th><th style="text-align:right">Total</th></tr></thead>
+        <tbody>
+          <tr><td>01/06</td><td><span class="badge bg">FC 0003-2241</span></td><td>CloudHost SA</td><td style="text-align:right">148.760</td><td style="text-align:right;color:#1D9E75">31.240</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">180.000</td></tr>
+          <tr><td>10/06</td><td><span class="badge bg">FC 0002-2255</span></td><td>DataCenter BA</td><td style="text-align:right">429.752</td><td style="text-align:right;color:#1D9E75">90.248</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">520.000</td></tr>
+          <tr><td>15/06</td><td><span class="badge bg">FC 0001-2258</span></td><td>LogiExpress</td><td style="text-align:right">256.198</td><td style="text-align:right;color:#1D9E75">53.802</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">310.000</td></tr>
+          <tr><td>18/06</td><td><span class="badge bg">FC 0001-2261</span></td><td>Estudio García</td><td style="text-align:right">68.182</td><td style="text-align:right">—</td><td style="text-align:right;color:#1D9E75">7.159</td><td style="text-align:right;color:var(--text2)">6.659</td><td style="text-align:right;font-weight:500">82.000</td></tr>
+          <tr><td>20/06</td><td><span class="badge bg">FC 0001-2264</span></td><td>Edesur SA</td><td style="text-align:right">34.711</td><td style="text-align:right;color:#1D9E75">7.289</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right;font-weight:500">42.000</td></tr>
+          <tr class="trt"><td colspan="3">TOTALES</td><td style="text-align:right">937.603</td><td style="text-align:right;color:#1D9E75">182.579</td><td style="text-align:right;color:#1D9E75">7.159</td><td style="text-align:right;color:var(--text2)">6.659</td><td style="text-align:right;color:#185FA5">1.134.000</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">determinación del saldo</div>
+      <div class="row3">
+        <div><div style="font-size:10px;color:var(--text2);font-weight:500;margin-bottom:6px;text-transform:uppercase">Débito fiscal</div>
+          <div class="padr-item"><span class="pl">IVA ventas 21%</span><span style="color:#E24B4A;font-weight:500">$ 328.650</span></div>
+          <div class="padr-item"><span class="pl">IVA ventas 10,5%</span><span style="color:#E24B4A;font-weight:500">$ 4.725</span></div>
+          <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Subtotal</span><span style="color:#E24B4A;font-weight:500">$ 333.375</span></div>
+        </div>
+        <div><div style="font-size:10px;color:var(--text2);font-weight:500;margin-bottom:6px;text-transform:uppercase">Crédito fiscal</div>
+          <div class="padr-item"><span class="pl">IVA compras 21%</span><span style="color:#1D9E75;font-weight:500">$ 182.579</span></div>
+          <div class="padr-item"><span class="pl">IVA compras 10,5%</span><span style="color:#1D9E75;font-weight:500">$ 7.159</span></div>
+          <div class="padr-item"><span class="pl">75% imp. crédito</span><span style="color:#1D9E75;font-weight:500">$ 9.120</span></div>
+          <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Subtotal</span><span style="color:#1D9E75;font-weight:500">$ 198.858</span></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--radius2);padding:14px;text-align:center">
+          <div style="font-size:10px;color:var(--text2);margin-bottom:6px;text-transform:uppercase">Saldo a ingresar</div>
+          <div style="font-size:26px;font-weight:500;color:#E24B4A">$ 134.517</div>
+          <div class="divider"></div>
+          <div style="font-size:11px;color:var(--text2)">Vence <strong>20/07/2026</strong></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px">F.731 · AFIP en línea</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IIBB -->
+  <div id="ip-iibb" class="ip">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr))">
+      <div class="kpi"><div class="kpi-label">Base imponible</div><div class="kpi-val blue">$ 1.820.000</div><div class="kpi-sub">ventas netas</div></div>
+      <div class="kpi"><div class="kpi-label">IIBB devengado</div><div class="kpi-val amber">$ 54.600</div><div class="kpi-sub">alícuota 3%</div></div>
+      <div class="kpi"><div class="kpi-label">Percepciones sufridas</div><div class="kpi-val green">$ 28.513</div><div class="kpi-sub">a cuenta</div></div>
+      <div class="kpi"><div class="kpi-label">Anticipos pagados</div><div class="kpi-val green">$ 42.000</div><div class="kpi-sub">AGIP junio</div></div>
+      <div class="kpi"><div class="kpi-label">Saldo a favor</div><div class="kpi-val green">$ 15.913</div><div class="kpi-sub">acumula próx. mes</div></div>
+    </div>
+    <div class="alert ao"><i class="ti ti-circle-check" style="font-size:13px"></i>Saldo a favor — percepciones y anticipos superan el devengado del mes</div>
+    <div class="row2">
+      <div class="card">
+        <div class="card-title">determinación IIBB — CABA</div>
+        <div class="padr-item"><span class="pl">Ventas gravadas</span><span style="font-weight:500">$ 1.820.000</span></div>
+        <div class="padr-item"><span class="pl">Alícuota AGIP</span><span style="font-weight:500">3,00%</span></div>
+        <div class="padr-item"><span class="pl">IIBB bruto</span><span style="color:#BA7517;font-weight:500">$ 54.600</span></div>
+        <div class="padr-item"><span class="pl">(-) Percepciones</span><span style="color:#1D9E75;font-weight:500">-$ 28.513</span></div>
+        <div class="padr-item"><span class="pl">(-) Anticipos</span><span style="color:#1D9E75;font-weight:500">-$ 42.000</span></div>
+        <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Saldo (a favor)</span><span style="color:#1D9E75;font-weight:500">-$ 15.913</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:6px">Vence 15/07 · CM03 local CABA</div>
+      </div>
+      <div class="card">
+        <div class="card-title">percepciones sufridas</div>
+        <table>
+          <thead><tr><th>Proveedor</th><th>Fecha</th><th style="text-align:right">Importe</th><th>Juris.</th></tr></thead>
+          <tbody>
+            <tr><td>CloudHost SA</td><td>01/06</td><td style="text-align:right;color:#534AB7">$ 4.463</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>Publimark SRL</td><td>06/06</td><td style="text-align:right;color:#534AB7">$ 3.471</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>DataCenter BA</td><td>10/06</td><td style="text-align:right;color:#534AB7">$ 12.893</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>LogiExpress</td><td>15/06</td><td style="text-align:right;color:#534AB7">$ 7.686</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr class="trt"><td colspan="2">Total</td><td style="text-align:right;color:#534AB7">$ 28.513</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">evolución IIBB — 6 meses</div>
+      <div class="chart-wrap"><canvas id="iibbchart"></canvas></div>
+      <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#534AB7"></span>IIBB devengado</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#1D9E75"></span>Percepciones + anticipos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GANANCIAS -->
+  <div id="ip-ganancias" class="ip">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+      <div class="kpi"><div class="kpi-label">Resultado contable YTD</div><div class="kpi-val blue">$ 3.240.000</div><div class="kpi-sub">ene–jun 2026</div></div>
+      <div class="kpi"><div class="kpi-label">Resultado impositivo est.</div><div class="kpi-val blue">$ 2.920.000</div><div class="kpi-sub">ajustes aplicados</div></div>
+      <div class="kpi"><div class="kpi-label">Impuesto estimado (35%)</div><div class="kpi-val amber">$ 1.022.000</div><div class="kpi-sub">anual</div></div>
+      <div class="kpi"><div class="kpi-label">Anticipos pagados</div><div class="kpi-val green">$ 510.000</div><div class="kpi-sub">4 de 10 cuotas</div></div>
+    </div>
+    <div class="alert ai"><i class="ti ti-lock" style="font-size:13px"></i>DDJJ anual y saldo real disponibles con clave fiscal — habilitá en fase 2</div>
+    <div class="row2">
+      <div class="card">
+        <div class="card-title">anticipos ganancias 2026</div>
+        <table>
+          <thead><tr><th>Cuota</th><th>Vencimiento</th><th style="text-align:right">Importe</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>1°</td><td>26/02/2026</td><td style="text-align:right">$ 127.500</td><td><span class="badge bg">Pagado</span></td></tr>
+            <tr><td>2°</td><td>26/03/2026</td><td style="text-align:right">$ 127.500</td><td><span class="badge bg">Pagado</span></td></tr>
+            <tr><td>3°</td><td>28/04/2026</td><td style="text-align:right">$ 127.500</td><td><span class="badge bg">Pagado</span></td></tr>
+            <tr><td>4°</td><td>26/05/2026</td><td style="text-align:right">$ 127.500</td><td><span class="badge bg">Pagado</span></td></tr>
+            <tr><td>5°</td><td>26/06/2026</td><td style="text-align:right">$ 127.500</td><td><span class="badge ba">Próximo</span></td></tr>
+            <tr><td>6° al 10°</td><td>Jul–Nov 2026</td><td style="text-align:right">$ 637.500</td><td><span class="badge bb">Futuro</span></td></tr>
+            <tr class="trt"><td colspan="2">Total anticipos</td><td style="text-align:right">$ 1.275.000</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">retenciones practicadas — SICORE</div>
+        <table>
+          <thead><tr><th>Proveedor</th><th>Régimen</th><th style="text-align:right">Base</th><th style="text-align:right">Ret. Gcias</th></tr></thead>
+          <tbody>
+            <tr><td>CloudHost SA</td><td>501</td><td style="text-align:right">$ 148.760</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 11.907</td></tr>
+            <tr><td>DataCenter BA</td><td>501</td><td style="text-align:right">$ 429.752</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 34.380</td></tr>
+            <tr><td>Estudio García</td><td>507</td><td style="text-align:right">$ 214.876</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 17.190</td></tr>
+            <tr class="trt"><td colspan="2">Total Ganancias</td><td style="text-align:right">$ 793.388</td><td style="text-align:right;color:#534AB7">$ 63.477</td></tr>
+          </tbody>
+        </table>
+        <div class="divider"></div>
+        <table>
+          <thead><tr><th>Proveedor</th><th>Régimen</th><th style="text-align:right">Base</th><th style="text-align:right">Ret. SUSS</th></tr></thead>
+          <tbody>
+            <tr><td>DataCenter BA</td><td>795</td><td style="text-align:right">$ 429.752</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 21.488</td></tr>
+            <tr class="trt"><td colspan="2">Total SUSS</td><td style="text-align:right">$ 429.752</td><td style="text-align:right;color:#534AB7">$ 21.488</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--text2);margin-top:8px">Presentación SICORE quincenal · próx. vencimiento 05/07</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETENCIONES -->
+  <div id="ip-ret" class="ip">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="kpi"><div class="kpi-label">Ret. Gcias practicadas</div><div class="kpi-val purple">$ 63.477</div><div class="kpi-sub">SICORE</div></div>
+      <div class="kpi"><div class="kpi-label">Ret. SUSS practicadas</div><div class="kpi-val purple">$ 21.488</div><div class="kpi-sub">honorarios</div></div>
+      <div class="kpi"><div class="kpi-label">Perc. IIBB sufridas</div><div class="kpi-val green">$ 28.513</div><div class="kpi-sub">a cuenta IIBB</div></div>
+      <div class="kpi"><div class="kpi-label">Ret. IVA sufridas</div><div class="kpi-val green">$ 0</div><div class="kpi-sub">no aplica</div></div>
+    </div>
+    <div class="alert ao"><i class="ti ti-circle-check" style="font-size:13px"></i>No figurás en padrón de retención IVA ni IIBB este período — verificado en ARCA</div>
+    <div class="row2">
+      <div class="card">
+        <div class="card-title">retenciones que practicamos</div>
+        <div style="font-size:10px;font-weight:500;color:var(--text2);margin-bottom:6px;text-transform:uppercase">Ganancias RG 830</div>
+        <table>
+          <thead><tr><th>Proveedor</th><th style="text-align:right">Base</th><th style="text-align:right">%</th><th style="text-align:right">Importe</th></tr></thead>
+          <tbody>
+            <tr><td>CloudHost SA</td><td style="text-align:right">148.760</td><td style="text-align:right">8%</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 11.907</td></tr>
+            <tr><td>DataCenter BA</td><td style="text-align:right">429.752</td><td style="text-align:right">8%</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 34.380</td></tr>
+            <tr><td>Estudio García</td><td style="text-align:right">214.876</td><td style="text-align:right">8%</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 17.190</td></tr>
+            <tr class="trt"><td colspan="3">Total Ganancias</td><td style="text-align:right;color:#534AB7">$ 63.477</td></tr>
+          </tbody>
+        </table>
+        <div class="divider"></div>
+        <div style="font-size:10px;font-weight:500;color:var(--text2);margin-bottom:6px;text-transform:uppercase">SUSS RG 2682</div>
+        <table>
+          <thead><tr><th>Proveedor</th><th style="text-align:right">Base</th><th style="text-align:right">%</th><th style="text-align:right">Importe</th></tr></thead>
+          <tbody>
+            <tr><td>DataCenter BA</td><td style="text-align:right">429.752</td><td style="text-align:right">5%</td><td style="text-align:right;color:#534AB7;font-weight:500">$ 21.488</td></tr>
+            <tr class="trt"><td colspan="3">Total SUSS</td><td style="text-align:right;color:#534AB7">$ 21.488</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">retenciones y percepciones que nos practican</div>
+        <div style="font-size:10px;font-weight:500;color:var(--text2);margin-bottom:6px;text-transform:uppercase">Percepciones IIBB sufridas</div>
+        <table>
+          <thead><tr><th>Agente</th><th>Fecha</th><th style="text-align:right">Importe</th><th>Juris.</th></tr></thead>
+          <tbody>
+            <tr><td>CloudHost SA</td><td>01/06</td><td style="text-align:right;color:#1D9E75">$ 4.463</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>Publimark SRL</td><td>06/06</td><td style="text-align:right;color:#1D9E75">$ 3.471</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>DataCenter BA</td><td>10/06</td><td style="text-align:right;color:#1D9E75">$ 12.893</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr><td>LogiExpress</td><td>15/06</td><td style="text-align:right;color:#1D9E75">$ 7.686</td><td><span class="badge bp">CABA</span></td></tr>
+            <tr class="trt"><td colspan="2">Total</td><td style="text-align:right;color:#1D9E75">$ 28.513</td><td></td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--text2);margin-top:8px">Computable como pago a cuenta de IIBB · CM03</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTRACTO -->
+  <div id="ip-banco" class="ip">
+    <div id="uz" class="upload-z" onclick="doUp()">
+      <i class="ti ti-file-upload" style="font-size:30px;color:var(--text2);display:block;margin-bottom:10px"></i>
+      <div style="font-size:14px;font-weight:500;margin-bottom:5px">Subir extracto bancario</div>
+      <div style="font-size:12px;color:var(--text2)">PDF · XLS · CSV — Galicia, Santander, BBVA, Macro, Nación, ICBC</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">FinIA identifica automáticamente el impacto impositivo de cada movimiento</div>
+    </div>
+    <div id="extr" style="display:none">
+      <div class="alert ao"><i class="ti ti-circle-check" style="font-size:13px"></i>Extracto procesado — Banco Galicia · Cta. 014-3-00012345-6 · Junio 2026 · 47 movimientos · 10 con impacto fiscal</div>
+      <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Imp. débito (0,6%)</div><div class="kpi-val red">$ 24.804</div><div class="kpi-sub">sobre débitos</div></div>
+        <div class="kpi"><div class="kpi-label">Imp. crédito (0,6%)</div><div class="kpi-val amber">$ 12.160</div><div class="kpi-sub">75% → crédito IVA</div></div>
+        <div class="kpi"><div class="kpi-label">ABL / tasas munic.</div><div class="kpi-val amber">$ 8.450</div><div class="kpi-sub">2 débitos auto.</div></div>
+        <div class="kpi"><div class="kpi-label">Imp. automotor</div><div class="kpi-val amber">$ 2.650</div><div class="kpi-sub">Toyota SW4</div></div>
+        <div class="kpi"><div class="kpi-label">Pagos AFIP/AGIP</div><div class="kpi-val green">$ 182.400</div><div class="kpi-sub">3 declarados</div></div>
+        <div class="kpi"><div class="kpi-label">Sin clasificar</div><div class="kpi-val blue">3 mov.</div><div class="kpi-sub">revisar</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">movimientos con impacto fiscal — identificados por IA</div>
+        <div style="overflow-x:auto"><table style="min-width:540px">
+          <thead><tr><th>Fecha</th><th>Descripción</th><th style="text-align:right">Importe</th><th>Impuesto</th><th style="text-align:right">Monto</th><th>Tratamiento</th></tr></thead>
+          <tbody>
+            <tr><td>03/06</td><td>Débito — transf. proveedor</td><td style="text-align:right;color:#E24B4A">-$ 520.000</td><td><span class="badge br" style="font-size:9px">Imp. débito 0,6%</span></td><td style="text-align:right;color:#E24B4A;font-weight:500">$ 3.120</td><td><span class="badge bgr">Gasto deducible</span></td></tr>
+            <tr><td>05/06</td><td>Crédito — cobro cliente</td><td style="text-align:right;color:#1D9E75">+$ 619.200</td><td><span class="badge ba" style="font-size:9px">Imp. crédito 0,6%</span></td><td style="text-align:right;color:#BA7517;font-weight:500">$ 3.715</td><td><span class="badge bg">75% cta. IVA</span></td></tr>
+            <tr><td>08/06</td><td>Débito auto. — ABL CABA</td><td style="text-align:right;color:#E24B4A">-$ 5.800</td><td><span class="badge bp" style="font-size:9px">Tasa municipal</span></td><td style="text-align:right;color:#534AB7;font-weight:500">$ 5.800</td><td><span class="badge bgr">Gasto administr.</span></td></tr>
+            <tr><td>10/06</td><td>Débito — AFIP IVA F.731</td><td style="text-align:right;color:#E24B4A">-$ 98.400</td><td><span class="badge ba" style="font-size:9px">IVA mensual</span></td><td style="text-align:right;color:#BA7517;font-weight:500">$ 98.400</td><td><span class="badge bg">Declarado AFIP</span></td></tr>
+            <tr><td>12/06</td><td>Débito auto. — Patente SW4</td><td style="text-align:right;color:#E24B4A">-$ 2.650</td><td><span class="badge bp" style="font-size:9px">Imp. automotor</span></td><td style="text-align:right;color:#534AB7;font-weight:500">$ 2.650</td><td><span class="badge br">No deducible</span></td></tr>
+            <tr><td>15/06</td><td>Débito — AGIP IIBB anticipo</td><td style="text-align:right;color:#E24B4A">-$ 42.000</td><td><span class="badge bp" style="font-size:9px">IIBB CABA</span></td><td style="text-align:right;color:#534AB7;font-weight:500">$ 42.000</td><td><span class="badge bg">Declarado AGIP</span></td></tr>
+            <tr><td>18/06</td><td>Débito — Edesur oficina</td><td style="text-align:right;color:#E24B4A">-$ 8.400</td><td><span class="badge ba" style="font-size:9px">IVA en servicio</span></td><td style="text-align:right;color:#BA7517;font-weight:500">$ 1.764</td><td><span class="badge bg">Crédito fiscal</span></td></tr>
+            <tr><td>20/06</td><td>Débito — transf. nómina</td><td style="text-align:right;color:#E24B4A">-$ 3.614.000</td><td><span class="badge ba" style="font-size:9px">Imp. débito 0,6%</span></td><td style="text-align:right;color:#BA7517;font-weight:500">$ 21.684</td><td><span class="badge bgr">Exento — sueldos</span></td></tr>
+            <tr style="background:var(--bg2)"><td>22/06</td><td style="color:#BA7517;font-weight:500">Débito — concepto no identificado</td><td style="text-align:right;color:#E24B4A">-$ 15.000</td><td><span class="badge ba" style="font-size:9px">Sin clasificar</span></td><td style="text-align:right">—</td><td><button class="qbtn" style="font-size:10px;padding:2px 8px" onclick="alert('En el MVP real: clasificación asistida por IA con sugerencias automáticas')">Clasificar ↗</button></td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENCIMIENTOS -->
+  <div id="ip-cal" class="ip">
+    <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">
+      <div class="kpi"><div class="kpi-label">Vence esta semana</div><div class="kpi-val red">$ 466.100</div><div class="kpi-sub">2 obligaciones</div></div>
+      <div class="kpi"><div class="kpi-label">Vence este mes</div><div class="kpi-val amber">$ 747.384</div><div class="kpi-sub">5 obligaciones</div></div>
+      <div class="kpi"><div class="kpi-label">Próximo trimestre</div><div class="kpi-val blue">$ 1.985.600</div><div class="kpi-sub">estimado</div></div>
+      <div class="kpi"><div class="kpi-label">Pagados junio</div><div class="kpi-val green">$ 322.400</div><div class="kpi-sub">3 cumplidos</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">calendario julio–septiembre 2026</div>
+      <div class="cal-r" style="font-size:10px;font-weight:500;color:var(--text2);padding-bottom:5px">
+        <span style="min-width:65px">Fecha</span><span style="min-width:55px">Días</span><span style="min-width:100px">Impuesto</span><span style="min-width:85px">Organismo</span><span style="flex:1">Concepto</span><span style="min-width:90px;text-align:right">Estimado</span><span style="min-width:65px"></span>
+      </div>
+      <div class="cal-r"><span style="min-width:65px;color:#E24B4A;font-weight:500">26/06</span><span style="min-width:55px"><span class="badge br">2 días</span></span><span style="min-width:100px">Ganancias</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">Anticipo 5° cuota</span><span style="min-width:90px;text-align:right;color:#BA7517;font-weight:500">$ 127.500</span><span style="min-width:65px"><span class="badge ba">Próximo</span></span></div>
+      <div class="cal-r"><span style="min-width:65px;color:#E24B4A;font-weight:500">30/06</span><span style="min-width:55px"><span class="badge br">6 días</span></span><span style="min-width:100px">Cargas Soc.</span><span style="min-width:85px;color:var(--text2)">AFIP SUSS</span><span style="flex:1;color:var(--text2)">Sueldos junio + SAC</span><span style="min-width:90px;text-align:right;color:#BA7517;font-weight:500">$ 338.600</span><span style="min-width:65px"><span class="badge ba">Próximo</span></span></div>
+      <div class="cal-r"><span style="min-width:65px">05/07</span><span style="min-width:55px"><span class="badge bb">11 d.</span></span><span style="min-width:100px">SICORE</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">Ret. Gcias/SUSS 2° quincena</span><span style="min-width:90px;text-align:right;font-weight:500">$ 84.965</span><span style="min-width:65px"><span class="badge bb">Futuro</span></span></div>
+      <div class="cal-r"><span style="min-width:65px">15/07</span><span style="min-width:55px"><span class="badge bb">21 d.</span></span><span style="min-width:100px">IIBB</span><span style="min-width:85px;color:var(--text2)">AGIP CABA</span><span style="flex:1;color:var(--text2)">Anticipo julio · CM03</span><span style="min-width:90px;text-align:right;font-weight:500">$ 42.000</span><span style="min-width:65px"><span class="badge bb">Futuro</span></span></div>
+      <div class="cal-r"><span style="min-width:65px">20/07</span><span style="min-width:55px"><span class="badge bb">26 d.</span></span><span style="min-width:100px">IVA</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">DDJJ junio 2026 · F.731</span><span style="min-width:90px;text-align:right;font-weight:500">$ 134.517</span><span style="min-width:65px"><span class="badge bb">Futuro</span></span></div>
+      <div class="cal-r"><span style="min-width:65px">26/07</span><span style="min-width:55px"><span class="badge bb">32 d.</span></span><span style="min-width:100px">Ganancias</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">Anticipo 6° cuota</span><span style="min-width:90px;text-align:right;font-weight:500">$ 127.500</span><span style="min-width:65px"><span class="badge bb">Futuro</span></span></div>
+      <div class="cal-r"><span style="min-width:65px">31/07</span><span style="min-width:55px"><span class="badge bb">37 d.</span></span><span style="min-width:100px">Cargas Soc.</span><span style="min-width:85px;color:var(--text2)">AFIP SUSS</span><span style="flex:1;color:var(--text2)">Sueldos julio</span><span style="min-width:90px;text-align:right;font-weight:500">$ 338.600</span><span style="min-width:65px"><span class="badge bb">Futuro</span></span></div>
+      <div class="cal-r"><span style="min-width:65px;color:var(--text2)">20/08</span><span style="min-width:55px"><span class="badge bgr">57 d.</span></span><span style="min-width:100px">IVA</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">DDJJ julio 2026</span><span style="min-width:90px;text-align:right;color:var(--text2)">~$ 140.000</span><span style="min-width:65px"><span class="badge bgr">Estimado</span></span></div>
+      <div class="cal-r"><span style="min-width:65px;color:var(--text2)">20/09</span><span style="min-width:55px"><span class="badge bgr">88 d.</span></span><span style="min-width:100px">IVA</span><span style="min-width:85px;color:var(--text2)">AFIP</span><span style="flex:1;color:var(--text2)">DDJJ agosto 2026</span><span style="min-width:90px;text-align:right;color:var(--text2)">~$ 140.000</span><span style="min-width:65px"><span class="badge bgr">Estimado</span></span></div>
+    </div>
+  </div>
+
+  <!-- POSICIÓN -->
+  <div id="ip-pos" class="ip">
+    <div class="row3">
+      <div class="card">
+        <div class="card-title">IVA junio</div>
+        <div class="padr-item"><span class="pl">Débito fiscal</span><span style="color:#E24B4A;font-weight:500">$ 333.375</span></div>
+        <div class="padr-item"><span class="pl">(-) Crédito fiscal</span><span style="color:#1D9E75;font-weight:500">-$ 189.738</span></div>
+        <div class="padr-item"><span class="pl">(-) 75% imp. crédito</span><span style="color:#1D9E75;font-weight:500">-$ 9.120</span></div>
+        <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Saldo a pagar</span><span class="red" style="font-weight:500">$ 134.517</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:5px">Vence 20/07</div>
+      </div>
+      <div class="card">
+        <div class="card-title">IIBB junio</div>
+        <div class="padr-item"><span class="pl">Devengado (3%)</span><span style="color:#BA7517;font-weight:500">$ 54.600</span></div>
+        <div class="padr-item"><span class="pl">(-) Percepciones</span><span style="color:#1D9E75;font-weight:500">-$ 28.513</span></div>
+        <div class="padr-item"><span class="pl">(-) Anticipos</span><span style="color:#1D9E75;font-weight:500">-$ 42.000</span></div>
+        <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Saldo a favor</span><span class="green" style="font-weight:500">-$ 15.913</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:5px">Vence 15/07</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ganancias 2026</div>
+        <div class="padr-item"><span class="pl">Res. impositivo est.</span><span style="color:#185FA5;font-weight:500">$ 2.920.000</span></div>
+        <div class="padr-item"><span class="pl">Impuesto (35%)</span><span style="color:#BA7517;font-weight:500">$ 1.022.000</span></div>
+        <div class="padr-item"><span class="pl">(-) Anticipos pagados</span><span style="color:#1D9E75;font-weight:500">-$ 510.000</span></div>
+        <div class="padr-item" style="border-top:1px solid var(--border2)"><span style="font-weight:500">Saldo estim. DDJJ</span><span class="red" style="font-weight:500">$ 512.000</span></div>
+        <div style="font-size:11px;color:var(--text2);margin-top:5px">DDJJ anual dic. 2026</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">carga impositiva mensual — evolución</div>
+      <div class="chart-wrap" style="height:180px"><canvas id="poschart"></canvas></div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;font-size:11px;color:var(--text2)">
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#BA7517"></span>IVA neto</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#534AB7"></span>IIBB</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#185FA5"></span>Ganancias ant.</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#E24B4A"></span>Imp. bancario</span>
+        <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:2px;background:#888780"></span>Municipales</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">caja impositiva julio vs. fondos disponibles</div>
+      <div class="row2">
+        <div>
+          <div class="pr-row"><span class="pr-label">IVA junio (20/07)</span><div class="pr-bar"><div class="pr-fill" style="width:50%;background:#BA7517"></div></div><span class="pr-val amber">$ 134.517</span></div>
+          <div class="pr-row"><span class="pr-label">Ganancias (26/07)</span><div class="pr-bar"><div class="pr-fill" style="width:48%;background:#185FA5"></div></div><span class="pr-val blue">$ 127.500</span></div>
+          <div class="pr-row"><span class="pr-label">SICORE (05/07)</span><div class="pr-bar"><div class="pr-fill" style="width:32%;background:#534AB7"></div></div><span class="pr-val purple">$ 84.965</span></div>
+          <div class="pr-row"><span class="pr-label">IIBB (15/07)</span><div class="pr-bar"><div class="pr-fill" style="width:16%;background:#534AB7"></div></div><span class="pr-val purple">$ 42.000</span></div>
+          <div class="pr-row"><span class="pr-label">Cargas soc. (31/07)</span><div class="pr-bar"><div class="pr-fill" style="width:100%;background:#E24B4A"></div></div><span class="pr-val red">$ 338.600</span></div>
+        </div>
+        <div style="background:var(--bg2);border-radius:var(--radius2);padding:16px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:5px">Total impuestos julio</div>
+          <div style="font-size:26px;font-weight:500;color:#E24B4A">$ 727.582</div>
+          <div class="divider" style="width:100%"></div>
+          <div style="font-size:11px;color:var(--text2)">Saldo caja disponible</div>
+          <div style="font-size:20px;font-weight:500;color:#1D9E75;margin-top:3px">$ 2.847.500</div>
+          <div style="font-size:11px;color:#1D9E75;margin-top:5px;font-weight:500">✓ Fondos suficientes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- fin s-imp -->
+
+</div><!-- fin shell -->
 
 <script>
-const FINIA_TOUR_STEPS = [
-  { page:'finia_onboarding.html', title:'1 · Te registrás', body:'Google, Apple, Microsoft o LinkedIn. <strong>Menos de 1 minuto</strong> — sin formularios largos.' },
-  { page:'finia_welcome.html', title:'2 · FinIA te conoce', body:'Chat conversacional. Con tu CUIL/CUIT consultamos <strong>ARCA, RENAPER y ANSES</strong> para armar tu perfil sin que escribas nada.' },
-  { page:'finia_dashboard.html', title:'3 · Tu balance, claro', body:'Un número grande: cuánto te sobra. Categorías, vencimientos e inversión del excedente — todo en una pantalla.' },
-  { page:'finia_carga.html', title:'4 · Cargar es instantáneo', body:'Foto, chat, manual o archivo. <strong>FinIA lee, interpreta y lo suma a tu balance</strong> automáticamente.' },
-];
-
-function finiaTourState(){
-  try { return JSON.parse(localStorage.getItem('finia_tour')||'null'); }
-  catch(e){ return null; }
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  btn.classList.add('active');
 }
-function finiaTourSave(s){ localStorage.setItem('finia_tour', JSON.stringify(s)); }
-function finiaTourClear(){ localStorage.removeItem('finia_tour'); }
-
-function finiaTourStart(){
-  finiaTourSave({ step: 0, active: true });
-  finiaTourGoToStep(0);
+function swImp(id, btn) {
+  document.querySelectorAll('.ip').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.in').forEach(b => b.classList.remove('active'));
+  document.getElementById('ip-' + id).classList.add('active');
+  btn.classList.add('active');
 }
-
-function finiaTourGoToStep(i){
-  const step = FINIA_TOUR_STEPS[i];
-  const here = window.location.pathname.split('/').pop() || 'index.html';
-  if(here !== step.page){
-    window.location.href = step.page + '?tour=1';
-    return;
-  }
-  finiaTourShowOverlay(i);
+function doUp() {
+  const z = document.getElementById('uz');
+  z.innerHTML = '<i class="ti ti-loader-2" style="font-size:26px;color:#888;display:block;margin-bottom:8px"></i><div style="font-size:12px;color:#888">Procesando con FinIA IA...</div>';
+  setTimeout(() => { z.style.display = 'none'; document.getElementById('extr').style.display = 'block'; }, 1400);
+}
+function checkCuit() {
+  const v = document.getElementById('cuit-in').value.trim() || '30-71234567-8';
+  document.getElementById('cuit-res').innerHTML = '<span style="color:#1D9E75;font-weight:500">✓ ' + v + ' — Responsable Inscripto IVA · Activo · Agente percepción IIBB CABA · No sujeto retención especial</span>';
 }
 
-function finiaTourShowOverlay(i){
-  const step = FINIA_TOUR_STEPS[i];
-  document.getElementById('finia-tour-step').textContent = `Paso ${i+1} de ${FINIA_TOUR_STEPS.length}`;
-  document.getElementById('finia-tour-title').textContent = step.title;
-  document.getElementById('finia-tour-body').innerHTML = step.body;
-  document.getElementById('finia-tour-next-btn').textContent = (i === FINIA_TOUR_STEPS.length-1) ? 'Terminar tour ✓' : 'Siguiente →';
-  const prog = document.getElementById('finia-tour-progress');
-  prog.innerHTML = '';
-  FINIA_TOUR_STEPS.forEach((s,idx)=>{
-    const d = document.createElement('div');
-    d.className = 'finia-tour-dot' + (idx<i?' done':idx===i?' active':'');
-    prog.appendChild(d);
-  });
-  document.getElementById('finia-tour-overlay').classList.add('show');
-  document.getElementById('finia-tour-fab').classList.add('hide');
-  finiaTourSave({ step: i, active: true });
-}
+const opts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+const tf = { font: { size: 10 } };
 
-function finiaTourNext(){
-  const state = finiaTourState();
-  const i = state ? state.step : 0;
-  if(i >= FINIA_TOUR_STEPS.length - 1){
-    finiaTourEnd();
-    return;
-  }
-  finiaTourGoToStep(i+1);
-}
-
-function finiaTourEnd(){
-  finiaTourClear();
-  document.getElementById('finia-tour-overlay').classList.remove('show');
-  document.getElementById('finia-tour-fab').classList.remove('hide');
-}
-
-// Auto-resume al cargar la página
-(function(){
-  const params = new URLSearchParams(window.location.search);
-  const state = finiaTourState();
-  if(params.get('tour')==='1' && state && state.active){
-    window.addEventListener('DOMContentLoaded', ()=> finiaTourShowOverlay(state.step));
-  }
-})();
+new Chart(document.getElementById('cajachart'), { type: 'bar', data: { labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Hoy'], datasets: [{ label: 'Ingresos', data: [520, 680, 410, 750, 380, 210, 680], backgroundColor: '#1D9E75' }, { label: 'Egresos', data: [310, 420, 380, 290, 560, 180, 410], backgroundColor: '#E24B4A' }] }, options: { ...opts, scales: { x: { ticks: tf }, y: { ticks: { ...tf, callback: v => '$' + Math.round(v / 1000) + 'K' } } } } });
+new Chart(document.getElementById('cobrchart'), { type: 'bar', data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], datasets: [{ label: 'Cobrado', data: [4200, 5100, 4800, 5600, 6100, 5680], backgroundColor: '#1D9E75' }, { label: 'Vencido', data: [800, 600, 1100, 700, 900, 1950], backgroundColor: '#E24B4A' }] }, options: { ...opts, scales: { x: { ticks: tf }, y: { ticks: { ...tf, callback: v => '$' + Math.round(v / 1000) + 'K' } } } } });
+new Chart(document.getElementById('provchart'), { type: 'bar', data: { labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'], datasets: [{ data: [420, 840, 1100, 630], backgroundColor: ['#E24B4A', '#BA7517', '#185FA5', '#1D9E75'] }] }, options: { ...opts, scales: { x: { ticks: tf }, y: { ticks: { ...tf, callback: v => '$' + Math.round(v / 1000) + 'K' } } } } });
+new Chart(document.getElementById('suelchart'), { type: 'doughnut', data: { labels: ['Tecnología', 'Comercial', 'Administración', 'Operaciones'], datasets: [{ data: [42, 28, 18, 12], backgroundColor: ['#185FA5', '#1D9E75', '#BA7517', '#888780'], borderWidth: 0 }] }, options: { ...opts, cutout: '65%' } });
+new Chart(document.getElementById('iibbchart'), { type: 'bar', data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], datasets: [{ label: 'Devengado', data: [48, 52, 44, 58, 51, 55], backgroundColor: '#534AB7' }, { label: 'Perc+Ant', data: [68, 70, 66, 72, 69, 70], backgroundColor: '#1D9E75' }] }, options: { ...opts, scales: { x: { ticks: tf }, y: { ticks: { ...tf, callback: v => '$' + v + 'K' } } } } });
+new Chart(document.getElementById('poschart'), { type: 'bar', data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], datasets: [{ label: 'IVA', data: [98, 112, 87, 124, 98, 135], backgroundColor: '#BA7517', stack: 'a' }, { label: 'IIBB', data: [42, 42, 42, 42, 42, 42], backgroundColor: '#534AB7', stack: 'a' }, { label: 'Ganancias', data: [128, 128, 128, 128, 128, 128], backgroundColor: '#185FA5', stack: 'a' }, { label: 'Bancario', data: [28, 31, 26, 34, 29, 32], backgroundColor: '#E24B4A', stack: 'a' }, { label: 'Municipal', data: [8, 8, 8, 9, 9, 9], backgroundColor: '#888780', stack: 'a' }] }, options: { ...opts, scales: { x: { stacked: true, ticks: tf }, y: { stacked: true, ticks: { ...tf, callback: v => '$' + v + 'K' } } } } });
 </script>
-<!-- ===== FIN FINIA TOUR GUIADO ===== -->
-
 </body>
 </html>
